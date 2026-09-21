@@ -27,6 +27,7 @@
 | Visit Planning US-003 | Clarification | Planner horizon, views, responsive panel and Due Reason disclosure | Rep website (R-01) |
 | Visit Planning US-004, US-005 | Clarification | Drag uses default duration; click scheduled visit to amend | Rep website (R-01) |
 | Visit Planning US-009 | Clarification | Review-and-select bulk digest actions | Rep website (R-02) |
+| Visit Planning US-010 | Amendment | By-rep default and compact coverage context | Manager website (M-01) |
 | Targets & Performance US-004 | Amendment | Targeted Locations ordered by greatest target shortfall | Rep website (R-03) |
 | Stock Allocation US-003, US-005 | Clarification | Manager-selected stock pools when re-proposing | Head office (H-10) |
 | Area 1 US-014 | Amendment | Sent item shows removed lines and applied prices | Tablet (T-08) |
@@ -398,6 +399,30 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 ---
 
 ## Amendments to existing stories
+
+### Visit Planning US-010 — by-rep default with coverage context
+
+> **Context:** managers normally plan for a rep. Coverage context helps distinguish patches but should not duplicate the full assignment screens.
+
+**Additional Acceptance Criteria:**
+
+**AC-VP010-A:**
+- **Given** I have never opened the Visit Planning overview
+- **When** it loads
+- **Then** it opens in `By rep`
+
+**AC-VP010-B:**
+- **Given** I previously selected `By rep` or `By region`
+- **When** I return to the overview
+- **Then** it opens in my last-selected view
+
+**AC-VP010-C:**
+- **Given** a rep has effective Location coverage
+- **When** their summary row renders
+- **Then** it shows a compact derived area summary and effective Location count
+- **And** detailed assignment rules remain available through the Coverage Management screens
+
+---
 
 ### Stock Allocation US-003 and US-005 — re-propose from selected stock pools
 
