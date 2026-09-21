@@ -30,6 +30,7 @@
 | Visit Planning US-010 | Amendment | By-rep default and compact coverage context | Manager website (M-01) |
 | Visit Planning US-006, US-007 | Clarification | Absence save precedes affected-visit decisions | Manager website (M-02) |
 | Visit Planning US-011 | Clarification | Four-step campaign creation wizard | Manager website (M-03) |
+| Visit Planning US-012 | Clarification | Campaign detail defaults to Overall | Manager website (M-04) |
 | Coverage US-001 | Amendment | Campaign creation can assign an unassigned Location's Primary Rep | Manager website (M-03) |
 | Targets & Performance US-004 | Amendment | Targeted Locations ordered by greatest target shortfall | Rep website (R-03) |
 | Stock Allocation US-003, US-005 | Clarification | Manager-selected stock pools when re-proposing | Head office (H-10) |
@@ -402,6 +403,52 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 ---
 
 ## Amendments to existing stories
+
+### Visit Planning US-012 — campaign detail view hierarchy
+
+> **Context:** the campaign is the primary object; rep performance within it is a drill-down rather than the default framing.
+
+**Additional Acceptance Criteria:**
+
+**AC-VP012-A:**
+- **Given** I open or return to a campaign
+- **When** its detail page loads
+- **Then** `Overall` is selected
+- **And** I see total progress, the outcome breakdown and the visit list
+
+**AC-VP012-B:**
+- **Given** I switch to `By rep`
+- **When** the detail table changes
+- **Then** each rep shows done of due for this campaign
+- **And** the campaign's overall progress and outcome breakdown remain visible above it
+
+**AC-VP012-C:**
+- **Given** the outcome breakdown is visible
+- **When** I select Ordered, Declined, Follow up, Not yet visited or Cancelled
+- **Then** the visit list shows only records behind that count
+- **And** the selected outcome is identified by text/state, not colour alone
+
+**AC-VP012-D:**
+- **Given** an outcome filter is active
+- **When** I select it again or choose `All visits`
+- **Then** the complete visit list returns
+- **And** all headline counts continue to show campaign totals while filtered
+
+**AC-VP012-E:**
+- **Given** a campaign has open visits
+- **When** I choose `Extend remaining...`
+- **Then** a review opens with every open visit selected by default
+- **And** I can exclude individual visits before applying the change
+- **And** I see the proposed new campaign window
+
+**AC-VP012-F:**
+- **Given** I apply an extension from the review
+- **When** the change is saved
+- **Then** only the selected open visits move into the new window
+- **And** excluded open visits retain their existing dates
+- **And** completed and cancelled visits remain unchanged
+
+---
 
 ### Visit Planning US-011 — four-step campaign creation wizard
 

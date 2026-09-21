@@ -129,3 +129,66 @@ Region / optional Brand   Exceptions removable      Reason Type + text         a
 
 **Open:**
 - *(none for M-03)*
+
+---
+
+## M-04 · Campaign detail
+
+**Job:** understand the campaign as one piece of work, then drill into the reps or visits causing its current state.
+
+```
++---------------------------------------------------------------------------------------+
+| < Campaigns          Autumn range launch                         [ Overall ] [ By rep ]|
++---------------------------------------------------------------------------------------+
+| 22 of 38 done                            Window 5-30 Oct                              |
+| [=============================---------------------]          [ Extend remaining... ] |
++---------------------------------------------------------------------------------------+
+| OUTCOMES                                                                              |
+| 15 ordered       7 declined       3 follow up       13 not yet visited                |
++---------------------------------------------------------------------------------------+
+| VISITS                                                                                |
+| Location                 Rep          Status / outcome                     Due         |
+| Quinn's Centra           Colm         Pitched - ordered                    18 Oct       |
+| Murphy's Pharmacy        Aoife        Follow up                            22 Oct       |
+| Kelly's, Avoca           Colm         Not yet visited                      25 Oct       |
+| ...                                                                                   |
++---------------------------------------------------------------------------------------+
+```
+
+> **DECISION M4.1 — Campaign detail always opens on Overall. Settled.**
+> The campaign is the primary object, so the first view answers whether the launch is progressing and what outcomes it is producing. `By rep` is a secondary diagnostic pivot for finding uneven execution; it does not replace Overall as the return/default view.
+
+> **DECISION M4.2 — progress and outcomes remain visible above either detail view. Source-aligned.**
+> `22 of 38 done` and the full outcome breakdown are the campaign's stable headline. Switching to `By rep` changes the table beneath, not the campaign summary, so the manager never loses the overall context while investigating a person.
+
+> **DECISION M4.3 — every outcome count filters the visit list. Settled.**
+> Ordered, Declined, Follow up, Not yet visited and Cancelled are interactive summary filters. Selecting one shows only visits behind that count and gives the active count a selected state with a clear text label; selecting it again or choosing `All visits` clears the filter. Counts themselves never change while filtered, so the manager retains the campaign totals.
+
+> **DECISION M4.4 — extending remaining visits uses a select-all review. Settled.**
+> `Extend remaining...` opens a review containing every open visit, selected by default. The manager can exclude individual rows and sees the proposed new campaign window before applying it. Completed and cancelled visits are not included or changed. Applying the review moves only the selected open visits; excluded visits retain their existing dates.
+
+**Open:**
+- *(none for M-04)*
+
+---
+
+## M-05 · Schedule conflicts
+
+**Job:** show the manager where their change overtook a rep's offline change, with enough context to settle it directly.
+
+```
++---------------------------------------------------------------------------------------+
+| Schedule conflicts                                                   3 conflicts      |
++---------------------------------------------------------------------------------------+
+| Rep       Location             Affected visit       Applied manager change            |
+| Colm      Murphy's Pharmacy    Thu 8 Oct            Covered by Aoife                  |
+|           Rep's change: moved to Thu 8 Oct                         [ Open visit > ]    |
+|                                                                                       |
+| ...                                                                                   |
++---------------------------------------------------------------------------------------+
+```
+
+The manager's change remains applied. This is an exception notice, not a separate approval queue: the conflict clears when the manager amends their change or the rep reschedules the visit, as defined by US-014. Changing only Suggested Day does not create a conflict.
+
+**Open:**
+- What should determine the default order of conflicts?
