@@ -63,6 +63,7 @@ Colm — senior software developer in Ireland, strong engineering instincts, **n
 | `02-head-office.md` | H-01 Worklist, H-02 Order detail, H-03 Despatch, H-10 Allocation, H-16 Category archive | **H-01, H-02, H-10 and H-16 settled.** H-03 remains drafting calls |
 | `03-rep-planner.md` | R-01 Planner, R-02 Cycle end digest, R-03 Rep performance | **R-01, R-02 and R-03 settled** |
 | `04-user-stories-amendments.md` | BR-NEW-001–003, US-NEW-001–005, amendments to Pricing US-008/009, Promotions US-007, Area 1 US-014, superseded Head Office US-001–003/006, EC-NEW-001–005, RC-NEW-001–007 | Reflects every settled decision up to the end of the session |
+| `05-manager.md` | M-01 Visit Planning overview onward | **M-01, M-02 and M-03 settled.** M-04 next |
 
 **Not drawn at all:** M-01 to M-15, C-01 to C-08, and H-04 to H-09, H-11 to H-15, H-17 to H-30. Deliberately deferred — brief §10 calls them conventional once the patterns settle.
 
@@ -77,7 +78,7 @@ Every wireframe carries **DECISION blocks**. They are not all equal.
 
 Do not turn a drafting call into a user story, or treat it as agreed, until Colm confirms it.
 
-**Settled IDs:** T7.1, T7.6, T7.7, T7.8, T7.9, T7.10, T7.11, T7.12, T2.5 (except its clearing rule), H1.6, H1.7, H2.3, H2.6, H2.7, H2.8, H10.1–H10.7, H16.1–H16.3, R1.1–R1.12, R2.1–R2.7, R3.1–R3.5, and the H-01 disposition table.
+**Settled IDs:** T7.1, T7.6, T7.7, T7.8, T7.9, T7.10, T7.11, T7.12, T2.5 (except its clearing rule), H1.6, H1.7, H2.3, H2.6, H2.7, H2.8, H10.1–H10.7, H16.1–H16.3, R1.1–R1.12, R2.1–R2.7, R3.1–R3.5, M1.1–M1.2, M2.1–M2.4, and the H-01 disposition table.
 
 ---
 
@@ -165,7 +166,7 @@ Replaces head office override approval. Colm's rules, in order:
 
 The allowance and FOC granularity question is answered at UX level: a manager groups eligible products into a commercial policy profile carrying rules such as 10% rep discount and X FOC units per rep per month. Products outside a policy cannot use those actions. "Profile" is provisional and may become a more explicit business-rule model.
 
-FOC accounting is settled by treating it as an ordinary order line at €0.00: the line counts while it exists and normal removal releases it. R-01 Planner, R-02 Cycle End digest and R-03 Rep performance are settled. R-03 sorts targeted Locations by lowest percentage attainment, keeps untargeted Locations in a filterable `No target set` section, and shows a labelled straight-line pace marker as a neutral reference only. There is no pacing model or automated on/off-track judgement; reps and managers interpret progress from their commercial context. H-10 Allocation is settled: stock changes preserve and flag the draft, block release only if now over-allocated, and never silently re-propose. `Re-propose...` lets the manager select On Hand and Incoming pools based on quantity/date, then replaces the whole draft across waiting orders using only those pools. H-16 Category archive is settled with one typed confirmation; leaving products in the archived branch repeats its exact browsing consequence immediately above the field but adds no second confirmation. Work can move to the undrawn manager screens.
+FOC accounting is settled by treating it as an ordinary order line at €0.00: the line counts while it exists and normal removal releases it. R-01–R-03, H-10, H-16 and M-01–M-03 are settled. M-03 is a four-step campaign wizard; it can choose a campaign rep per Location, automatically establish Primary ownership where none exists, and preserve existing Primary ownership for campaign-only routing. Multiple unassigned selections support one bulk Primary Rep default with per-row overrides, and Confirm lists all permanent assignment side effects. Work moves to M-04 Campaign detail.
 
 ---
 
@@ -211,7 +212,7 @@ In the brief's §10 order, with what's done:
 6. **H-10 Allocation and H-16 Category archive** — drafted; not discussed.
 7. M- and C- screens — not drawn.
 
-A natural session plan: begin the undrawn manager screens at M-01 Team coverage, using the Coverage Management source stories. Leave the provisional commercial-policy entity shape for the business-rule modelling pass unless it blocks the UX.
+A natural session plan: design M-04 Campaign detail from Visit Planning US-012, then continue through manager screens. Leave the provisional commercial-policy entity shape for the business-rule modelling pass unless it blocks the UX.
 
 ---
 

@@ -28,6 +28,9 @@
 | Visit Planning US-004, US-005 | Clarification | Drag uses default duration; click scheduled visit to amend | Rep website (R-01) |
 | Visit Planning US-009 | Clarification | Review-and-select bulk digest actions | Rep website (R-02) |
 | Visit Planning US-010 | Amendment | By-rep default and compact coverage context | Manager website (M-01) |
+| Visit Planning US-006, US-007 | Clarification | Absence save precedes affected-visit decisions | Manager website (M-02) |
+| Visit Planning US-011 | Clarification | Four-step campaign creation wizard | Manager website (M-03) |
+| Coverage US-001 | Amendment | Campaign creation can assign an unassigned Location's Primary Rep | Manager website (M-03) |
 | Targets & Performance US-004 | Amendment | Targeted Locations ordered by greatest target shortfall | Rep website (R-03) |
 | Stock Allocation US-003, US-005 | Clarification | Manager-selected stock pools when re-proposing | Head office (H-10) |
 | Area 1 US-014 | Amendment | Sent item shows removed lines and applied prices | Tablet (T-08) |
@@ -400,6 +403,134 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ## Amendments to existing stories
 
+### Visit Planning US-011 — four-step campaign creation wizard
+
+> **Context:** the candidate set, per-campaign details and routing summary have genuine dependencies and should not compete on one long screen.
+
+**Additional Acceptance Criteria:**
+
+**AC-VP011-A:**
+- **Given** I start creating a Visit Campaign
+- **When** the flow renders
+- **Then** it has four labelled steps: `Filter`, `Review`, `Details`, `Confirm`
+
+**AC-VP011-B:**
+- **Given** I move backward or forward between completed steps
+- **When** a step reopens
+- **Then** my filters, selected Locations and campaign details are preserved
+
+**AC-VP011-C:**
+- **Given** the current filter matches no Locations
+- **When** the Filter step renders
+- **Then** it shows `No Locations match` and I cannot advance to Review
+
+**AC-VP011-D:**
+- **Given** my reviewed selection and campaign details are valid
+- **When** I reach Confirm
+- **Then** it states the visit count, rep count and number routed to specialists before creation
+
+**AC-VP011-E:**
+- **Given** a selected Location has no Primary Rep
+- **When** I choose its campaign rep
+- **Then** Review states that this rep will also become the Location's permanent Primary Rep
+
+**AC-VP011-F:**
+- **Given** a selected Location already has a Primary Rep
+- **When** I choose another rep for this campaign
+- **Then** only the campaign Visit Due is routed to that rep
+- **And** the existing Primary Rep remains unchanged
+
+**AC-VP011-G:**
+- **Given** one or more selected Locations will receive a Primary Rep
+- **When** I reach Confirm
+- **Then** those permanent assignments are counted and listed separately from campaign-only routing
+
+**AC-VP011-H:**
+- **Given** I confirm campaign creation with a Primary Rep assignment for an unassigned Location
+- **When** creation succeeds
+- **Then** the direct Primary Rep assignment and its Assignment History entry are saved atomically with the campaign
+- **And** future recurring visits, tablet access and performance attribution use that assignment normally
+
+**AC-VP011-I:**
+- **Given** multiple selected Locations are unassigned
+- **When** I choose a bulk Primary Rep default
+- **Then** that rep is applied to all selected unassigned rows
+- **And** I can override the rep on any individual row before advancing
+
+**AC-VP011-J:**
+- **Given** one or more rows override the bulk Primary Rep default
+- **When** Review and Confirm show assignment counts
+- **Then** they use each row's effective rep and list every permanent assignment accurately
+
+**Amendment to Coverage US-001:** campaign creation is an additional route for creating a direct Location assignment where the Location was previously unassigned. It must produce the same effective ownership and append-only Assignment History as the Coverage Management screen.
+
+---
+
+### Visit Planning US-006 and US-007 — two-stage absence flow
+
+> **Context:** calendar blocking is urgent and factual; Extend / Keep / Cover decisions may require review and are already allowed to remain pending.
+
+**Additional Acceptance Criteria:**
+
+**AC-VP006-A:**
+- **Given** I enter a valid planned absence
+- **When** I save it
+- **Then** the absence is committed and the affected calendar time is blocked immediately
+- **And** any visits scheduled on those days return to Unscheduled as specified by US-006
+
+**AC-VP006-B:**
+- **Given** the saved absence affects one or more Visit Dues
+- **When** the save completes
+- **Then** I see the affected count and can choose `Decide affected visits` or `Return to overview`
+
+**AC-VP006-C:**
+- **Given** I return without deciding
+- **When** the rep or manager views an affected visit
+- **Then** its Due Window is unchanged and it shows `Absence — decision pending`
+- **And** the saved absence remains in effect
+
+**AC-VP006-D:**
+- **Given** the saved absence affects no Visit Dues
+- **When** the save completes
+- **Then** I see `No visits affected` and no decision step is offered
+
+**AC-VP006-E:**
+- **Given** a new absence genuinely overlaps an existing absence for the same rep
+- **When** the overlap is detected
+- **Then** I see the existing absence, the proposed combined range and an `Extend existing absence` option
+- **And** its reason remains editable before save
+
+**AC-VP006-F:**
+- **Given** two absences are adjacent but do not overlap in date/time
+- **When** I save the new absence
+- **Then** they remain separate entries and no extension prompt is shown
+
+**Superseded:** US-006 scenario 4's `merge` wording; the action is `Extend existing absence` and applies only to genuine overlap.
+
+**AC-VP007-A:**
+- **Given** an absence affects multiple Visit Dues
+- **When** I choose `Apply to all: Cover`
+- **Then** a review opens with all eligible visits selected
+- **And** I can Select all, Clear all, or unselect individual rows
+
+**AC-VP007-B:**
+- **Given** I selected one covering rep for the batch
+- **When** I apply Cover
+- **Then** that rep covers only the selected visits
+- **And** excluded visits remain available for Extend, Keep or a different covering rep
+
+**AC-VP007-C:**
+- **Given** the selected covering rep is over capacity during the affected period
+- **When** the review renders
+- **Then** it shows the existing capacity warning and still allows confirmation
+
+**AC-VP007-D:**
+- **Given** the covering rep belongs to another manager
+- **When** I apply Cover
+- **Then** cover takes effect immediately and the other manager receives the source-story notification without an approval step
+
+---
+
 ### Visit Planning US-010 — by-rep default with coverage context
 
 > **Context:** managers normally plan for a rep. Coverage context helps distinguish patches but should not duplicate the full assignment screens.
@@ -419,7 +550,8 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 **AC-VP010-C:**
 - **Given** a rep has effective Location coverage
 - **When** their summary row renders
-- **Then** it shows a compact derived area summary and effective Location count
+- **Then** it shows the broadest meaningful effective area, any carve-out or overflow count, and the effective Location count
+- **And** fragmented coverage with no coherent territory shows up to two representative area names followed by `+ N areas`
 - **And** detailed assignment rules remain available through the Coverage Management screens
 
 ---
