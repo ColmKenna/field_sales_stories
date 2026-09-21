@@ -450,6 +450,58 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ---
 
+### Visit Planning US-014 — conflict list ordering
+
+> **Context:** schedule conflicts are time-sensitive operational exceptions, so the affected visit date is more useful than the time the conflict was detected.
+
+**Additional Acceptance Criteria:**
+
+**AC-VP014-A:**
+- **Given** more than one unresolved Schedule Conflict exists
+- **When** I open the conflict list
+- **Then** conflicts for overdue affected visits appear first
+- **And** conflicts affecting today appear next
+- **And** future conflicts follow in ascending affected-visit date order
+
+**AC-VP014-B:**
+- **Given** a rep row on the Visit Planning overview shows one or more conflicts
+- **When** I select that conflict count
+- **Then** the Schedule Conflicts page opens filtered to that rep
+- **And** the active filter identifies the rep in text
+- **And** I can clear it with `View all conflicts`
+
+**AC-VP014-C:**
+- **Given** I open the Schedule Conflicts page directly
+- **When** the page loads
+- **Then** it shows unresolved conflicts for all reps in the default earliest-first order
+
+**AC-VP014-D:**
+- **Given** either party amends a visit and thereby clears its Schedule Conflict
+- **When** the conflict leaves the unresolved list
+- **Then** it remains accessible to a manager in resolved-conflicts history
+- **And** the history retains both conflicting versions
+- **And** it identifies the clearing amendment, who made it and when
+
+**AC-VP014-E:**
+- **Given** I open Schedule Conflicts
+- **When** the page loads
+- **Then** `Open` is selected by default
+- **And** `Resolved` is available as a separate adjacent view
+
+**AC-VP014-F:**
+- **Given** I entered Schedule Conflicts from a rep row
+- **When** I switch between `Open` and `Resolved`
+- **Then** the active rep filter is retained
+- **And** I can still clear it with `View all conflicts`
+
+**AC-VP014-G:**
+- **Given** more than one cleared Schedule Conflict exists
+- **When** I open `Resolved`
+- **Then** the most recently cleared conflict appears first
+- **And** each record identifies its affected visit date separately from its clearing date and time
+
+---
+
 ### Visit Planning US-011 — four-step campaign creation wizard
 
 > **Context:** the candidate set, per-campaign details and routing summary have genuine dependencies and should not compete on one long screen.

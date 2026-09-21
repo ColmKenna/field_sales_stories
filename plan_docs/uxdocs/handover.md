@@ -63,7 +63,7 @@ Colm — senior software developer in Ireland, strong engineering instincts, **n
 | `02-head-office.md` | H-01 Worklist, H-02 Order detail, H-03 Despatch, H-10 Allocation, H-16 Category archive | **H-01, H-02, H-10 and H-16 settled.** H-03 remains drafting calls |
 | `03-rep-planner.md` | R-01 Planner, R-02 Cycle end digest, R-03 Rep performance | **R-01, R-02 and R-03 settled** |
 | `04-user-stories-amendments.md` | BR-NEW-001–003, US-NEW-001–005, amendments to Pricing US-008/009, Promotions US-007, Area 1 US-014, superseded Head Office US-001–003/006, EC-NEW-001–005, RC-NEW-001–007 | Reflects every settled decision up to the end of the session |
-| `05-manager.md` | M-01 Visit Planning overview onward | **M-01–M-04 settled; M-05 active.** Conflict list ordering is next |
+| `05-manager.md` | M-01 Visit Planning overview onward | **M-01–M-05 settled; M-06 active.** One-off Visit Due entry points are next |
 
 **Not drawn at all:** M-01 to M-15, C-01 to C-08, and H-04 to H-09, H-11 to H-15, H-17 to H-30. Deliberately deferred — brief §10 calls them conventional once the patterns settle.
 
@@ -166,7 +166,7 @@ Replaces head office override approval. Colm's rules, in order:
 
 The allowance and FOC granularity question is answered at UX level: a manager groups eligible products into a commercial policy profile carrying rules such as 10% rep discount and X FOC units per rep per month. Products outside a policy cannot use those actions. "Profile" is provisional and may become a more explicit business-rule model.
 
-FOC accounting is settled by treating it as an ordinary order line at €0.00: the line counts while it exists and normal removal releases it. R-01–R-03, H-10, H-16 and M-01–M-04 are settled. Campaign detail always opens on `Overall`; `By rep` is a secondary diagnostic view. Overall progress and outcome counts remain visible above either detail table, and every outcome count filters the visit list without changing totals. `Extend remaining...` opens a review with all open visits selected, supports row exclusions, previews the new window, and never changes completed or cancelled visits. M-05 Schedule conflicts is active; its default list ordering is the next decision.
+FOC accounting is settled by treating it as an ordinary order line at €0.00: the line counts while it exists and normal removal releases it. R-01–R-03, H-10, H-16 and M-01–M-05 are settled. Campaign detail always opens on `Overall`; `By rep` is a secondary diagnostic view. Overall progress and outcome counts remain visible above either detail table, and every outcome count filters the visit list without changing totals. `Extend remaining...` opens a review with all open visits selected, supports row exclusions, previews the new window, and never changes completed or cancelled visits. M-05 conflicts sort by earliest affected visit in `Open`; entry from a rep row carries a removable rep filter. Cleared conflicts retain both versions and clearing audit details in a separate `Resolved` view ordered by most recently cleared. M-06 Add a one-off Visit Due is active; its entry points are the next decision.
 
 ---
 
@@ -212,7 +212,7 @@ In the brief's §10 order, with what's done:
 6. **H-10 Allocation and H-16 Category archive** — drafted; not discussed.
 7. M- and C- screens — not drawn.
 
-A natural session plan: settle M-05 Conflicts, then continue through the remaining manager panels. Leave the provisional commercial-policy entity shape for the business-rule modelling pass unless it blocks the UX.
+A natural session plan: settle M-06 Add a one-off Visit Due, then continue through the remaining manager panels. Leave the provisional commercial-policy entity shape for the business-rule modelling pass unless it blocks the UX.
 
 ---
 

@@ -190,5 +190,31 @@ Region / optional Brand   Exceptions removable      Reason Type + text         a
 
 The manager's change remains applied. This is an exception notice, not a separate approval queue: the conflict clears when the manager amends their change or the rep reschedules the visit, as defined by US-014. Changing only Suggested Day does not create a conflict.
 
+> **DECISION M5.1 — conflicts are ordered by the earliest affected visit. Settled.**
+> Overdue affected visits appear first, followed by visits due today and then future visits in ascending scheduled order. This makes the default list reflect operational urgency rather than the time at which the conflict was detected.
+
+> **DECISION M5.2 — entering from a rep row carries a removable rep filter. Settled.**
+> Selecting a rep's conflict count on M-01 opens M-05 filtered to that rep. The page names the active rep filter in text and offers `View all conflicts`; clearing it restores the full earliest-first list. Opening M-05 directly shows all conflicts.
+
+> **DECISION M5.3 — cleared conflicts remain accessible as resolved history. Settled.**
+> When either party makes an amendment that clears a conflict, it leaves the unresolved operational list but remains available to the manager in a resolved-conflicts history. The history preserves the rep's overtaken change, the manager change that applied, how the conflict was cleared, who made that clearing amendment and when.
+
+> **DECISION M5.4 — Open and Resolved are separate views. Settled.**
+> M-05 opens on `Open`, keeping the manager's operational workload distinct from audit history. `Resolved` is an adjacent, clearly labelled view; switching views retains any active rep filter so a manager who arrived from a rep row can inspect that rep's open and historical conflicts without rebuilding context.
+
+> **DECISION M5.5 — resolved conflicts are ordered by most recently cleared. Settled.**
+> The Resolved view sorts by clearing timestamp descending so the conflict most recently discussed or amended is easiest to find. Each row still displays the affected visit date separately; sorting by clearance does not rewrite the event chronology.
+
 **Open:**
-- What should determine the default order of conflicts?
+- *(none for M-05)*
+
+---
+
+## M-06 · Add a one-off Visit Due
+
+**Job:** ask for one additional visit at a Location, with a clear reason and due window, without changing its recurring schedule.
+
+The form must capture the Location, due window, structured Due Reason Type, optional explanatory text and optional Suggested Day. The effective rep follows the Location assignment rules; saving creates one Visit Due which is completed by the next recorded Call at that Location, as defined by US-015.
+
+**Open:**
+- From which manager contexts should this flow be available?
