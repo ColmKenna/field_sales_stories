@@ -67,7 +67,9 @@ Colm — senior software developer in Ireland, strong engineering instincts, **n
 | `04-user-stories-amendments.md` | BR-NEW-001–005, US-NEW-001–006, amendments to Pricing, Promotions, Area 1, Visit Planning (US-003–US-015), Coverage US-001–US-003, Targets, Stock Allocation; superseded Head Office stories; EC-NEW-001–006; RC-NEW-001–013 | Reflects every settled decision up to the end of the session |
 | `05-manager.md` | M-01 to M-15, plus M-16 Add a one-off Visit Due (not in the brief; numbered after M-15 so it doesn't clash with the brief's M-06 Territory assignment) | **All manager screens M-01–M-16 settled** (M16.6 superseded; M11.2 layout deferred to usage feedback). Assumed (confirm): M-06's Region-level rule; M8.2 for carve-out Move; M-15 count company-wide. Drafting calls: M-06 and M-07 layouts, M-07 History as its own view, M-13 units-only order under € sort, M-14 removal consequence line |
 
-**Not drawn at all:** C-01 to C-08, and H-04 to H-09, H-11 to H-15, H-17 to H-30. Deliberately deferred — brief §10 calls them conventional once the patterns settle.
+**Not drawn at all (40 screens):** T-09 to T-14, R-04, C-01 to C-08, and H-04 to H-09, H-11 to H-15, H-17 to H-30. The head office screens were deliberately deferred, because brief §10 calls them conventional once the patterns settle.
+
+**Tally (23 Sep 2026):** 72 screens (the brief's 71 plus M-16). 24 settled; 8 drafted but awaiting confirmation (T-01 to T-06, T-08, H-03); 40 not drawn.
 
 ---
 
