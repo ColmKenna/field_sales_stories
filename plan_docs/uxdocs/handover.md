@@ -217,10 +217,20 @@ In the brief's §10 order, with what's done:
 3. **T-06 Call & stock check** — drafted; settle open question 4.
 4. ~~H-01 Worklist and H-02 Order detail~~ — settled. Remaining: open questions 5, 6.
 5. ~~**R-01 Planner**~~ — settled in `03`. Includes responsive Day / Week / Month scheduling, fixed four-week unscheduled horizon plus Overdue, immediate drag with editable duration, and structured manager/admin-maintained Due Reason Types with controlled icon/colour choices.
-6. **H-10 Allocation and H-16 Category archive** — drafted; not discussed.
-7. M- and C- screens — not drawn.
+6. ~~H-10 Allocation and H-16 Category archive~~ — settled. Remaining: open questions 7, 8.
+7. ~~M- screens~~ — all settled, with no drafting calls or assumptions left (23 Sep 2026). C- screens — not drawn.
 
-A natural session plan: confirm the manager-area assumptions and drafting calls listed in §4, then move to the customer screens (C-01 to C-08), or return to open questions 2–4 on the tablet. Leave the provisional commercial-policy entity shape for the business-rule modelling pass unless it blocks the UX.
+### Next session (set by Colm, 23 Sep 2026)
+
+**Tablet open questions 2–4**, in this order:
+
+1. **What clears "not supplied" on Home** (§9 Q2, RC-NEW-001). The options are opening the order, an explicit "Told them", or the next call at the Location. Settling it also settles T2.5's clearing rule.
+2. **The Low tab on an order with no stock check**, for example a phone order (§9 Q3, RC-NEW-007).
+3. **T-06 when channel = Phone** (§9 Q4): does the stock check stay, collapse or disappear? Q3 and Q4 are linked, so settle Q4's shape first if Q3 depends on it.
+
+Then confirm the remaining drafting calls on T-02 and T-01 (§9 Q11), which clears the way to settle T-01, T-02 and T-06. Fold each decision into `01-tablet-day.md`, `04` and the matching source story as it settles.
+
+After that: the customer screens (C-01 to C-08), or the remaining head office screens. Leave the provisional commercial-policy entity shape for the business-rule modelling pass unless it blocks the UX.
 
 ---
 
