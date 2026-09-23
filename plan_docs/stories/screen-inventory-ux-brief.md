@@ -1,6 +1,8 @@
 # Field Sales Management System — Screen Inventory & UI Brief
 
 **Generated:** 19 September 2026
+
+> **Amended 23 September 2026 by the UX design sessions** (`../uxdocs/`): principle 2 below has changed. Orders no longer need head office confirmation: every order flag has an automatic disposition, and rep discounts and free goods are applied within manager-set allowances at capture. H-01 now holds only range proposals, duplicate matches and account requests, and H-02 is a read-only record. A new manager screen, **M-16 Add a one-off Visit Due**, was added after M-15. Settled designs are in `../uxdocs/00`–`05`, and story amendments are folded into this folder.
 **For:** UX designer
 **Derived from:** fourteen area documents containing ~130 user stories
 **Purpose:** To describe every screen the system needs, what each one is for, what it must show, and how they connect — so the screens and flows can be designed without reading all fourteen documents first.
@@ -32,7 +34,7 @@ A wholesaler sells into physical shops. **Field Salespersons** visit or phone sh
 Three things shape almost every screen:
 
 1. **The tablet is offline.** It works from a snapshot taken at the morning sync. Everything it shows may be hours old, and everything the rep does waits to be uploaded.
-2. **The rep captures; head office confirms.** Orders, price discounts, free goods, range agreements and new prospects are all provisional until someone at head office accepts them.
+2. **The rep captures; head office confirms.** Orders, price discounts, free goods, range agreements and new prospects are all provisional until someone at head office accepts them. *Superseded in part 23 Sep 2026:* orders, price discounts and free goods now go through without a person; range agreements, duplicate prospects and customer accounts still need head office.
 3. **Performance is measured per Location** — per shop, never rolled up to the customer as a whole.
 
 ---
@@ -614,4 +616,4 @@ These are unresolved in the source documents and will need an answer before or d
 4. **Website corrections** — the rule for correcting synced calls on the website (R-04) is defined in principle but its screen isn't designed.
 5. **Editing a live promotion** — assumed "end early" only.
 6. **App scope for customers** — assumed identical to the website and online-only.
-7. **Location Profile vs Location Type** — confirmed as separate concepts, but whether the existing Location Type list should be reused is open.
+7. **Location Profile vs Location Type** — confirmed as separate concepts, but whether the existing Location Type list should be reused is open. *23 Sep 2026:* a Location may hold many Location Profiles.

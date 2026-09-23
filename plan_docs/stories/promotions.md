@@ -1,6 +1,6 @@
 # Promotions: UX & User Stories
 
-**Generated:** 18 September 2026
+**Generated:** 18 September 2026 (amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Promotions, within Pricing
 **Primary users:** Head Office User (setting them up); Field Salesperson (explaining them)
 **Scope:** Head office running offers that apply automatically to qualifying orders, and how those offers read on the rep's order. Six screens: Promotion List, Promotion Setup, Product Selection (with overlap warning), Audience Selection, Order Offer Summary, Order line markers.
@@ -19,7 +19,7 @@
     - **Buy X get Y** — buy a quantity of one product (or any from a set), get another product free or at a set price.
     - **Bundle** — a fixed set of named products together at a set price.
     - **Mix and Match** — any N products from a defined **Eligible Set** for a set price.
-    - **Spend Threshold** — an order reaching a value gets a percentage or fixed amount off the order.
+    - **Spend Threshold** — an order reaching a value gets a percentage or fixed amount off the order. *Amended 23 Sep 2026:* qualification is checked on resolved prices, **before** any rep discount, so a rep's discount never costs the customer the threshold offer. Buy X get Y, Bundle and Mix and Match lines never take a rep discount (Pricing: discount allowance).
   - **Line-level offer** — Buy X get Y, Bundle and Mix and Match. Each produces a **Candidate Price** for the lines involved, resolved by Pricing's **Best Price Wins**.
   - **Order-level offer** — a Spend Threshold. It sits outside Best Price Wins: lines resolve first, then the discount applies to the order total.
   - **Automatic application** — a qualifying order gets the offer without the rep accepting anything.
@@ -483,6 +483,15 @@ Given the order partly qualifies for 3 offers
 Then a single line reads "3 offers available on this order", expanding to the detail
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+*Scenario PM007-A*
+```
+Given an order qualifies for a spend-threshold promotion on resolved prices
+When rep discounts bring the order total below the threshold
+Then the order still qualifies for the threshold discount
+```
+
 ---
 
 ### US-008: Browse and manage promotions
@@ -524,6 +533,7 @@ Then it is flagged "May never apply"
 4. **Area 1 amendments (applied):** promotions and their periods in the snapshot; offer markers on lines; the Offer Summary on the order.
 5. **Targets & Performance amendment (applied):** actuals use gross line value; order-level discounts tracked separately.
 6. **Pricing amendment (applied):** rep-given Free of Charge lines are designed in Pricing US-009, not here.
+7. **Spend-threshold discount base (23 Sep 2026):** does the threshold discount apply to the final order total after rep discounts (assumed) or to the pre-discount total?
 
 ---
 

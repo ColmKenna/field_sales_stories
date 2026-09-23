@@ -1,9 +1,9 @@
 # Pricing: UX & User Stories
 
-**Generated:** 18 September 2026 (amended same day for Promotions)
+**Generated:** 18 September 2026 (amended same day for Promotions; amended 23 September 2026 from the UX design sessions: rep discount allowance and free-of-charge rules — see `../uxdocs/04-user-stories-amendments.md`, BR-NEW-002 and BR-NEW-003)
 **Bounded context:** Pricing, within Ordering
-**Primary users:** Head Office User (tiers, breaks, override approval); Field Salesperson (quoting and overriding)
-**Scope:** How a line's price is determined and explained, including rep discretion. Seven screens: Price Tier List, Price Tier Detail, Tier Assignment on the Customer, Quantity Breaks on the product, Price display on the Order Pad and line (with breakdown), Price Override and Free of Charge entry and approval.
+**Primary users:** Head Office User (tiers, breaks); Sales Manager (commercial policy: discount allowance and free-of-charge allowance); Field Salesperson (quoting and applying discounts within allowance)
+**Scope:** How a line's price is determined and explained, including rep discretion. Seven screens: Price Tier List, Price Tier Detail, Tier Assignment on the Customer, Quantity Breaks on the product, Price display on the Order Pad and line (with breakdown), Price Override and Free of Charge entry (applied within allowances; no approval since 23 Sep 2026).
 
 ---
 
@@ -24,8 +24,9 @@
   - **Winning Source** — the named origin of the applied price, shown on the line ("Autumn promotion", "Tier A", "Break: 10+", "List price").
   - **Break Prompt** — a message relative to what is already on the line ("2 more for €18 per 10 — save €4"), never an abstract price list.
   - **Drift Indicator** — on a fixed tier price, the effective discount it now represents against the current Base Price, so a stale price is visible.
-  - **Price Override** — a rep-entered price on a line, **lower than the resolved price only**, with a reason. Marked "subject to approval"; the Order is flagged for head office, who accept it at the override or at the resolved price. Actuals use the approved price.
-  - **Free of Charge (FOC) line** — a product the rep adds at zero price with a reason, to sample a new line or clear discontinued stock. Like a Price Override it is marked subject to approval and flags the Order for head office, who accept the Order with or without it. An FOC line may carry products a paid line cannot — Run-out and Unavailable ones — and its quantity counts against a Run-out Remaining, because the stock leaves either way. It is discretion, not a promotion.
+  - **Price Override** — a rep-entered price on a line, **lower than the resolved price only**, with a reason, **applied immediately within the rep's discount allowance** (amended 23 Sep 2026; no head office approval). The button says Apply. The sheet shows the lowest price the rep can offer before they type, and a blocked sheet explains why, so the rep has a sentence for the customer.
+  - **Discount allowance** — a percentage off the resolved price that a rep may apply, set by a manager through a **commercial policy profile** (working name, e.g. "Allow 10% rep discount and 12 FOC units per rep per month"); product membership enables the action, and products outside a policy can't be discounted by the rep. Rules: (1) **base price** is the best non-promotional price — tier, list or quantity break, since breaks are bulk pricing, not an offer; (2) no promotion: down to the allowance off the base; (3) promotion no larger than the allowance: the rep's discount stacks on the promotion price; (4) promotion larger than the allowance: no stacking, but the rep can still reach the allowance off the base if that is lower than the promotion — only if the promotion is lower still is the line blocked (a promotion never leaves the rep worse off); (5) buy X get Y, bundle, mix and match: never take a rep discount; (6) spend threshold: qualification is checked before rep discounts. Because of rule 3 the effective maximum discount is nearly twice the allowance.
+  - **Free of Charge (FOC) line** — (amended 23 Sep 2026) only for products in the **Discontinuing** state, to clear stock. A manager sets an FOC **quantity allowance per rep per calendar month** through the commercial policy profile; within the rep's remaining allowance the line is applied, with no head office decision. An FOC item is an **ordinary order line at €0.00**: stock, availability, allocation, despatch and removal behave exactly as for any other line. Its quantity counts against the monthly allowance while the line exists; reducing or removing it releases the quantity. It is discretion, not a promotion.
   - **Capture** — the applied price is recorded on the line when the Order is captured and does not change afterwards (valid when captured).
 - **Upstream contexts:**
   - **Product Management** — Base Price with history, Unit of Measure and Quantity Step.
@@ -33,7 +34,7 @@
   - **Promotions** (own area) — promotional Candidate Prices.
 - **Downstream contexts:**
   - **Rep at a Location** (area 1) — prices, tiers and breaks in the Morning Snapshot; price display and override on the Order Pad and line.
-  - **Head Office Order Processing** — the Price Override flag and its accept-at-which-price decision.
+  - **Head Office Order Processing** — records applied rep prices and FOC lines on the order; no longer decides them (amended 23 Sep 2026).
   - **Targets & Performance** — order value from captured prices.
   - **Self-service** (area 7) — the same resolution for Customer Users.
 - **Terms that mean something different elsewhere:**
@@ -51,8 +52,8 @@
   - Price display: winner, source, runner-up tier price, full breakdown on demand
   - Break Prompts relative to the current line
   - Drift Indicators on fixed tier prices
-  - Price Override entry, approval and its effect on actuals
-  - Free of Charge lines: entry, approval, allowed products, effect on Run-out Remaining
+  - Price Override entry within the rep's allowance, and its effect on actuals
+  - Free of Charge lines on Discontinuing products within a monthly per-rep allowance
   - Everything above working offline from the snapshot
 - **Out of scope:**
   - All four promotion shapes and their setup (Promotions area); head-office-run offers of any kind
@@ -75,15 +76,15 @@
 ### Head Office User
 
 - **Role:** maintains commercial terms; usually also a Sales Manager.
-- **Responsibilities:** sets up tiers and assigns them; sets quantity breaks; approves or declines price overrides.
-- **Context on arrival:** a negotiated deal to record; a base price rise that may have made fixed tier prices too generous; a rep's override waiting in the queue.
+- **Responsibilities:** sets up tiers and assigns them; sets quantity breaks. (Amended 23 Sep 2026: no longer approves overrides; limits are enforced at capture.)
+- **Context on arrival:** a negotiated deal to record; a base price rise that may have made fixed tier prices too generous.
 - **Goal:** "Hold agreed terms without maintaining a thousand prices, and keep discretion visible."
 - **Pain points:** tier prices quietly drifting as base prices move; a price list that goes stale the moment a product changes; not knowing whether a rep's discount was justified.
 
 ### Field Salesperson
 
 - **Role:** the area 1 rep, quoting at the counter.
-- **Responsibilities:** quotes the right price, explains it, and asks for an override when a sale needs one.
+- **Responsibilities:** quotes the right price, explains it, and applies a discount within their allowance when a sale needs one.
 - **Context on arrival:** offline, a customer asking why the price differs from last time, or pushing for a better one.
 - **Goal:** "Quote the right price and be able to explain it."
 - **Pain points:** a price they cannot account for; missing a quantity break the customer would have taken; promising a discount that head office then refuses.
@@ -115,10 +116,10 @@ flowchart TD
         Line --> Qty[Quantity changed] --> Cand
     end
 
-    Show --> Ovr{Rep overrides?}
-    Ovr -->|Lower only, with reason| Marked[Line: subject to approval] --> Flag[Order flagged Price Override]
-    Flag --> HO[Head office: accept at override or at resolved price]
-    HO --> Captured[(Captured price on the line)]
+    Show --> Ovr{Rep discounts?}
+    Ovr -->|Within allowance, with reason| Applied[Rep price applied on the line]
+    Ovr -->|Beyond allowance or multi-buy| Blocked[Sheet explains why no further discount]
+    Applied --> Captured[(Captured price on the line)]
     Best --> Captured
     Captured --> Actuals[Targets & Performance]
 ```
@@ -168,6 +169,7 @@ flowchart TD
 - **Over:** a fifth promotion shape; bonus quantities on an existing line.
 - **Because:** a promotion is head office setting a rule in advance for whoever qualifies, while this is a rep deciding at the counter — the same category as dropping a price; the two uses (sampling a new line, clearing discontinued stock) both give away a *different* product, not extra units of one ordered; allowing unavailable products is deliberate, since shifting remaining stock is exactly the point.
 - **Trade-off accepted:** head office gains a third decision shape; giveaways consume stock that must still be tracked.
+- **Amended 23 Sep 2026 (supersedes the above):** free of charge exists only to clear Discontinuing stock; it is an ordinary €0.00 line within a monthly per-rep allowance, applied without approval. Sampling new lines and FOC on Unavailable products are no longer allowed.
 
 ### Overrides go down only, and head office decides
 
@@ -175,6 +177,7 @@ flowchart TD
 - **Over:** no overrides; overrides within a limit; free overrides.
 - **Because:** discretion sometimes closes a sale, but a discount is a commercial decision; an upward override would undo best-price-wins by hand; approval mirrors how orders already work, so the rep's position with the customer is unchanged ("subject to confirmation").
 - **Trade-off accepted:** the customer waits for confirmation; head office gains a new decision shape (accept-at-which-price) in the order queue.
+- **Amended 23 Sep 2026 (supersedes the above):** guardrail over gatekeeper — the rep applies a discount up to a manager-set allowance, enforced on the tablet, and no human decides it afterwards. Rejected: an absolute minimum price per product; promotions consuming the allowance; measuring multi-buys by effective discount.
 
 ---
 
@@ -427,7 +430,7 @@ Then no prompt is shown
 
 | Field | Value |
 |---|---|
-| **Story** | As a Field Salesperson, I want to enter a lower price with a reason, marked as needing approval, so that I can close a sale without promising something head office hasn't agreed |
+| **Story** | As a Field Salesperson, I want to apply a lower price with a reason, within my discount allowance, so that I can close a sale on the spot *(amended 23 Sep 2026; originally "marked as needing approval")* |
 | **Priority** | Should Have |
 | **Status** | Ready |
 | **Dependencies** | US-005; Head Office Order Processing |
@@ -466,6 +469,70 @@ When I remove the override before Sync
 Then the line returns to the resolved price
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Overrides change from *requested* (head office decides) to *applied* within the rep's allowance (BR-NEW-002). The override sheet has four states: stacks, falls back, blocked by promotion, blocked by multi-buy.
+
+*Scenario PR007-A*
+```
+Given I open the override sheet on a line
+When it renders
+Then it shows the resolved price with its source and the lowest price I can offer, before I type anything
+```
+
+*Scenario PR007-B*
+```
+Given I enter a price no lower than the lowest I can offer, with a reason
+When I tap Apply
+Then the price is applied to the line immediately and no head office decision is created
+```
+
+*Scenario PR007-C*
+```
+Given I enter a price below the lowest I can offer
+When I try to apply it
+Then Apply is unavailable
+```
+
+*Scenario PR007-D*
+```
+Given the line has a promotion no larger than my allowance
+When the sheet renders
+Then the lowest price is my allowance off the promotion price, and the sheet says so
+```
+
+*Scenario PR007-E*
+```
+Given the line has a promotion larger than my allowance, and my allowance off the tier or break price is lower than the promotion price
+When the sheet renders
+Then the lowest price is my allowance off that base, and the sheet names the base ("10% off the bulk price")
+```
+
+*Scenario PR007-F*
+```
+Given the line has a promotion larger than my allowance, and the promotion price is lower than anything my allowance can reach
+When the sheet renders
+Then it explains that no further discount can be added, with no price field and a Close action
+```
+
+*Scenario PR007-G*
+```
+Given the line is part of a buy X get Y, bundle or mix-and-match promotion
+When the sheet renders
+Then it names the promotion and explains a rep discount can't be added, with no price field
+```
+
+*Scenario PR007-H*
+```
+Given a rep price has been applied to a line
+When I open the price provenance sheet
+Then the applied price is shown as a calculation: the base or promotion price, my discount, and my reason
+```
+
+**Superseded:** scenario 1's "subject to approval" wording and Price Override flag for head office; any criterion in which head office accepts or declines an override ("accept at €9.00" / "accept at resolved €11.20"), and any status on T-08 describing an override's outcome.
+
+**Edge cases addressed:** SPF30 at 24 units — the Autumn promotion €9.99 (11% off tier) exceeds a 10% allowance, but 10% off the €10.08 break is €9.07, so the rep can offer €9.07 (rule 4). A buy 10 get 1 free (about 9%) blocks the rep's discount although a price promotion of the same size wouldn't (rule 5, accepted).
+
 ---
 
 ### US-008: Decide a price override
@@ -474,7 +541,7 @@ Then the line returns to the resolved price
 |---|---|
 | **Story** | As a Head Office User, I want to accept an order at the rep's price or at the resolved price so that discretion stays visible and controlled |
 | **Priority** | Should Have |
-| **Status** | Draft |
+| **Status** | **Superseded 23 Sep 2026** — overrides are applied within the rep's allowance (US-007) and no longer decided by head office |
 | **Dependencies** | Head Office Order Processing US-003 |
 
 **Acceptance criteria:**
@@ -512,7 +579,7 @@ Then the approved price is what counts towards targets and actuals
 
 | Field | Value |
 |---|---|
-| **Story** | As a Field Salesperson, I want to add a product at no charge with a reason so that I can sample a new line or move the last of a discontinued one, with head office's agreement |
+| **Story** | As a Field Salesperson, I want to add a discontinuing product at no charge, within my monthly allowance, so that I can move the last of it *(amended 23 Sep 2026; originally included sampling new lines, with head office's agreement)* |
 | **Priority** | Should Have |
 | **Status** | Ready |
 | **Dependencies** | US-007; Head Office Order Processing; Range Lifecycle Run-out |
@@ -558,6 +625,40 @@ And the rep sees the outcome at next Sync
 Then an approved FOC line contributes €0.00 to actuals while its quantity still leaves the warehouse
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> BR-NEW-003.
+
+*Scenario PR009-A*
+```
+Given I choose Add free-of-charge line
+When the picker opens
+Then it lists only products in the Discontinuing state, and states that only discontinuing products can be given free
+```
+
+*Scenario PR009-B*
+```
+Given the picker is open
+When it renders
+Then it shows my remaining free-of-charge allowance for this calendar month (BR: monthly allowance per rep)
+```
+
+*Scenario PR009-C*
+```
+Given adding the quantity would exceed my remaining monthly allowance
+When I try to add it
+Then it can't be added
+```
+
+*Scenario PR009-D*
+```
+Given the free-of-charge line is within my remaining monthly allowance
+When I add it
+Then it is applied to the order and no head office decision is created
+```
+
+**Superseded:** scenario 1 (sampling a new product), scenario 3 (FOC on an Unavailable product) and scenario 5 (head office decides); free-of-charge lines on any product with a free-text reason. An FOC line is an ordinary line at €0.00: if it becomes unavailable at processing it is removed like any line and the rep is prompted; its quantity returns to the allowance at the next Sync.
+
 ---
 
 ## 6. Requires Clarification
@@ -566,10 +667,11 @@ Then an approved FOC line contributes €0.00 to actuals while its quantity stil
 2. **"Within reach" threshold** for Break Prompts: the next break only, assumed.
 3. **Tax:** all prices assumed exclusive; confirm the external system handles it.
 4. **Area 1 amendments:** resolved prices and tiers in the snapshot; price, source and runner-up on the line; Break Prompts; override entry; Order Pad showing resolved prices.
-5. **Head Office Order Processing amendment:** Price Override flag and the accept-at-which-price decision.
+5. ~~**Head Office Order Processing amendment:** Price Override flag and the accept-at-which-price decision.~~ **Superseded 23 Sep 2026:** no head office decision; limits are enforced at capture.
 6. **Area 7 (resolved):** Customer Users see the same resolution with no tier names or breakdown, and may not request an override or free goods.
 7. **Promotions:** the four head-office offer shapes are designed in the Promotions area and resolve through Best Price Wins here.
 8. **FOC stock control:** whether head office needs a view of free goods given per rep or per period (not designed).
+9. **Commercial policy profile (23 Sep 2026):** does it replace or extend the catalogue's existing one-per-product Product Profile, or become a separate rule/membership model? The name is provisional. The tablet snapshot must carry the applicable policy rules and membership, and each rep's month-to-date FOC use.
 
 ---
 

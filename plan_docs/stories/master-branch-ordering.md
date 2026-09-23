@@ -1,6 +1,6 @@
 # Master & Branch Ordering: UX & User Stories
 
-**Generated:** 18 September 2026
+**Generated:** 18 September 2026 (amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Ordering (chain relationship), with Sales Operations for the Range Review call
 **Primary users:** Field Salesperson (at a master); Head Office User (confirming proposals)
 **Scope:** How a rep works with a chain's head office or main shop: agreeing what the chain carries, and ordering for many branches in one sitting. Six screens: Master Location view, Range Review on the Call, Multi-Branch Order (tablet), Multi-Branch Order (laptop), Split Review, and the agreed-range markers on the branch Order Pad.
@@ -395,6 +395,48 @@ Then the grid shows what I entered, and further edits are saved to the same sess
 Then every cell is reachable by keyboard and the "All" entry is available without a mouse
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> A chain may have 140 agreed products, but a session orders about 30. The grid opens near that size, and a bulk fill never destroys deliberate exceptions. The grid layout itself is deferred to usage feedback (M11.2). Settled in `../uxdocs/05-manager.md` M11.1 and M11.3.
+
+*Scenario MB006-A*
+```
+Given Hickey's branches have Accepted Orders
+When I start a Multi-Branch Order on the website
+Then the rows are the products on any branch's last 3 Accepted Orders, with every cell empty
+```
+
+*Scenario MB006-B*
+```
+Given the grid is open
+When I search for a product that isn't listed
+Then I can add it as a row
+```
+
+*Scenario MB006-C*
+```
+Given the grid is open
+When I choose "Show full Agreed Range"
+Then the rest of Hickey's agreed products appear as empty rows
+```
+
+*Scenario MB006-D*
+```
+Given SPF30's "All" is 24 and I changed Rathdrum to 12 and Arklow to 0
+When I change "All" to 36
+Then the other 8 branches become 36, Rathdrum stays 12 and Arklow stays 0
+And the row shows "36 × 8 branches, 2 adjusted" with the adjusted cells marked
+```
+
+*Scenario MB006-E*
+```
+Given a row has adjusted cells
+When I choose "Clear adjustments"
+Then every branch cell on the row takes the "All" value
+```
+
+**Superseded:** US-006 scenario 2's "every branch cell on that row becomes 24", when the row already has hand-edited cells.
+
 ---
 
 ### US-007: Review the split and save
@@ -481,6 +523,7 @@ Then Stock Check is still offered but its Suggested List is empty with "No stock
 4. **Session recovery:** a Multi-Branch session left unfinished on the tablet — assumed it stays open until saved or discarded, with a count on Home.
 5. **Area 1 amendments (applied):** Range Review purpose on the Call; agreed-range markers and union on the Order Pad; Ordered By / For and Capturing Rep on Orders; Multi-Branch session entry from a Master Location; branches and Agreed Range in the snapshot.
 6. **Customer Directory amendment:** the Agreed Range lives on the Master Location record.
+7. **Laptop grid layout (23 Sep 2026):** version 1 is the flat products × branches grid; nested alternatives (product rows with branch sub-rows, or branch groups with product sub-rows) are deliberately deferred until there is usage feedback.
 
 ---
 

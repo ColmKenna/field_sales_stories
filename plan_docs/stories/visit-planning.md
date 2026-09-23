@@ -1,6 +1,6 @@
 # Visit Planning: UX & User Stories
 
-**Generated:** 17 September 2026 (revised same day after clarification; amended 18 September 2026 for Coverage Management)
+**Generated:** 17 September 2026 (revised same day after clarification; amended 18 September 2026 for Coverage Management; amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Visit Planning, within Sales Operations
 **Primary users:** Sales Manager; Field Salesperson (planning role)
 **Scope:** The website screens where managers decide what needs visiting and when, handle absences and campaigns, and where reps turn their due visits into a weekly schedule. Seven screens: Rep Planner, Cycle End Digest, Manager Overview, Absence Decisions, Campaign Creation, Campaign Detail, Conflicts.
@@ -15,19 +15,19 @@
 - **Ubiquitous language:**
   - **Visit Due** — a Location a rep is expected to visit within a **Due Window**. Completed by a qualifying Call within the window.
     - **Recurring Visit Due** — generated from the Location's **Visit Frequency** on a fixed calendar. One per **Cycle Period**.
-    - **One-off Visit Due** — created by a manager for a reason, alone or as part of a Visit Campaign.
-  - **Visit Frequency** — how often a Location should be visited, e.g. "every 4 weeks". Defaulted from the Location Profile, overridable per Location.
+    - **One-off Visit Due** — created by a manager for a reason, alone or as part of a Visit Campaign. A single one-off starts from the Location; it goes to the Primary Rep by default, but the manager may choose another rep for this visit only, without changing the Location's assignment.
+  - **Visit Frequency** — how often a Location should be visited, e.g. "every 4 weeks". Defaulted from the Location's Location Profiles (the most frequent wins when several supply one), overridable per Location.
   - **Cycle Start** — the anchor date from which a Location's Cycle Periods are counted. Required: it is asked for whenever a Visit Frequency is set, so no Location is without one.
   - **Cycle Period** — one fixed span of the calendar (Cycle Start plus multiples of the Visit Frequency). The Due Window of a Recurring Visit Due is its Cycle Period.
-  - **Due Reason** — optional manager note on a Visit Due explaining why the date matters ("Autumn range order deadline"). Shown wherever the visit appears, and strengthens the past-due warning.
+  - **Due Reason** — optional manager note on a Visit Due explaining why the date matters ("Autumn range order deadline"). Shown wherever the visit appears, and strengthens the past-due warning. When supplied, it has a structured **Due Reason Type** (from a vocabulary maintained by an authorised manager or administrator, each with an icon and colour from a controlled set, never colour alone) plus optional free-text explanation.
   - **Suggested Day** — a manager's recommendation. Shown beside the rep's choice, never applied.
   - **Scheduled Day** — the day the rep has chosen. Owned by the rep.
-  - **Visit Duration** — expected time on site. Defaulted from the Location Profile, overridable per Location or per One-off Visit Due. The rep can set the duration of any **Scheduled Visit** when scheduling it.
+  - **Visit Duration** — expected time on site. Defaulted from the Location's Location Profiles (the longest wins when several supply one), overridable per Location or per One-off Visit Due. The rep can set the duration of any **Scheduled Visit** when scheduling it.
   - **Scheduled Visit** — one trip to one Location on one day. A Recurring and a campaign Visit Due at the same Location in the same window are scheduled as one Scheduled Visit, and one Call serves both.
   - **Travel Allowance** — a flat system value added to each visit's duration when calculating day load.
   - **Working Day** — a rep's available hours per day, reduced by partial Planned Absence.
   - **Day Load** — scheduled time (durations plus Travel Allowance) against Working Day. **Over** when it exceeds it; never blocks.
-  - **Location Profile** — a category of Location ("Large pharmacy") carrying defaults: Visit Frequency, Visit Duration, Low Stock Thresholds. Renamed from area 1's "Stocking Profile". Distinct from the elaboration's Location Type until area 8 decides otherwise.
+  - **Location Profile** — a category of Location ("Large pharmacy") that may carry defaults: Visit Frequency, Visit Duration, Low Stock Thresholds. Renamed from area 1's "Stocking Profile". Distinct from the elaboration's Location Type until area 8 decides otherwise. **A Location may hold many profiles**; each default resolves separately to the most demanding value and is shown with its source ("Every 2 weeks (from Large pharmacy)"). See Customer Directory.
   - **Planned Absence** — days a rep is known to be off, entered in advance. Absence days are always blocked for scheduling.
   - **Absence Decision** — the manager's per-Visit-Due choice for visits whose Due Window overlaps a Planned Absence: **Extend** (push the window out by the absence length), **Keep** (window unchanged), or **Cover** (reassign to another rep for that window). Until decided, windows are kept and the absence shows as **Needs a decision**.
   - **Cover** — a Visit Due temporarily held by a **Covering Rep**. Ownership of the Location does not change; the covering rep sees and can act on that Location for the window only.
@@ -39,9 +39,10 @@
   - **Campaign Outcome** — one entry from a campaign's Outcome List, recorded on a Call at the Location. Each outcome has **Completes visit: yes/no**. Recording a completing outcome completes that campaign Visit Due; a non-completing one (e.g. *Follow up*) records what happened and leaves it open. One outcome per campaign per Call.
   - **Schedule Conflict** — a notice raised when a manager's change makes a rep's offline Scheduled Day impossible or pointless (visit covered, cancelled, or its window moved so the day falls outside it). Shown to both with both versions; the manager's change applies meanwhile; clears when either amends the visit.
   - **Unassigned** — a Location with Visit Dues but no Primary Rep (Coverage Management).
-  - **Primary Rep / Specialist** — from Coverage Management. Recurring Visit Dues always go to the Location's Primary Rep. A campaign Visit Due goes to the Location's **Specialist** whose scope matches the campaign (its Brand, Customer or Location Profile) where one exists, else to the Primary Rep.
+  - **Primary Rep / Specialist** — from Coverage Management. Recurring Visit Dues always go to the Location's Primary Rep. A campaign Visit Due goes to the Location's **Specialist** whose scope matches the campaign's link (its Brand, Customer or Location Profile) where exactly one does, else to the Primary Rep. If more than one Specialist matches, or the campaign has no link and several Specialists are at the Location, the manager chooses in campaign Review; nothing is preselected.
   - **Handover Pending** — an open visit still held by a rep who is no longer the Location's Primary Rep (or a specialist whose scope was removed) with no Handover decision made. Counted on the manager overview.
-  - **One Call clears all** — a qualifying Call at a Location completes every open Recurring Visit Due there (Overdue and current period). Campaign Visit Dues need their Campaign Outcome.
+  - **One Call clears all** — a qualifying Call at a Location completes every open Recurring Visit Due there (Overdue and current period). Campaign Visit Dues need their Campaign Outcome. **Exception:** a Call made for a single One-off Visit Due completes only that one-off, whoever holds the recurring visit; the manager and reps decide afterwards whether the recurring visit is kept, moved or cancelled as covered.
+  - **Inherited visit** — an open Visit Due that moved to a new rep when a Location changed owner (a leaving rep, a long-absence batch, or a handover Move). Marked "inherited from <rep>" wherever it appears; counts in the new rep's operational figures but is excluded from their performance, until the visit closes (Coverage Management).
 - **Upstream contexts:**
   - **Customer Directory** — Locations with Town, Location Profile, coordinates (geocoding is a new dependency).
   - **Coverage Management** (area 5) — Primary Rep and Specialists per Location; manager–rep reporting lines; Handover decisions and Left Visits; cross-team cover permission.
@@ -169,6 +170,7 @@ flowchart TD
 - **Over:** one Call per Visit Due.
 - **Because:** the shop's need is met by the visit; stacking several "visits due" for one shop is noise.
 - **Trade-off accepted:** the record shows the gap only through the Overdue history, not through multiple completions.
+- **Amended 23 Sep 2026:** a Call made for a single One-off Visit Due completes only that one-off, even when the same rep holds the recurring visit. The same rep may need two visits with different contacts; when one visit is enough, the manager moves the existing visit forward instead of adding a one-off. When a one-off is added within a week of another scheduled visit at the Location, the form says so, without blocking or asking for a choice (US-015).
 
 ### Absence: days always blocked, decision per visit, manager decides
 
@@ -176,6 +178,7 @@ flowchart TD
 - **Over:** one rule for all visits; one decision per absence; automatic extension.
 - **Because:** a launch-deadline visit and a routine village shop need different handling; a visible undecided flag prevents the problem surfacing only as Overdue later.
 - **Trade-off accepted:** manager effort per absence; a rep's long leave may mean many rows.
+- **Amended 23 Sep 2026:** saving the absence and deciding its visits are separate commit points (US-006). Short leave never changes ownership: needed visits are Covered, the rest Extended, and the rep's schedule restarts on return. Absences long enough to justify moving ownership use Coverage Management's bulk reassign instead.
 
 ### Capacity in time, warned not blocked
 
@@ -204,6 +207,7 @@ flowchart TD
 - **Over:** a single list of every visit; assuming one rep per region.
 - **Because:** managers plan by region or rep; assignments can be by region, town or Location, so a region may have several reps.
 - **Trade-off accepted:** two groupings to maintain; an Unassigned Location can only be fixed in area 5.
+- **Amended 23 Sep 2026:** By rep is the first-use default and the last-selected view is remembered; each rep row carries a compact coverage reminder (US-010). Because an Unassigned Location generates no visits and so never shows as an exception, the overview header shows a standing "N Locations unassigned" count whenever it is above zero (Coverage US-007).
 
 ### Campaigns: bulk by Customer or Profile, tracked as a group, completed by outcome
 
@@ -211,6 +215,7 @@ flowchart TD
 - **Over:** independent Visit Dues; any Call completing the campaign; completion by order content.
 - **Because:** a launch is one decision the manager tracks as one; "done" should mean the campaign was actually covered; a decline is still a covered visit; outcomes are countable where free text is not.
 - **Trade-off accepted:** one more field on the Call for the rep; an outcome forgotten on the tablet must be added by Follow-up Call; a badly designed Outcome List can misreport (mitigated by the per-outcome completes flag).
+- **Amended 23 Sep 2026:** creation is a four-step wizard, Filter → Review → Details → Confirm (US-011). Campaign detail always opens on Overall, with By rep as a diagnostic pivot (US-012).
 
 ### Schedule Conflict as a notice, not a workflow
 
@@ -218,6 +223,7 @@ flowchart TD
 - **Over:** manager always wins silently; a resolution workflow with confirmation.
 - **Because:** rare; the two people will talk; another rep may already be en route so the manager's version must apply in the gap; a formal record nobody would use is dead weight.
 - **Trade-off accepted:** no audit of how a conflict was settled.
+- **Amended 23 Sep 2026 (supersedes "no record" above):** a cleared conflict leaves the Open list but stays in a separate Resolved view, which keeps both versions, the clearing amendment, who made it and when. Open is ordered by earliest affected visit; Resolved by most recently cleared (US-014). There is still no resolve action.
 
 ---
 
@@ -363,6 +369,108 @@ Then the panel shows "Nothing unscheduled due in the next 2 weeks"
 
 **Non-functional notes:** every map action has a list equivalent; keyboard operable; day colour paired with a letter.
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Resolves the source story's mismatch between its four-week example and two-week empty state, and replaces the fixed-week assumption in the first R-01 wireframe.
+
+*Scenario VP003-A*
+```
+Given I open the planner
+When the scheduler loads
+Then I can select Day, Week or Month view and navigate the corresponding timeframe
+```
+
+*Scenario VP003-B*
+```
+Given an open Visit Due is Overdue or due within the next four weeks and has no Scheduled Day
+When I view the unscheduled panel
+Then it appears in the Town list and map where coordinates exist
+```
+
+*Scenario VP003-C*
+```
+Given an unscheduled Visit Due is due later than four weeks from today and is not Overdue
+When I view the unscheduled panel
+Then it does not appear until it enters the four-week horizon
+```
+
+*Scenario VP003-D*
+```
+Given there are no Overdue or unscheduled Visit Dues due within the next four weeks
+When I view the panel
+Then it shows "Nothing unscheduled due in the next 4 weeks"
+```
+
+*Scenario VP003-E*
+```
+Given I change the scheduler between Day, Week and Month
+When the calendar timeframe changes
+Then the unscheduled panel continues to use the same four-week horizon
+```
+
+*Scenario VP003-F*
+```
+Given I have never opened the planner before
+When it loads
+Then the scheduler opens in Week view
+```
+
+*Scenario VP003-G*
+```
+Given I previously selected Day, Week or Month view
+When I return to the planner
+Then it opens in my last-selected view
+```
+
+*Scenario VP003-H*
+```
+Given I select Month view
+When the month renders
+Then each day shows its number of scheduled visits and does not render individual visit cards
+And it shows town names only when the day cell has room
+```
+
+*Scenario VP003-I*
+```
+Given a day in Month view contains one or more scheduled visits
+When I select that day
+Then the scheduler switches to Day view with that date active
+And the day's individual visits are shown there
+```
+
+*Scenario VP003-J*
+```
+Given I am using Day, Week or Month view and there is enough horizontal room
+When the planner renders
+Then the unscheduled panel remains visible beside the calendar
+```
+
+*Scenario VP003-K*
+```
+Given available width is too limited for both usable calendar cells and the open panel
+When the planner renders
+Then the panel collapses to an "Unscheduled (n)" control
+And I can reopen it without losing my selection or changing its four-week horizon
+```
+
+*Scenario VP003-L*
+```
+Given a scheduled visit has a Due Reason
+When I view it in Week view
+Then its card shows the Reason Type's icon and colour without the free-text explanation
+And the icon has an accessible type label
+```
+
+*Scenario VP003-M*
+```
+Given a scheduled visit has a Due Reason
+When I view it in Day view
+Then the reason text is shown when space permits
+And opening the visit always shows the Reason Type and full explanation
+```
+
+**Superseded:** Visit Planning US-003 scenario 5's “next 2 weeks” empty-state wording.
+
 ---
 
 ### US-004: Schedule visits onto days
@@ -415,6 +523,45 @@ Then I see "After the due date (25 Sep). Due by then because: Autumn range order
 Given Suggested Day is Wed 30 Sep
 When I schedule it on Tue 29 Sep
 Then it is scheduled on 29 Sep and no warning or conflict is raised
+```
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Distinguishes the immediate drag accelerator from the explicit `Schedule on...` route while preserving the source stories' default-duration and warning rules.
+
+*Scenario VP004-A*
+```
+Given an unscheduled Visit Due has a resolved default duration
+When I drag it onto an available day
+Then it is scheduled immediately with that duration and the day's load updates
+```
+
+*Scenario VP004-B*
+```
+Given a scheduled visit uses its default duration
+When I select the visit and amend its duration
+Then the visit and day load update immediately
+```
+
+*Scenario VP004-C*
+```
+Given a normal drop takes the day over its Working Day
+When the visit is scheduled
+Then the drop succeeds and the day shows "Over by" with the amount
+```
+
+*Scenario VP004-D*
+```
+Given the dropped date is after the Visit Due's due date
+When I drop the visit
+Then the existing US-004 confirmation is shown before scheduling, including the Due Reason when present
+```
+
+*Scenario VP004-E*
+```
+Given the destination is blocked by Planned Absence
+When I try to drop the visit
+Then the drop is refused as specified by US-004
 ```
 
 ---
@@ -505,6 +652,57 @@ When I record a second absence overlapping the first
 Then I see "Overlaps existing absence 5–9 Oct" and can adjust or merge
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Calendar blocking is urgent and factual; Extend / Keep / Cover decisions may require review and are already allowed to remain pending.
+
+*Scenario VP006-A*
+```
+Given I enter a valid planned absence
+When I save it
+Then the absence is committed and the affected calendar time is blocked immediately
+And any visits scheduled on those days return to Unscheduled as specified by US-006
+```
+
+*Scenario VP006-B*
+```
+Given the saved absence affects one or more Visit Dues
+When the save completes
+Then I see the affected count and can choose "Decide affected visits" or "Return to overview"
+```
+
+*Scenario VP006-C*
+```
+Given I return without deciding
+When the rep or manager views an affected visit
+Then its Due Window is unchanged and it shows "Absence — decision pending"
+And the saved absence remains in effect
+```
+
+*Scenario VP006-D*
+```
+Given the saved absence affects no Visit Dues
+When the save completes
+Then I see "No visits affected" and no decision step is offered
+```
+
+*Scenario VP006-E*
+```
+Given a new absence genuinely overlaps an existing absence for the same rep
+When the overlap is detected
+Then I see the existing absence, the proposed combined range and an "Extend existing absence" option
+And its reason remains editable before save
+```
+
+*Scenario VP006-F*
+```
+Given two absences are adjacent but do not overlap in date/time
+When I save the new absence
+Then they remain separate entries and no extension prompt is shown
+```
+
+**Superseded:** US-006 scenario 4's `merge` wording; the action is `Extend existing absence` and applies only to genuine overlap.
+
 ---
 
 ### US-007: Decide how an absence affects visits
@@ -548,6 +746,40 @@ Then affected visits show "Absence — decision pending" and their windows are u
 ```
 
 **Edge cases addressed:** any decision can be changed at any time, including after the absence has started.
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Calendar blocking is urgent and factual; Extend / Keep / Cover decisions may require review and are already allowed to remain pending.
+
+*Scenario VP007-A*
+```
+Given an absence affects multiple Visit Dues
+When I choose "Apply to all: Cover"
+Then a review opens with all eligible visits selected
+And I can Select all, Clear all, or unselect individual rows
+```
+
+*Scenario VP007-B*
+```
+Given I selected one covering rep for the batch
+When I apply Cover
+Then that rep covers only the selected visits
+And excluded visits remain available for Extend, Keep or a different covering rep
+```
+
+*Scenario VP007-C*
+```
+Given the selected covering rep is over capacity during the affected period
+When the review renders
+Then it shows the existing capacity warning and still allows confirmation
+```
+
+*Scenario VP007-D*
+```
+Given the covering rep belongs to another manager
+When I apply Cover
+Then cover takes effect immediately and the other manager receives the source-story notification without an approval step
+```
 
 ---
 
@@ -647,6 +879,122 @@ Then I see "3 cycle decisions waiting — on the website" and no notification
 
 **Edge cases addressed:** a Call recorded before the rep actions the digest removes that visit from it; Missed needs no reason.
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Replaces immediate `Apply to all` behavior. The rep chooses an outcome first, reviews every candidate across both digest sections, and may exclude individual visits before applying it.
+
+*Scenario VP009-A*
+```
+Given the digest contains visits in "Still open from earlier weeks" and "This week"
+When I choose "Review Keep Overdue..." or "Review Mark Missed..."
+Then a dedicated review page lists all candidate visits under those same section headings
+And every candidate starts selected
+```
+
+*Scenario VP009-B*
+```
+Given the bulk review is open
+When I use Select all, Clear all, or change an individual checkbox
+Then the selected count and the set to be changed update immediately
+```
+
+*Scenario VP009-C*
+```
+Given I excluded one or more visits
+When I apply the chosen outcome
+Then only selected visits receive it
+And excluded visits remain undecided in the digest
+```
+
+*Scenario VP009-D*
+```
+Given no visits are selected
+When the review renders
+Then the apply action is unavailable and the review explains that at least one visit must be selected
+```
+
+*Scenario VP009-E*
+```
+Given I apply the chosen outcome successfully
+When processing completes
+Then I return to the Cycle End digest
+And excluded or otherwise undecided visits remain visible there
+```
+
+*Scenario VP009-F*
+```
+Given I leave the review without applying
+When I return to the digest
+Then no visit decisions have changed
+```
+
+*Scenario VP009-G*
+```
+Given I am reviewing "Mark Missed" for selected visits
+When I enter an optional shared reason
+Then that reason is applied to every selected visit that has no individual override
+```
+
+*Scenario VP009-H*
+```
+Given a selected visit has a different cause
+When I override or clear its reason
+Then that visit keeps its individual value while the other selected visits retain the shared reason
+```
+
+*Scenario VP009-I*
+```
+Given I change the shared reason after adding an individual override
+When the review updates
+Then the override is preserved and only non-overridden selected visits receive the new shared value
+```
+
+*Scenario VP009-J*
+```
+Given I apply "Mark Missed" to selected Visit Dues
+When processing succeeds
+Then each selected Visit Due is closed and recorded as Missed with its applicable optional reason
+And no replacement visit, notification or automatic follow-up workflow is created
+And the next fixed-cycle Visit Due is unchanged
+```
+
+*Scenario VP009-K*
+```
+Given a missed visit should be attempted again
+When the rep or a reviewing manager decides to reschedule it
+Then they create a one-off Visit Due through the normal planning flow
+```
+
+*Scenario VP009-L*
+```
+Given I want to make different decisions for individual visits
+When I use a row's "Keep Overdue / Missed" controls on the digest
+Then I can save those decisions without entering either bulk-review page
+```
+
+*Scenario VP009-M*
+```
+Given the digest first loads
+When I have not made a decision for a visit
+Then neither row outcome is preselected
+```
+
+*Scenario VP009-N*
+```
+Given I select "Missed" on one digest row
+When the row expands
+Then an optional reason field appears directly beneath that visit
+```
+
+*Scenario VP009-O*
+```
+Given I entered a row-level Missed reason
+When I switch that row to "Keep Overdue"
+Then the reason field is hidden and its value is not saved
+```
+
+**Superseded:** Visit Planning US-009 scenario 3's immediate `Apply to all` behavior.
+
 ---
 
 ### US-010: Manager overview by rep or region
@@ -704,6 +1052,33 @@ Given a rep has no exceptions
 Then their row shows counts of zero, not an empty row
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Managers normally plan for a rep. Coverage context helps distinguish patches but should not duplicate the full assignment screens.
+
+*Scenario VP010-A*
+```
+Given I have never opened the Visit Planning overview
+When it loads
+Then it opens in "By rep"
+```
+
+*Scenario VP010-B*
+```
+Given I previously selected "By rep" or "By region"
+When I return to the overview
+Then it opens in my last-selected view
+```
+
+*Scenario VP010-C*
+```
+Given a rep has effective Location coverage
+When their summary row renders
+Then it shows the broadest meaningful effective area, any carve-out or overflow count, and the effective Location count
+And fragmented coverage with no coherent territory shows up to two representative area names followed by "+ N areas"
+And detailed assignment rules remain available through the Coverage Management screens
+```
+
 ---
 
 ### US-011: Create a Visit Campaign
@@ -756,6 +1131,83 @@ When the filter matches 0 Locations
 Then I see "No Locations match" and cannot create
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> The candidate set, per-campaign details and routing summary have genuine dependencies and should not compete on one long screen.
+
+*Scenario VP011-A*
+```
+Given I start creating a Visit Campaign
+When the flow renders
+Then it has four labelled steps: "Filter", "Review", "Details", "Confirm"
+```
+
+*Scenario VP011-B*
+```
+Given I move backward or forward between completed steps
+When a step reopens
+Then my filters, selected Locations and campaign details are preserved
+```
+
+*Scenario VP011-C*
+```
+Given the current filter matches no Locations
+When the Filter step renders
+Then it shows "No Locations match" and I cannot advance to Review
+```
+
+*Scenario VP011-D*
+```
+Given my reviewed selection and campaign details are valid
+When I reach Confirm
+Then it states the visit count, rep count and number routed to specialists before creation
+```
+
+*Scenario VP011-E*
+```
+Given a selected Location has no Primary Rep
+When I choose its campaign rep
+Then Review states that this rep will also become the Location's permanent Primary Rep
+```
+
+*Scenario VP011-F*
+```
+Given a selected Location already has a Primary Rep
+When I choose another rep for this campaign
+Then only the campaign Visit Due is routed to that rep
+And the existing Primary Rep remains unchanged
+```
+
+*Scenario VP011-G*
+```
+Given one or more selected Locations will receive a Primary Rep
+When I reach Confirm
+Then those permanent assignments are counted and listed separately from campaign-only routing
+```
+
+*Scenario VP011-H*
+```
+Given I confirm campaign creation with a Primary Rep assignment for an unassigned Location
+When creation succeeds
+Then the direct Primary Rep assignment and its Assignment History entry are saved atomically with the campaign
+And future recurring visits, tablet access and performance attribution use that assignment normally
+```
+
+*Scenario VP011-I*
+```
+Given multiple selected Locations are unassigned
+When I choose a bulk Primary Rep default
+Then that rep is applied to all selected unassigned rows
+And I can override the rep on any individual row before advancing
+```
+
+*Scenario VP011-J*
+```
+Given one or more rows override the bulk Primary Rep default
+When Review and Confirm show assignment counts
+Then they use each row's effective rep and list every permanent assignment accurately
+```
+
 ---
 
 ### US-012: Track and change a campaign
@@ -798,6 +1250,60 @@ Then those 6 become Handover Pending for the manager to Move to each Primary Rep
 ```
 When I view the campaign By rep
 Then I see each rep's done of due for this campaign
+```
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> The campaign is the primary object; rep performance within it is a drill-down rather than the default framing.
+
+*Scenario VP012-A*
+```
+Given I open or return to a campaign
+When its detail page loads
+Then "Overall" is selected
+And I see total progress, the outcome breakdown and the visit list
+```
+
+*Scenario VP012-B*
+```
+Given I switch to "By rep"
+When the detail table changes
+Then each rep shows done of due for this campaign
+And the campaign's overall progress and outcome breakdown remain visible above it
+```
+
+*Scenario VP012-C*
+```
+Given the outcome breakdown is visible
+When I select Ordered, Declined, Follow up, Not yet visited or Cancelled
+Then the visit list shows only records behind that count
+And the selected outcome is identified by text/state, not colour alone
+```
+
+*Scenario VP012-D*
+```
+Given an outcome filter is active
+When I select it again or choose "All visits"
+Then the complete visit list returns
+And all headline counts continue to show campaign totals while filtered
+```
+
+*Scenario VP012-E*
+```
+Given a campaign has open visits
+When I choose "Extend remaining..."
+Then a review opens with every open visit selected by default
+And I can exclude individual visits before applying the change
+And I see the proposed new campaign window
+```
+
+*Scenario VP012-F*
+```
+Given I apply an extension from the review
+When the change is saved
+Then only the selected open visits move into the new window
+And excluded open visits retain their existing dates
+And completed and cancelled visits remain unchanged
 ```
 
 ---
@@ -889,6 +1395,68 @@ Given the manager changed only the Suggested Day
 Then no conflict is raised
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Schedule conflicts are time-sensitive operational exceptions, so the affected visit date is more useful than the time the conflict was detected.
+
+*Scenario VP014-A*
+```
+Given more than one unresolved Schedule Conflict exists
+When I open the conflict list
+Then conflicts for overdue affected visits appear first
+And conflicts affecting today appear next
+And future conflicts follow in ascending affected-visit date order
+```
+
+*Scenario VP014-B*
+```
+Given a rep row on the Visit Planning overview shows one or more conflicts
+When I select that conflict count
+Then the Schedule Conflicts page opens filtered to that rep
+And the active filter identifies the rep in text
+And I can clear it with "View all conflicts"
+```
+
+*Scenario VP014-C*
+```
+Given I open the Schedule Conflicts page directly
+When the page loads
+Then it shows unresolved conflicts for all reps in the default earliest-first order
+```
+
+*Scenario VP014-D*
+```
+Given either party amends a visit and thereby clears its Schedule Conflict
+When the conflict leaves the unresolved list
+Then it remains accessible to a manager in resolved-conflicts history
+And the history retains both conflicting versions
+And it identifies the clearing amendment, who made it and when
+```
+
+*Scenario VP014-E*
+```
+Given I open Schedule Conflicts
+When the page loads
+Then "Open" is selected by default
+And "Resolved" is available as a separate adjacent view
+```
+
+*Scenario VP014-F*
+```
+Given I entered Schedule Conflicts from a rep row
+When I switch between "Open" and "Resolved"
+Then the active rep filter is retained
+And I can still clear it with "View all conflicts"
+```
+
+*Scenario VP014-G*
+```
+Given more than one cleared Schedule Conflict exists
+When I open "Resolved"
+Then the most recently cleared conflict appears first
+And each record identifies its affected visit date separately from its clearing date and time
+```
+
 ---
 
 ### US-015: Add a single One-off Visit Due with a reason
@@ -920,11 +1488,128 @@ When I save without a window
 Then it is rejected with "Set a due window"
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> A one-off visit is triggered by something at a Location, so the flow starts there. The manager picks who goes, based on the reason or on who will be nearby, and confirms with that rep by phone. Sending a rep other than the Primary Rep is a convenience for this visit only, as with campaign routing (Coverage US-001 amendment). Settled in `../uxdocs/05-manager.md` M16.1–M16.5 and M16.7.
+
+*Scenario VP015-A*
+```
+Given I am viewing a Location
+When I choose to add a one-off visit
+Then the form opens with that Location already filled in
+```
+
+*Scenario VP015-B*
+```
+Given the add form is open for a Location with a Primary Rep
+When it renders
+Then the Primary Rep is selected as the rep who will make the visit
+```
+
+*Scenario VP015-C*
+```
+Given the add form is open
+When I open the rep picker
+Then reps with any assignment at the Location are listed first, followed by the rest of the team
+```
+
+*Scenario VP015-D*
+```
+Given Byrne's Primary Rep is Colm
+When I choose Aoife to make the one-off visit
+Then the form states "Aoife will make this visit. Colm remains Byrne's Primary Rep."
+And saving leaves Byrne's assignments and Assignment History unchanged
+```
+
+*Scenario VP015-E*
+```
+Given Colm has a visit scheduled at Byrne's on Thu 24 Sep
+When I add a one-off visit with a due window of 21–25 Sep
+Then the form shows "Colm is scheduled at Byrne's on Thu 24 Sep."
+And the notice asks for no choice and does not prevent saving
+```
+
+*Scenario VP015-F*
+```
+Given Aoife holds a one-off Visit Due at Byrne's and Colm holds an open Recurring Visit Due there
+When Aoife records a Call at Byrne's
+Then the one-off Visit Due is complete
+And Colm's Recurring Visit Due remains open and unchanged
+```
+
+*Scenario VP015-F2*
+```
+Given Colm holds both a one-off Visit Due and an open Recurring Visit Due at Byrne's
+When he records a Call for the one-off visit
+Then the one-off Visit Due is complete
+And the Recurring Visit Due remains open
+```
+
+*Scenario VP015-G*
+```
+Given I have saved a one-off Visit Due
+When the confirmation and the saved visit are shown
+Then neither shows whether the visit has reached the rep's tablet
+```
+
+**Superseded:** "the effective rep follows the Location assignment rules" as the only way to set the visit's rep. "One Call clears all" gains the exception in scenario VP015-F and F2: a Call for a one-off visit never completes a Recurring Visit Due.
+
+---
+
+### US-016: Maintain Visit Due Reason Types
+
+| Field | Value |
+|---|---|
+| **Story** | As an authorised manager or administrator, I want to maintain Visit Due Reason Types so that planners use consistent reasons that can be recognised, filtered and reported |
+| **Priority** | Should Have |
+| **Status** | Ready |
+| **Dependencies** | Due Reason on Visit Dues (US-011, US-015); added 23 Sep 2026 from the UX design sessions |
+
+**Acceptance criteria:**
+
+*Scenario 1: Create*
+```
+Given I am authorised to maintain Reason Types
+When I create a type with a unique name
+Then it becomes available when a manager supplies a Due Reason
+```
+
+*Scenario 2: Rename*
+```
+Given a Reason Type is referenced by existing Visit Dues
+When I rename it
+Then those visits show the new name while retaining their original reason explanation
+```
+
+*Scenario 3: Retire*
+```
+Given a Reason Type is referenced by existing or historical Visit Dues
+When I retire it
+Then it is archived rather than deleted, remains visible on those visits and is unavailable for new reasons
+```
+
+*Scenario 4: Duplicate name*
+```
+Given another active Reason Type already has the same name
+When I try to save a duplicate
+Then the save is rejected with a message naming the existing type
+```
+
+*Scenario 5: Icon and colour*
+```
+Given I create or edit a Reason Type
+When I choose its presentation
+Then I select an icon and colour from the controlled system set
+And the UI previews them together with the type name
+```
+
+**Edge cases addressed:** a Visit Due may still have no Due Reason; colour is never offered as a free-form value and never the only signal; the Reason Type and explanation travel with the Visit Due to the rep website and the tablet snapshot.
+
 ---
 
 ## 6. Requires Clarification
 
-1. **Location Profile vs Location Type:** are they the same entity, and who maintains profile defaults? Blocks US-001 (area 8).
+1. **Location Profile vs Location Type:** are they the same entity, and who maintains profile defaults? Blocks US-001 (area 8). *Partly settled 23 Sep 2026:* a Location may hold many Location Profiles, with each default resolved to the most demanding value (see Customer Directory).
 2. **Geocoding:** Locations need coordinates for the map; source and upkeep (area 8).
 3. **Area 5 (resolved):** cover permissions, Unassigned and reporting lines are defined in Coverage Management; campaign routing to Specialists and Handover Pending are now reflected here.
 

@@ -4,6 +4,7 @@
 **Derived from:** decisions settled in session, recorded in `01-tablet-day.md` (T7.1, T7.6–T7.12, T2.5) and `02-head-office.md` (H1.6, H1.7, H2.6–H2.8)
 **Scope:** only decisions confirmed in conversation. Drafting calls in 00–03 that haven't been confirmed (e.g. T2.1 Today above Overdue, H1.1 Type column) are not turned into stories here.
 **Numbering:** the source area documents are under `plan_docs/stories`. New cross-area stories retain their `US-NEW-###` placeholders until they are folded back into those sources; amendments reference the source story IDs.
+**Folded into `plan_docs/stories` on 23 Sep 2026:** every amendment below has been added to its source story as "UX amendments (23 Sep 2026)" scenarios, keeping the AC IDs (e.g. `Scenario CV001-A`). Placeholders now live at: US-NEW-001 → Rep at a Location US-008 (scenarios 7–13); US-NEW-002 and US-NEW-004 → Rep at a Location US-012 (scenarios 7–18); US-NEW-003 → Rep at a Location US-003 (scenarios 8–11); US-NEW-005 → Head Office Order Processing **US-008**; US-NEW-006 → Visit Planning **US-016**. BR-NEW-001 to BR-NEW-005 are folded into the glossaries and design decisions of Head Office, Pricing, Promotions, Visit Planning and Customer Directory. "Pricing US-008" here maps to source Pricing **US-007** (Ask for a price override), and source US-008 (Decide a price override) is marked superseded. AC-PR009-B/C/D were reworded to the monthly per-rep allowance of BR-NEW-003. Keep this file as the design record; when amending further, update both.
 
 ---
 
@@ -15,6 +16,7 @@
 | BR-NEW-002 | Business rule | Rep discount allowance and promotion interaction | Tablet, head office |
 | BR-NEW-003 | Business rule | Free of charge on discontinuing stock only | Tablet |
 | BR-NEW-004 | Business rule | Structured Visit Due Reason Type | Rep website, manager website, tablet |
+| BR-NEW-005 | Business rule | Many Location Profiles, defaults resolved field by field | Manager website, rep website, tablet |
 | US-NEW-001 | New story | Quantity popover when adding a Low item | Tablet (T-06, T-07) |
 | US-NEW-002 | New story | Low tab as a catch-up list | Tablet (T-07) |
 | US-NEW-003 | New story | Rep prompted when a line couldn't be supplied | Tablet (T-02, T-08) |
@@ -31,7 +33,19 @@
 | Visit Planning US-006, US-007 | Clarification | Absence save precedes affected-visit decisions | Manager website (M-02) |
 | Visit Planning US-011 | Clarification | Four-step campaign creation wizard | Manager website (M-03) |
 | Visit Planning US-012 | Clarification | Campaign detail defaults to Overall | Manager website (M-04) |
+| Visit Planning US-014 | Clarification | Conflict ordering, rep filter and resolved history | Manager website (M-05) |
+| Visit Planning US-015 | Amendment | Location-first one-off visit with a chosen rep | Manager website (M-16), tablet |
 | Coverage US-001 | Amendment | Campaign creation can assign an unassigned Location's Primary Rep | Manager website (M-03) |
+| Coverage US-001 | Amendment | Transfer Territory Assignments between reps (push, pull, County splitting) | Manager website (M-06) |
+| Coverage US-002 | Amendment | Location page as the manager's home for a Location | Manager website (M-07) |
+| Coverage US-003 | Amendment | Handover when the previous rep is leaving; inherited visits | Manager website (M-08), rep website, performance |
+| Coverage US-004, US-005 | Amendment | Bulk reassign for long absence only; reversal restores and flags | Manager website (M-09) |
+| Coverage US-006 | Amendment | Multi-condition specialist scopes; campaign routing when several match | Manager website (M-10, M-03) |
+| Master & Branch US-006 | Amendment | Grid opens on recently ordered products; `All` keeps adjusted cells | Rep/manager website (M-11) |
+| Targets & Performance US-001, US-002 | Amendment | Targets carried forward from the previous period | Manager website (M-12) |
+| Coverage US-007 | Amendment | Unassigned count pushed to the Visit Planning overview | Manager website (M-15, M-01) |
+| Coverage US-009 | Amendment | Cohort grants from the Restriction Group's page | Manager website (M-14) |
+| Targets & Performance US-005 | Clarification | "Furthest behind" by points behind pace, re-sortable by money; value decides for dual targets | Manager website (M-13) |
 | Targets & Performance US-004 | Amendment | Targeted Locations ordered by greatest target shortfall | Rep website (R-03) |
 | Stock Allocation US-003, US-005 | Clarification | Manager-selected stock pools when re-proposing | Head office (H-10) |
 | Area 1 US-014 | Amendment | Sent item shows removed lines and applied prices | Tablet (T-08) |
@@ -90,6 +104,26 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 6. The Reason Type and explanation travel with the Visit Due to the rep website and tablet snapshot.
 
 **Presentation:** colour is never offered as a free-form value and never acts as the only signal.
+
+### BR-NEW-005 — Many Location Profiles, defaults resolved field by field
+
+1. A Location may have **any number** of Location Profiles (for example "Large pharmacy", "Rural shop", "Customer campaign X").
+2. Any profile may carry defaults for Visit Frequency, Visit Duration and per-product Low Stock Thresholds. A profile carrying none is purely a grouping, used for selection such as specialist scopes, campaign filters and reporting.
+3. When several profiles supply the same default, each field resolves separately and the **most demanding value wins**:
+   - **Visit Frequency** — the most frequent.
+   - **Visit Duration** — the longest.
+   - **Low Stock Threshold** (per product) — the highest, so the hint appears earliest.
+4. A per-Location override beats every profile, as the source stories already allow.
+5. Every resolved default is shown with its source, as prices and owners are: `Every 2 weeks (from Large pharmacy)`, `Warn at 12 (from Rural shop)`. When profiles tie, all of them are named.
+6. A Location with no profile carrying a Visit Frequency generates no Recurring Visit Dues and appears on the No Visit Schedule list (Customer Directory, unchanged).
+
+**Example:** Byrne's is Large pharmacy (every 2 weeks, 45 min, SPF30 warn at 6) and Rural shop (every 4 weeks, 20 min, SPF30 warn at 12). It resolves to every 2 weeks, 45 minutes, warn at 12.
+
+**Trade-off accepted:** the resolved set can mix profiles, so it may match no single profile a manager set up. Showing the source of each value is the mitigation.
+
+**Superseded:** "a Location carries a Location Profile" (one per Location) in the Customer Directory, Visit Planning and Rep at a Location glossaries.
+
+**Affects:** Coverage US-006, where a Location Profile scope matches a Location holding that profile among any others; Visit Planning Visit Due generation; the tablet's Low Stock Hint (resolved thresholds must be in the snapshot); M-03 campaign filters.
 
 ---
 
@@ -502,6 +536,79 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ---
 
+### Visit Planning US-015 — Location-first one-off visit with a chosen rep
+
+> **Context:** a one-off visit is triggered by something at a Location, so the flow starts there. The manager picks who goes, based on the reason or on who will be nearby, and confirms with that rep by phone. Sending a rep other than the Primary Rep is a convenience for this visit only, as with campaign routing (Coverage US-001 amendment). Settled in `05-manager.md` M16.1–M16.5 and M16.7.
+
+**Additional Acceptance Criteria:**
+
+**AC-VP015-A:**
+- **Given** I am viewing a Location
+- **When** I choose to add a one-off visit
+- **Then** the form opens with that Location already filled in
+
+**AC-VP015-B:**
+- **Given** the add form is open for a Location with a Primary Rep
+- **When** it renders
+- **Then** the Primary Rep is selected as the rep who will make the visit
+
+**AC-VP015-C:**
+- **Given** the add form is open
+- **When** I open the rep picker
+- **Then** reps with any assignment at the Location are listed first, followed by the rest of the team
+
+**AC-VP015-D:**
+- **Given** Byrne's Primary Rep is Colm
+- **When** I choose Aoife to make the one-off visit
+- **Then** the form states "Aoife will make this visit. Colm remains Byrne's Primary Rep."
+- **And** saving leaves Byrne's assignments and Assignment History unchanged
+
+**AC-VP015-E:**
+- **Given** Colm has a visit scheduled at Byrne's on Thu 24 Sep
+- **When** I add a one-off visit with a due window of 21–25 Sep
+- **Then** the form shows "Colm is scheduled at Byrne's on Thu 24 Sep."
+- **And** the notice asks for no choice and does not prevent saving
+
+**AC-VP015-F:**
+- **Given** Aoife holds a one-off Visit Due at Byrne's and Colm holds an open Recurring Visit Due there
+- **When** Aoife records a Call at Byrne's
+- **Then** the one-off Visit Due is complete
+- **And** Colm's Recurring Visit Due remains open and unchanged
+
+**AC-VP015-F2:**
+- **Given** Colm holds both a one-off Visit Due and an open Recurring Visit Due at Byrne's
+- **When** he records a Call for the one-off visit
+- **Then** the one-off Visit Due is complete
+- **And** the Recurring Visit Due remains open
+
+**AC-VP015-G:**
+- **Given** I have saved a one-off Visit Due
+- **When** the confirmation and the saved visit are shown
+- **Then** neither shows whether the visit has reached the rep's tablet
+
+**Superseded:** "the effective rep follows the Location assignment rules" as the only way to set the visit's rep. "One Call clears all" gains the exception in AC-VP015-F and F2: a Call for a one-off visit never completes a Recurring Visit Due.
+
+**Recommended Acceptance Tests:**
+
+- `Should_PrefillLocation_When_AddOneOffStartedFromLocation`
+  → The trigger is a Location, so the form must not make the manager find it again.
+- `Should_DefaultToPrimaryRep_When_AddOneOffFormOpens`
+  → The usual answer is pre-selected; choosing someone else is the exception.
+- `Should_ListAssignedRepsFirst_When_RepPickerOpens`
+  → The rep sent is usually one already assigned to the Location.
+- `Should_LeaveAssignmentUnchanged_When_OneOffSentToNonPrimaryRep`
+  → Choosing a rep for one visit never changes who owns the Location.
+- `Should_ShowScheduledVisitNotice_When_OtherVisitWithinAWeekOfWindow`
+  → The manager needs to know about the nearby visit so they can talk to its rep afterwards.
+- `Should_AllowSave_When_ScheduledVisitNoticeShown`
+  → The notice is information only, not a gate.
+- `Should_LeaveOtherRepsRecurringVisitOpen_When_OneOffCallRecorded`
+  → What happens to the other visit is decided later by the manager and reps, not by the Call.
+- `Should_LeaveOwnRecurringVisitOpen_When_SameRepRecordsOneOffCall`
+  → The same rep may need a second visit with a different contact.
+
+---
+
 ### Visit Planning US-011 — four-step campaign creation wizard
 
 > **Context:** the candidate set, per-campaign details and routing summary have genuine dependencies and should not compete on one long screen.
@@ -562,6 +669,483 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **Then** they use each row's effective rep and list every permanent assignment accurately
 
 **Amendment to Coverage US-001:** campaign creation is an additional route for creating a direct Location assignment where the Location was previously unassigned. It must produce the same effective ownership and append-only Assignment History as the Coverage Management screen.
+
+---
+
+### Coverage US-001 — transfer Territory Assignments between reps
+
+> **Context:** the most common trigger for territory work is a new rep, often replacing one who is leaving. A permanent replacement moves the **assignments themselves**, so Locations keep resolving through the territory and new Locations follow the new rep. Bulk reassign (US-004) stays for temporary moves, because it creates direct Location assignments. Settled in `05-manager.md` M6.1–M6.5.
+
+**Additional Acceptance Criteria:**
+
+**AC-CV001-A:**
+- **Given** I am on Colm's Territory assignment page
+- **When** I filter his assignments and choose `Transfer...`
+- **Then** a review opens with every assignment in the filtered set selected
+- **And** I can remove individual rows before choosing the receiving rep
+
+**AC-CV001-B:**
+- **Given** Colm holds Wicklow (County)
+- **When** I view his assignments
+- **Then** Wicklow can be expanded to its Towns, each with its Location count
+- **And** Towns carved out to another rep are marked with that rep
+
+**AC-CV001-C:**
+- **Given** Colm holds Wicklow (County)
+- **When** I transfer the whole County to Niamh
+- **Then** the Wicklow County assignment moves to Niamh
+- **And** its Locations show "Niamh (via Wicklow)", while carve-outs keep their owners
+
+**AC-CV001-D:**
+- **Given** Colm holds Wicklow (County)
+- **When** I transfer only Bray, Greystones and Wicklow Town to Niamh
+- **Then** each becomes a Town assignment to Niamh
+- **And** the Wicklow County assignment stays with Colm
+
+**AC-CV001-E:**
+- **Given** Bray, Greystones and Wicklow Town have already been transferred to Niamh
+- **When** I transfer every remaining Town Colm holds through Wicklow to Ciara
+- **Then** the Wicklow County assignment moves to Ciara as well
+- **And** the impact preview states "Wicklow (County) moves to Ciara with its last Towns."
+
+**AC-CV001-F:**
+- **Given** I am on Niamh's page and Rathdrum (Town) is assigned to Aoife
+- **When** I choose `Add assignment`
+- **Then** Rathdrum is listed as "Rathdrum — Aoife's"
+- **And** choosing it asks "Transfer Rathdrum from Aoife to Niamh?" and continues to the impact preview and handover
+
+**AC-CV001-G:**
+- **Given** I am on Niamh's page
+- **When** I choose `Take over from another rep...` and pick Colm
+- **Then** the transfer review opens on Colm's assignments with Niamh already set as the receiving rep
+
+**AC-CV001-H:**
+- **Given** any transfer
+- **When** I confirm it after the impact preview
+- **Then** open visits with the previous rep go to Handover (US-003)
+- **And** each Location whose owner changes gets an Assignment History entry
+
+**Superseded:** US-001 scenario 3's dead-end message ("remove that assignment first") when adding an area already held at the same level. The transfer offer in AC-CV001-F replaces it.
+
+---
+
+### Coverage US-003 — handover when the previous rep is leaving; inherited visits
+
+> **Context:** the most common reason for handover is a rep leaving and being replaced. "Leave with Colm" is meaningless once Colm has gone, and the new rep's schedule is built fresh anyway. Late visits handed over shouldn't count against the rep who inherits them. Settled in `05-manager.md` M8.1–M8.2.
+
+**Additional Acceptance Criteria:**
+
+**AC-CV003-A:**
+- **Given** I start a transfer of Colm's assignments
+- **When** the transfer begins
+- **Then** I am asked "Is Colm leaving?"
+
+**AC-CV003-B:**
+- **Given** I answered that Colm is leaving
+- **When** I reach the impact preview
+- **Then** Leave is not offered and there is no per-visit handover list
+- **And** the preview states how many open visits move to the new owner as visits needed, including how many are Overdue
+
+**AC-CV003-C:**
+- **Given** I confirm a transfer where Colm is leaving
+- **When** it is saved
+- **Then** every open Visit Due at a Location changing owner moves to that Location's new Primary Rep with its Scheduled Day cleared and its due window unchanged
+- **And** none becomes Handover Pending
+
+**AC-CV003-D:**
+- **Given** I answered that Colm is not leaving
+- **When** I reach the impact preview
+- **Then** the US-003 handover applies unchanged: Move or Leave per visit, Apply to all, and undecided visits become Handover Pending
+
+**AC-CV003-E:**
+- **Given** Byrne's recurring visit was Overdue when it moved from Colm to Niamh
+- **When** it appears on Niamh's planner, the Visit Planning overview or the visit detail
+- **Then** it is marked "inherited from Colm"
+- **And** it counts in Niamh's Overdue figure on the overview
+
+**AC-CV003-F:**
+- **Given** Niamh inherited Byrne's open Visit Due
+- **When** it is completed or marked Missed
+- **Then** its outcome is excluded from Niamh's performance
+- **And** the inherited marker ends when the visit closes
+
+**AC-CV003-G:**
+- **Given** Niamh inherited Byrne's
+- **When** a new Visit Due is generated there after the handover
+- **Then** it is not marked inherited and counts in her performance normally
+
+**Recommended Acceptance Tests:**
+
+- `Should_AskIfPreviousRepLeaving_When_TransferStarts`
+  → One question removes a whole class of stranded visits.
+- `Should_HideLeave_When_PreviousRepLeaving`
+  → Leave would strand the visit with nobody.
+- `Should_MoveAllOpenVisitsUnscheduled_When_PreviousRepLeaving`
+  → The new rep's schedule is built fresh.
+- `Should_KeepDueWindow_When_VisitInheritedOnHandover`
+  → The shop's real Overdue state stays visible.
+- `Should_ExcludeInheritedVisitFromPerformance_When_ClosedByNewRep`
+  → The new rep isn't penalised for debt they didn't cause.
+- `Should_CountNormally_When_VisitGeneratedAfterHandover`
+  → The marker ends with the visit, not a time window.
+
+---
+
+### Coverage US-004, US-005 — bulk reassign for long absence; reversal
+
+> **Context:** short leave never changes ownership. It's handled by the absence flow (Visit Planning US-006/US-007: Extend, Keep or Cover per visit), and the rep's schedule restarts on return. Bulk reassign is for long absence, where the batch is the record that makes reversal possible. On reversal both reps are working, and the returning rep may be part-time. Settled in `05-manager.md` M9.1–M9.4.
+
+**Additional Acceptance Criteria:**
+
+**AC-CV004-A:**
+- **Given** Colm is on short leave
+- **When** I handle his affected visits
+- **Then** I use the absence decisions (Extend, Keep, Cover), and no ownership changes and no batch is created
+
+**AC-CV004-B:**
+- **Given** I bulk-reassign 23 of Colm's Locations to Aoife as "Maternity cover"
+- **When** I reach the impact preview
+- **Then** Leave is not offered and there is no per-visit handover
+- **And** on save every open visit at those Locations moves to Aoife with Scheduled Day cleared, marked "inherited from Colm"
+
+**AC-CV005-A:**
+- **Given** I reverse "Maternity cover"
+- **When** I reach the impact preview
+- **Then** Aoife's open visits at the returning Locations are listed for Move or Leave, with Apply to all
+- **And** undecided visits become Handover Pending
+- **And** visits that Move are marked "inherited from Aoife"
+
+**AC-CV005-B:**
+- **Given** Colm still holds Wicklow (County)
+- **When** a Location from the batch is reversed
+- **Then** Aoife's direct assignment is removed and the Location shows "Colm (via Wicklow)"
+
+**AC-CV005-C:**
+- **Given** Wicklow (County) was transferred to Niamh during the batch
+- **When** I reverse the batch
+- **Then** the preview states "3 Locations would resolve to Niamh via Wicklow"
+- **And** each of those rows offers "Assign to Colm directly" or "Leave with Niamh"
+
+**Superseded:** US-005's open question ("restore the derived owner or create a direct assignment"): the owner is restored and exceptions are flagged (AC-CV005-B, C).
+
+**Recommended Acceptance Tests:**
+
+- `Should_NotCreateBatch_When_ShortLeaveHandledByAbsenceFlow`
+  → Short leave keeps ownership; the schedule restarts on return.
+- `Should_MoveAllOpenVisitsAsInherited_When_BulkReassignSaved`
+  → The absent rep can't finish anything.
+- `Should_OfferMoveOrLeave_When_BatchReversed`
+  → Both reps are working and the return may be part-time.
+- `Should_RestoreDerivedOwner_When_TerritoryUnchanged`
+  → Reversal leaves no direct-assignment clutter.
+- `Should_FlagLocation_When_RestoredOwnerIsNotReturningRep`
+  → A territory change during the batch never silently hands shops to another rep.
+
+---
+
+### Coverage US-006 — multi-condition specialist scopes and campaign routing
+
+> **Context:** the common specialist need is "every Location with profile X in an area", which the source's single-condition scopes can't express. Richer scopes make it more likely that several specialists match one campaign visit. Settled in `05-manager.md` M10.1–M10.2.
+
+**Additional Acceptance Criteria:**
+
+**AC-CV006-A:**
+- **Given** I create a Specialist Assignment for Brian
+- **When** I add the conditions Profile "Customer campaign X" and Area "Wicklow"
+- **Then** Brian is Specialist on every Location holding that profile in Wicklow, and only those
+- **And** before saving I see the scope as a sentence with the number of Locations it matches
+
+**AC-CV006-B:**
+- **Given** the default builder is open
+- **When** I choose `Advanced`
+- **Then** I can combine conditions with AND and OR, and group them
+
+**AC-CV006-C:**
+- **Given** Brian's scope is Profile "Customer campaign X" in Wicklow
+- **When** a Location in Wicklow gains that profile
+- **Then** Brian becomes its Specialist without any further action
+
+**AC-CV006-D:**
+- **Given** a specialist scope has no Brand condition
+- **When** the specialist syncs
+- **Then** no products are added to their Order Pad because of that scope
+
+**AC-CV006-E:**
+- **Given** a SunCo campaign and a Location where Ciara (Brand: SunCo) and Brian (Profile: Customer campaign X · in Wicklow) are both Specialists
+- **When** I review the campaign's visits
+- **Then** Ciara is preselected for that Location's visit and the row notes "also matches Brian"
+
+**AC-CV006-F:**
+- **Given** two Specialists at a Location both match the campaign's link, or the campaign has no link and two Specialists are at the Location
+- **When** I review the campaign's visits
+- **Then** the row shows "2 specialists match — choose" with no preselection
+- **And** I can't advance until I have chosen
+
+**AC-CV006-G:**
+- **Given** no Specialist at a Location matches the campaign's link
+- **When** I review the campaign's visits
+- **Then** the visit starts with the Location's Primary Rep
+
+**Superseded:** US-006's single-condition Scope (Customer **or** Location Profile **or** Brand). Scenario 3's routing is refined by AC-CV006-E to G.
+
+**Recommended Acceptance Tests:**
+
+- `Should_MatchOnlyLocationsMeetingAllConditions_When_ScopeHasProfileAndArea`
+  → The default builder is AND-only, so it reads as one sentence.
+- `Should_ShowSentenceAndMatchCount_When_ScopeSaved`
+  → The manager can predict who the rule catches.
+- `Should_JoinSpecialist_When_LocationGainsMatchingProfile`
+  → Scopes stay live.
+- `Should_PreselectLinkMatchingSpecialist_When_SeveralSpecialistsAtLocation`
+  → The campaign's own link is the most relevant signal.
+- `Should_RequireChoice_When_LinkDoesNotSettleRouting`
+  → Never an arbitrary pick.
+- `Should_RouteToPrimaryRep_When_NoSpecialistMatchesLink`
+  → Source behaviour is retained.
+
+---
+
+### Master & Branch US-006 — grid rows and the `All` cell
+
+> **Context:** a chain may have 140 agreed products, but a session orders about 30. The grid opens near that size, and a bulk fill never destroys deliberate exceptions. The grid layout itself is deferred to usage feedback (M11.2). Settled in `05-manager.md` M11.1 and M11.3.
+
+**Additional Acceptance Criteria:**
+
+**AC-MB006-A:**
+- **Given** Hickey's branches have Accepted Orders
+- **When** I start a Multi-Branch Order on the website
+- **Then** the rows are the products on any branch's last 3 Accepted Orders, with every cell empty
+
+**AC-MB006-B:**
+- **Given** the grid is open
+- **When** I search for a product that isn't listed
+- **Then** I can add it as a row
+
+**AC-MB006-C:**
+- **Given** the grid is open
+- **When** I choose `Show full Agreed Range`
+- **Then** the rest of Hickey's agreed products appear as empty rows
+
+**AC-MB006-D:**
+- **Given** SPF30's `All` is 24 and I changed Rathdrum to 12 and Arklow to 0
+- **When** I change `All` to 36
+- **Then** the other 8 branches become 36, Rathdrum stays 12 and Arklow stays 0
+- **And** the row shows "36 × 8 branches, 2 adjusted" with the adjusted cells marked
+
+**AC-MB006-E:**
+- **Given** a row has adjusted cells
+- **When** I choose `Clear adjustments`
+- **Then** every branch cell on the row takes the `All` value
+
+**Superseded:** US-006 scenario 2's "every branch cell on that row becomes 24", when the row already has hand-edited cells.
+
+**Recommended Acceptance Tests:**
+
+- `Should_OpenWithRecentlyOrderedProducts_When_GridStarts`
+  → The grid starts near a typical session's size.
+- `Should_LeaveCellsEmpty_When_GridStarts`
+  → Rows are proposed; quantities never are.
+- `Should_KeepAdjustedCells_When_AllChanged`
+  → A bulk fill never destroys deliberate exceptions.
+- `Should_ResetAdjustedCells_When_ClearAdjustmentsChosen`
+  → An explicit way to mean "every branch".
+
+---
+
+### Targets & Performance US-001, US-002 — targets carried forward from the previous period
+
+> **Context:** targets usually change a little from one period to the next, so retyping every figure costs more than the anchoring risk. This is a deliberate exception to *propose, don't impose*. Settled in `05-manager.md` M12.1–M12.2.
+
+**Additional Acceptance Criteria:**
+
+**AC-TP001-A:**
+- **Given** Colm's Q4 2026 Rep Target was €40,000 and Brian had none
+- **When** I choose period Q1 2027
+- **Then** Colm's row shows €40,000, editable, and Brian's row is blank
+- **And** the running total starts from the carried figures
+
+**AC-TP001-B:**
+- **Given** I changed 2 of 8 rows and left 6 as carried
+- **When** I save
+- **Then** all 8 figures are saved as Q1 2027 targets and dated in history as set by me today
+- **And** the confirmation states "6 of 8 targets were carried forward from Q4 unchanged. You can update them later." and names those reps
+
+**AC-TP002-A:**
+- **Given** Aoife had a Rep–Range Target for "Summer 2026" in Q2 2026
+- **When** I set targets for the same Range for Q3 2026
+- **Then** her row is pre-filled with that figure on the same terms
+
+**Recommended Acceptance Tests:**
+
+- `Should_PrefillPreviousPeriodTarget_When_PeriodChosen`
+  → Incremental changes are the norm.
+- `Should_KeepBlank_When_NoPreviousTarget`
+  → Blank still means no target; a carry never invents one.
+- `Should_ReportCarriedCount_When_SavedWithUntouchedRows`
+  → An interrupted review is visible without blocking the save.
+
+---
+
+### Targets & Performance US-005 — what "furthest behind" means
+
+> **Context:** the sort decides who the manager looks at first. Percentage points behind pace ranks each rep against their own expectation; money behind pace shows the biggest holes in the team's number. Settled in `05-manager.md` M13.1–M13.2.
+
+**Additional Acceptance Criteria:**
+
+**AC-TP005-A:**
+- **Given** we are 75% through Q4, Colm is at 66% of €40,000 and Aoife is at 50% of €12,000
+- **When** I open the overview
+- **Then** Aoife (25 pts behind pace) is listed before Colm (9 pts behind pace)
+
+**AC-TP005-B:**
+- **Given** the overview is open
+- **When** I choose `Sort by € behind pace`
+- **Then** Colm (€3,600 behind) is listed before Aoife (€3,000 behind)
+- **And** every rep remains listed
+
+**AC-TP005-C:**
+- **Given** Colm has a value target 8 pts ahead of pace and a units target 15 pts behind
+- **When** the overview is ordered
+- **Then** Colm is ranked by value (8 pts ahead)
+- **And** his row still shows the units figure and its pace gap
+
+**AC-TP005-D:**
+- **Given** a rep has a units-only target
+- **When** the overview is ordered by percentage points
+- **Then** that rep is ranked by units
+
+**Recommended Acceptance Tests:**
+
+- `Should_OrderByPointsBehindPace_When_OverviewOpens`
+  → Ranks people against their own expectation.
+- `Should_OrderByMoneyBehindPace_When_ManagerResorts`
+  → The team-total view is one click away.
+- `Should_RankByValue_When_RepHasValueAndUnitsTargets`
+  → One predictable rule; units stay visible on the row.
+
+---
+
+### Coverage US-009 — grant permissions to a cohort from the group's page
+
+> **Context:** permissions have two triggers: onboarding one rep (per-rep view, the source) and a cohort completing training (per-group view, added). Both views share one record. Settled in `05-manager.md` M14.1.
+
+**Additional Acceptance Criteria:**
+
+**AC-CV009-A:**
+- **Given** I open the Restriction Group "Pharmacy-only medicines"
+- **When** the page loads
+- **Then** I see the reps with Granted / Not granted and each one's last change
+
+**AC-CV009-B:**
+- **Given** I select Colm, Aoife, Ciara, Brian and Niamh on the group's page
+- **When** I grant with reason "Completed training 15 Sep 2026"
+- **Then** each of the five has a separate grant record with the date, my name and that reason
+
+**AC-CV009-C:**
+- **Given** I granted a permission from the group's page
+- **When** I open that rep's permissions
+- **Then** the grant appears there as Granted with the same record
+
+**AC-CV009-D:**
+- **Given** I am a Sales Manager who does not manage Ciara and not a Head Office User
+- **When** I open the group's page
+- **Then** Ciara is listed but can't be selected for a change
+
+**Recommended Acceptance Tests:**
+
+- `Should_RecordEachGrantSeparately_When_CohortGrantedFromGroupPage`
+  → The per-rep audit record is unchanged by the bulk entry.
+- `Should_ShowSameState_When_ViewedPerRepOrPerGroup`
+  → One record, two views.
+- `Should_PreventChange_When_RepNotManagedAndNotHeadOffice`
+  → Source permission rule applies in the new view.
+
+---
+
+### Coverage US-007 — unassigned Locations pushed to the overview
+
+> **Context:** an unassigned Location generates no visits, so it never becomes Overdue and never shows on the overview's exception columns. A list that has to be opened can't stop it being silently uncovered. Settled in `05-manager.md` M15.1; row actions follow M7.2.
+
+**Additional Acceptance Criteria:**
+
+**AC-CV007-A:**
+- **Given** 6 Locations have no Primary Rep
+- **When** I open the Visit Planning overview
+- **Then** its header shows "6 Locations unassigned" linking to the Unassigned list
+
+**AC-CV007-B:**
+- **Given** every Location has a Primary Rep
+- **When** I open the Visit Planning overview
+- **Then** no unassigned line appears
+
+**AC-CV007-C:**
+- **Given** Walsh's Shop and 4 other Laragh Locations are unassigned
+- **When** I view the Unassigned list
+- **Then** Walsh's row leads with `Assign Laragh (Town) to...` and states the Town's unassigned count, with `Assign just this shop to...` beside it
+
+**Recommended Acceptance Tests:**
+
+- `Should_ShowUnassignedCountOnOverview_When_AnyLocationUnassigned`
+  → Unassigned shops produce no other signal.
+- `Should_HideUnassignedLine_When_CountIsZero`
+  → No decoration without meaning.
+
+---
+
+### Coverage US-002 — the Location page as the manager's home for a Location
+
+> **Context:** M-07 answers "who covers this shop, and why?" and carries the Location's manager actions, so a manager never has to remember which screen holds which fact about a shop. It stays about coverage: visits are monitored in Visit Planning. Settled in `05-manager.md` M7.1–M7.4.
+
+**Additional Acceptance Criteria:**
+
+**AC-CV002-A:**
+- **Given** I open Murphy's Pharmacy
+- **When** the page loads
+- **Then** I see its Primary Rep with source and its Specialists first
+- **And** I can add a one-off visit and open History from the same page
+
+**AC-CV002-B:**
+- **Given** Walsh's Shop in Laragh is unassigned and 4 other Laragh Locations are too
+- **When** I open Walsh's Shop
+- **Then** `Assign Laragh (Town) to...` is offered first, with "4 other Locations in Laragh are unassigned"
+- **And** `Assign just this shop to...` is offered beside it
+
+**AC-CV002-C:**
+- **Given** Murphy's Pharmacy shows "Aoife (via Rathdrum)"
+- **When** I choose to change its owner
+- **Then** `Change just this shop to...` is offered first and creates a direct Location assignment
+- **And** `Transfer Rathdrum (Town, 23 Locations) to...` is offered beside it and continues to the transfer's impact preview
+
+**AC-CV002-D:**
+- **Given** I open a Location page
+- **When** it renders
+- **Then** it shows no list of open Visit Dues and no last-Call line
+
+**Recommended Acceptance Tests:**
+
+- `Should_LeadWithTownAssignment_When_LocationUnassigned`
+  → Fixes the reason the shop is uncovered, not just this shop.
+- `Should_ShowOtherUnassignedCountInTown_When_LocationUnassigned`
+  → The cause is visible before the manager picks a level.
+- `Should_LeadWithJustThisShop_When_ChangingCoveredLocation`
+  → A single exception is the likely intent once a working assignment exists.
+- `Should_OfferAddOneOffVisit_When_LocationPageOpens`
+  → The complaint call starts from the Location (M16.1).
+
+**Recommended Acceptance Tests:**
+
+- `Should_SelectAllFilteredAssignments_When_TransferReviewOpens`
+  → The manager starts from everything and removes exceptions.
+- `Should_MoveCountyAssignment_When_WholeCountyTransferred`
+  → A replacement keeps derived ownership instead of creating direct assignments.
+- `Should_CreateTownAssignments_When_SomeTownsTransferred`
+  → Dividing a County uses the existing carve-out mechanics.
+- `Should_MoveCountyWithLastTowns_When_TransferTakesAllRemainingTowns`
+  → No empty County is left with a departed rep to catch new Towns.
+- `Should_OfferTransfer_When_AddingAreaHeldByAnotherRep`
+  → Adding from the new rep's page never dead-ends.
+- `Should_PresetReceivingRep_When_TakeOverStartedFromNewRepPage`
+  → Pull and push produce the same transfer.
 
 ---
 
@@ -1085,6 +1669,7 @@ Depends on RC-NEW-003. If Hold is removed, this story's trigger needs redefining
 - **EC-NEW-003 — free-of-charge stock runs out.** The line is removed as unavailable and the rep is prompted (BR-NEW-003 rule 3).
 - **EC-NEW-004 — first order of a product at a location.** No out-of-pattern marker, since there's nothing to compare against (US-NEW-004).
 - **EC-NEW-005 — Low unticked after adding.** The order line stays (US-NEW-002).
+- **EC-NEW-006 — one-off and recurring visit held by different reps.** Aoife's one-off Call at Byrne's on Tue 22 Sep leaves Colm's recurring visit open. The manager and Colm decide whether to keep it, move it or cancel it as covered (Visit Planning US-015, AC-VP015-F).
 
 ---
 
@@ -1102,3 +1687,4 @@ Depends on RC-NEW-003. If Hold is removed, this story's trigger needs redefining
 - ~~**RC-NEW-010** — When an offline rep adds an FOC line, does it consume the monthly allowance immediately, and how is that reservation reconciled?~~ **Resolved:** FOC is an ordinary €0.00 order line; its quantity counts while the line exists and normal line removal releases it. The tablet combines the synced balance with local lines.
 - ~~**RC-NEW-011** — Does the manager/admin choose the icon and colour for each Visit Due Reason Type, or does the system assign them?~~ **Resolved:** the manager/admin chooses both from a controlled system set.
 - ~~**RC-NEW-012** — What happens after a rep marks a Visit Due Missed?~~ **Resolved:** close and record only. No automatic replacement or workflow; a rep or manager may manually create a one-off Visit Due.
+- ~~**RC-NEW-013** — When the one-off's rep also holds the open recurring visit at the Location, does their Call complete both or only the one-off?~~ **Resolved:** only the one-off. The same rep may need two visits with different contacts. When one is enough, the manager moves the existing visit forward in the planner instead of adding a one-off.

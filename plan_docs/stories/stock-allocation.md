@@ -1,6 +1,6 @@
 # Stock Allocation: UX & User Stories
 
-**Generated:** 19 September 2026
+**Generated:** 19 September 2026 (amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Stock Allocation, within Ordering
 **Primary user:** Head Office User
 **Scope:** Deciding who gets short stock when there isn't enough to fill every order. Four screens: Short Products, Stock Entry (on hand and incoming), Allocation view, Release confirmation.
@@ -281,6 +281,39 @@ Given a waiting order is cancelled
 Then it drops out of the list and its allocation returns to the pool
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> An Incoming delivery may be too far away to be useful even though it is technically allocatable. Stock changes preserve the current draft until the manager explicitly chooses to re-propose.
+
+*Scenario SA003-A*
+```
+Given an allocation draft uses On Hand and one or more Incoming deliveries
+When I choose "Re-propose..."
+Then I see each stock pool with its quantity and availability/expected date
+And pools currently included in the draft start selected
+```
+
+*Scenario SA003-B*
+```
+Given an Incoming delivery is too far away to use for current orders
+When I exclude it and apply Re-propose
+Then the complete-what-you-can proposal uses only the selected stock pools
+```
+
+*Scenario SA003-C*
+```
+Given I am reviewing the pool selection
+When the page describes the effect
+Then it states that Re-propose replaces current draft allocations across all waiting orders
+```
+
+*Scenario SA003-D*
+```
+Given I cancel the pool-selection step
+When I return to H-10
+Then the existing draft remains unchanged
+```
+
 ---
 
 ### US-004: Release an allocation
@@ -369,7 +402,7 @@ Then the draft is flagged over-allocated and cannot be released until adjusted
 2. **Purchasing:** raising supplier orders is out of scope; confirm it stays outside this system.
 3. **Allocation record:** whether a history of who allocated what to whom is needed (not designed; would matter if customers query it).
 4. **Passed Over thresholds:** how many times or how long before an order is marked; assumed twice, or short on more than one product.
-5. **Head Office Order Processing:** already links Held orders here; no further amendment expected.
+5. **Head Office Order Processing:** already links Held orders here; no further amendment expected. *Amended 23 Sep 2026:* orders are now accepted automatically, and short quantities from Stock Shortfall and Oversold lines are routed here as Outstanding without a head office decision. Whether Hold survives is open there.
 
 ---
 

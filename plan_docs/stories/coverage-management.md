@@ -1,6 +1,6 @@
 # Coverage Management: UX & User Stories
 
-**Generated:** 17 September 2026 (amended 18 September 2026 for Range Lifecycle and Product Management)
+**Generated:** 17 September 2026 (amended 18 September 2026 for Range Lifecycle and Product Management; amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Coverage Management, within Sales Operations
 **Primary user:** Sales Manager (usually also a Head Office User)
 **Scope:** The website screens where a manager decides which rep is responsible for which Locations, attaches specialists, moves coverage between reps, and grants product permissions. Seven screens: Territory Assignment, Location Coverage, Impact Preview & Handover, Bulk Reassign & Batch Reversal, Specialist Assignments, Rep Permissions, Unassigned Locations.
@@ -15,17 +15,20 @@
 - **Ubiquitous language:**
   - **Primary Rep** — the one rep responsible for a Location: owner of its Recurring Visit Dues, Missed records and performance. Exactly one, or none (then the Location is **Unassigned**).
   - **Territory Assignment** — an assignment of a rep to a Region, County, Town, or a single Location. Determines Primary Rep by the **Most-Specific Rule**.
-  - **Most-Specific Rule** — when Territory Assignments overlap, the narrowest wins: Location beats Town, Town beats County, County beats Region. Two assignments at the same level for the same unit are not allowed.
+  - **Most-Specific Rule** — when Territory Assignments overlap, the narrowest wins: Location beats Town, Town beats County, County beats Region. Two assignments at the same level for the same unit are not allowed; adding one that another rep holds offers a **Transfer** instead of an error.
+  - **Transfer** — moving Territory Assignments themselves from one rep to another (not their Locations), so Locations keep resolving through the territory and new Locations follow the new rep. Started from the giving rep (filter, select all, exclude) or pulled from the receiving rep. Selecting only some of a County's Towns creates Town assignments (carve-outs); taking a County's last remaining Towns moves the County assignment too. Used for permanent changes such as a new rep replacing a leaving one.
   - **Effective Owner** — the Primary Rep a Location resolves to, always shown with its **Source** ("Aoife (via Rathdrum)").
   - **Specialist Assignment** — an additional rep attached to Locations for a **Scope**, without becoming Primary. Receives Visit Dues in that scope (e.g. a campaign for that Brand) and sees the scope's products on their Order Pad. Never receives Recurring Visit Dues.
-  - **Scope** — a rule that selects Locations and products for a Specialist Assignment: a **Customer**, a **Location Profile**, or a **Brand**. Rule-based, so new matching Locations join automatically.
+  - **Scope** — a rule that selects Locations and products for a Specialist Assignment, built from conditions on **Customer**, **Location Profile**, **Brand** and **Area** (Region, County or Town). By default every condition must hold ("Profile: Customer campaign X · in Wicklow"); an Advanced mode allows AND/OR grouping. Always shown as a sentence with its current match count. Rule-based, so new matching Locations join automatically. Only a Brand condition adds products to the specialist's Order Pad.
   - **Brand** — a named group of products (Product Management). A product has one **Primary Brand** and may have **Alternative Brands**. Brand scope covers any membership, primary or alternative. An archived Brand keeps its products and any Specialist Assignment scoped to it, but is not offered for new scopes.
   - **Impact Preview** — shown before an assignment change is saved: which Locations change owner, and which open visits would be left with the previous rep.
+  - **Leaving rep** — a transfer first asks "Is <rep> leaving?". If yes, there is no Handover decision and no Leave: every open visit at a Location changing owner moves to its new Primary Rep with Scheduled Day cleared, as a visit needed.
+  - **Inherited visit** — an open visit that moved to a new rep through a transfer, batch or handover Move. Marked "inherited from <rep>"; keeps its due window; counts in the new rep's operational figures but is excluded from their performance until the visit closes.
   - **Handover** — the manager's decision per open visit when a Location changes Primary Rep: **Move** (to the new Primary Rep, Scheduled Day cleared) or **Leave** (with the previous rep). Apply-to-all available. Nothing moves automatically.
   - **Handover Pending** — an open visit still held by a rep who is no longer the Location's Primary Rep and for which no Handover decision has been made. Counted on the Visit Planning manager overview.
   - **Left Visit** — a visit the manager chose to Leave. The previous rep keeps temporary tablet access to that Location until the visit completes, is marked Missed, or is moved.
-  - **Reassignment Batch** — a bulk change of Primary Rep saved as a named unit ("Colm → Aoife, paternity cover, 5 Oct 2026, 23 Locations"). Permanent; never reverts on its own.
-  - **Batch Reversal** — a manual bulk change pre-filled from a batch, sending its Locations back to the original rep. Locations reassigned again since the batch are shown as **Changed Since** and unticked by default.
+  - **Reassignment Batch** — a bulk change of Primary Rep saved as a named unit ("Colm → Aoife, maternity cover, 5 Oct 2026, 23 Locations"). Permanent; never reverts on its own. Used only for **long** absence: short leave never changes ownership and is handled by Visit Planning's absence decisions. On save, open visits move to the covering rep as inherited visits needed, with no Leave.
+  - **Batch Reversal** — a manual bulk change pre-filled from a batch, sending its Locations back to the original rep. Locations reassigned again since the batch are shown as **Changed Since** and unticked by default. Reversal restores the territory-derived owner; where a territory changed meanwhile and would resolve to someone else, the preview flags it and offers a direct assignment. Open visits go through the per-visit Handover (the rep may return part-time).
   - **Assignment History** — an append-only record of every change to a Location's Primary Rep or Specialist Assignments: date, who, previous and new rep, **Cause** (direct Location assignment, territory assignment, batch, batch reversal), optional reason. Viewable per Location, per rep, per batch.
   - **Cover** — (from Visit Planning) a Visit Due temporarily held by another rep. Any rep may cover; the covering rep's own manager is notified, not asked.
   - **Restriction Group** — a named group of restricted products (Product Management), e.g. "Pharmacy-only medicines". Each restricted product belongs to at most one group. Archiving a group keeps existing permissions but they have no effect while it is archived.
@@ -123,6 +126,7 @@ flowchart TD
 - **Over:** preventing overlaps; shared ownership.
 - **Because:** carving a town out of a county is a normal operation; one owner keeps Visit Dues, Missed records and performance unambiguous; a computed owner must be visible or managers will guess.
 - **Trade-off accepted:** ownership is derived, so removing a wide assignment can silently change many owners — the preview is the mitigation.
+- **Amended 23 Sep 2026:** the Territory Assignment screen is anchored on the rep (the usual trigger is a new rep). Assignments are moved by **Transfer** (push or pull, County rows expandable to Towns), not by batches of direct assignments. The Location page is the manager's single home for a Location: coverage first; an unassigned shop leads with assigning its Town; a covered shop leads with "Change just this shop" (US-001, US-002).
 
 ### Primary plus Specialist
 
@@ -130,6 +134,7 @@ flowchart TD
 - **Over:** multiple equal owners; hand-picked specialist lists.
 - **Because:** the business occasionally needs a second rep for a brand or campaign; a rule picks up new matching Locations without maintenance; Recurring visits stay with one owner.
 - **Trade-off accepted:** Visit Planning must route campaign visits to a Specialist where the scope matches; brand totals overlap where a product has alternative brands, so they cannot be summed.
+- **Amended 23 Sep 2026:** scopes combine conditions (Customer, Location Profile, Brand, Area) with AND, with an Advanced AND/OR mode; the common need is "a profile within an area". When the campaign's link doesn't settle which of several Specialists gets a visit, the manager chooses in campaign Review (US-006).
 
 ### Nothing moves or reverts automatically
 
@@ -137,6 +142,7 @@ flowchart TD
 - **Over:** moving visits immediately; effective dates; end dates that revert.
 - **Because:** the manager wants control over what moves; dates are too strict for real leave; a saved batch gives the reversal screen something to pre-fill so nobody reverses from memory.
 - **Trade-off accepted:** a manager who never decides leaves visits pending (visible on the overview); a batch nobody reverses stays in force.
+- **Amended 23 Sep 2026:** when the previous rep is **leaving** (asked once at the start of a transfer) or on **long absence** (a batch), Leave would strand visits, so all open visits move to the new owner as visits needed, marked inherited and kept out of the new rep's performance. The per-visit Handover still applies when both reps are working: carve-outs and batch reversals (US-003, US-004, US-005).
 
 ### Left Visits keep temporary access
 
@@ -220,6 +226,77 @@ Then the preview shows "96 Locations become Unassigned" and asks me to confirm
 
 **Edge cases addressed:** a Location-level assignment always wins; removing a wide assignment with nothing beneath produces Unassigned Locations and a confirmation.
 
+**Additional route (23 Sep 2026):** campaign creation (Visit Planning US-011) may create a direct Location assignment where the Location was previously unassigned. It produces the same effective ownership and append-only Assignment History as this screen.
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> The most common trigger for territory work is a new rep, often replacing one who is leaving. A permanent replacement moves the **assignments themselves**, so Locations keep resolving through the territory and new Locations follow the new rep. Bulk reassign (US-004) stays for temporary moves, because it creates direct Location assignments. Settled in `../uxdocs/05-manager.md` M6.1–M6.5.
+
+*Scenario CV001-A*
+```
+Given I am on Colm's Territory assignment page
+When I filter his assignments and choose "Transfer..."
+Then a review opens with every assignment in the filtered set selected
+And I can remove individual rows before choosing the receiving rep
+```
+
+*Scenario CV001-B*
+```
+Given Colm holds Wicklow (County)
+When I view his assignments
+Then Wicklow can be expanded to its Towns, each with its Location count
+And Towns carved out to another rep are marked with that rep
+```
+
+*Scenario CV001-C*
+```
+Given Colm holds Wicklow (County)
+When I transfer the whole County to Niamh
+Then the Wicklow County assignment moves to Niamh
+And its Locations show "Niamh (via Wicklow)", while carve-outs keep their owners
+```
+
+*Scenario CV001-D*
+```
+Given Colm holds Wicklow (County)
+When I transfer only Bray, Greystones and Wicklow Town to Niamh
+Then each becomes a Town assignment to Niamh
+And the Wicklow County assignment stays with Colm
+```
+
+*Scenario CV001-E*
+```
+Given Bray, Greystones and Wicklow Town have already been transferred to Niamh
+When I transfer every remaining Town Colm holds through Wicklow to Ciara
+Then the Wicklow County assignment moves to Ciara as well
+And the impact preview states "Wicklow (County) moves to Ciara with its last Towns."
+```
+
+*Scenario CV001-F*
+```
+Given I am on Niamh's page and Rathdrum (Town) is assigned to Aoife
+When I choose "Add assignment"
+Then Rathdrum is listed as "Rathdrum — Aoife's"
+And choosing it asks "Transfer Rathdrum from Aoife to Niamh?" and continues to the impact preview and handover
+```
+
+*Scenario CV001-G*
+```
+Given I am on Niamh's page
+When I choose "Take over from another rep..." and pick Colm
+Then the transfer review opens on Colm's assignments with Niamh already set as the receiving rep
+```
+
+*Scenario CV001-H*
+```
+Given any transfer
+When I confirm it after the impact preview
+Then open visits with the previous rep go to Handover (US-003)
+And each Location whose owner changes gets an Assignment History entry
+```
+
+**Superseded:** US-001 scenario 3's dead-end message ("remove that assignment first") when adding an area already held at the same level. The transfer offer in scenario CV001-F replaces it.
+
 ---
 
 ### US-002: See who covers a Location and why
@@ -256,6 +333,41 @@ Then it shows "Primary: Unassigned" with an Assign action
 ```
 When I open History on Murphy's Pharmacy
 Then I see entries newest first, e.g. "17 Sep 2026 14:02 — Colm → Aoife — via Rathdrum assignment — by M. Byrne"
+```
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> M-07 answers "who covers this shop, and why?" and carries the Location's manager actions, so a manager never has to remember which screen holds which fact about a shop. It stays about coverage: visits are monitored in Visit Planning. Settled in `../uxdocs/05-manager.md` M7.1–M7.4.
+
+*Scenario CV002-A*
+```
+Given I open Murphy's Pharmacy
+When the page loads
+Then I see its Primary Rep with source and its Specialists first
+And I can add a one-off visit and open History from the same page
+```
+
+*Scenario CV002-B*
+```
+Given Walsh's Shop in Laragh is unassigned and 4 other Laragh Locations are too
+When I open Walsh's Shop
+Then "Assign Laragh (Town) to..." is offered first, with "4 other Locations in Laragh are unassigned"
+And "Assign just this shop to..." is offered beside it
+```
+
+*Scenario CV002-C*
+```
+Given Murphy's Pharmacy shows "Aoife (via Rathdrum)"
+When I choose to change its owner
+Then "Change just this shop to..." is offered first and creates a direct Location assignment
+And "Transfer Rathdrum (Town, 23 Locations) to..." is offered beside it and continues to the transfer's impact preview
+```
+
+*Scenario CV002-D*
+```
+Given I open a Location page
+When it renders
+Then it shows no list of open Visit Dues and no last-Call line
 ```
 
 ---
@@ -306,6 +418,63 @@ When Colm syncs
 Then Murphy's appears on his tablet marked "Handover — finish visit" until he records a Call there or it is Missed or moved
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> The most common reason for handover is a rep leaving and being replaced. "Leave with Colm" is meaningless once Colm has gone, and the new rep's schedule is built fresh anyway. Late visits handed over shouldn't count against the rep who inherits them. Settled in `../uxdocs/05-manager.md` M8.1–M8.2.
+
+*Scenario CV003-A*
+```
+Given I start a transfer of Colm's assignments
+When the transfer begins
+Then I am asked "Is Colm leaving?"
+```
+
+*Scenario CV003-B*
+```
+Given I answered that Colm is leaving
+When I reach the impact preview
+Then Leave is not offered and there is no per-visit handover list
+And the preview states how many open visits move to the new owner as visits needed, including how many are Overdue
+```
+
+*Scenario CV003-C*
+```
+Given I confirm a transfer where Colm is leaving
+When it is saved
+Then every open Visit Due at a Location changing owner moves to that Location's new Primary Rep with its Scheduled Day cleared and its due window unchanged
+And none becomes Handover Pending
+```
+
+*Scenario CV003-D*
+```
+Given I answered that Colm is not leaving
+When I reach the impact preview
+Then the US-003 handover applies unchanged: Move or Leave per visit, Apply to all, and undecided visits become Handover Pending
+```
+
+*Scenario CV003-E*
+```
+Given Byrne's recurring visit was Overdue when it moved from Colm to Niamh
+When it appears on Niamh's planner, the Visit Planning overview or the visit detail
+Then it is marked "inherited from Colm"
+And it counts in Niamh's Overdue figure on the overview
+```
+
+*Scenario CV003-F*
+```
+Given Niamh inherited Byrne's open Visit Due
+When it is completed or marked Missed
+Then its outcome is excluded from Niamh's performance
+And the inherited marker ends when the visit closes
+```
+
+*Scenario CV003-G*
+```
+Given Niamh inherited Byrne's
+When a new Visit Due is generated there after the handover
+Then it is not marked inherited and counts in her performance normally
+```
+
 ---
 
 ### US-004: Bulk reassign as a named batch
@@ -341,6 +510,25 @@ Then I see "Select at least one Location"
 *Scenario 4: History per Location*
 ```
 Then each of the 23 Locations has a History entry citing the batch as cause
+```
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Short leave never changes ownership. It's handled by the absence flow (Visit Planning US-006/US-007: Extend, Keep or Cover per visit), and the rep's schedule restarts on return. Bulk reassign is for long absence, where the batch is the record that makes reversal possible. On reversal both reps are working, and the returning rep may be part-time. Settled in `../uxdocs/05-manager.md` M9.1–M9.4.
+
+*Scenario CV004-A*
+```
+Given Colm is on short leave
+When I handle his affected visits
+Then I use the absence decisions (Extend, Keep, Cover), and no ownership changes and no batch is created
+```
+
+*Scenario CV004-B*
+```
+Given I bulk-reassign 23 of Colm's Locations to Aoife as "Maternity cover"
+When I reach the impact preview
+Then Leave is not offered and there is no per-visit handover
+And on save every open visit at those Locations moves to Aoife with Scheduled Day cleared, marked "inherited from Colm"
 ```
 
 ---
@@ -384,6 +572,36 @@ Then its direct assignment is removed and it shows "Colm (via Wicklow)" again
 ```
 
 **Open questions:** whether a reversal should restore the derived owner (Scenario 4) or create a direct assignment to the original rep — assumed restore.
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Short leave never changes ownership. It's handled by the absence flow (Visit Planning US-006/US-007: Extend, Keep or Cover per visit), and the rep's schedule restarts on return. Bulk reassign is for long absence, where the batch is the record that makes reversal possible. On reversal both reps are working, and the returning rep may be part-time. Settled in `../uxdocs/05-manager.md` M9.1–M9.4.
+
+*Scenario CV005-A*
+```
+Given I reverse "Maternity cover"
+When I reach the impact preview
+Then Aoife's open visits at the returning Locations are listed for Move or Leave, with Apply to all
+And undecided visits become Handover Pending
+And visits that Move are marked "inherited from Aoife"
+```
+
+*Scenario CV005-B*
+```
+Given Colm still holds Wicklow (County)
+When a Location from the batch is reversed
+Then Aoife's direct assignment is removed and the Location shows "Colm (via Wicklow)"
+```
+
+*Scenario CV005-C*
+```
+Given Wicklow (County) was transferred to Niamh during the batch
+When I reverse the batch
+Then the preview states "3 Locations would resolve to Niamh via Wicklow"
+And each of those rows offers "Assign to Colm directly" or "Leave with Niamh"
+```
+
+**Superseded:** US-005's open question ("restore the derived owner or create a direct assignment"): the owner is restored and exceptions are flagged (scenario CV005-B, C).
 
 ---
 
@@ -432,6 +650,63 @@ When I remove Brian's SunCo assignment
 Then open campaign visits routed to him via that scope become Handover Pending
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> The common specialist need is "every Location with profile X in an area", which the source's single-condition scopes can't express. Richer scopes make it more likely that several specialists match one campaign visit. Settled in `../uxdocs/05-manager.md` M10.1–M10.2.
+
+*Scenario CV006-A*
+```
+Given I create a Specialist Assignment for Brian
+When I add the conditions Profile "Customer campaign X" and Area "Wicklow"
+Then Brian is Specialist on every Location holding that profile in Wicklow, and only those
+And before saving I see the scope as a sentence with the number of Locations it matches
+```
+
+*Scenario CV006-B*
+```
+Given the default builder is open
+When I choose "Advanced"
+Then I can combine conditions with AND and OR, and group them
+```
+
+*Scenario CV006-C*
+```
+Given Brian's scope is Profile "Customer campaign X" in Wicklow
+When a Location in Wicklow gains that profile
+Then Brian becomes its Specialist without any further action
+```
+
+*Scenario CV006-D*
+```
+Given a specialist scope has no Brand condition
+When the specialist syncs
+Then no products are added to their Order Pad because of that scope
+```
+
+*Scenario CV006-E*
+```
+Given a SunCo campaign and a Location where Ciara (Brand: SunCo) and Brian (Profile: Customer campaign X · in Wicklow) are both Specialists
+When I review the campaign's visits
+Then Ciara is preselected for that Location's visit and the row notes "also matches Brian"
+```
+
+*Scenario CV006-F*
+```
+Given two Specialists at a Location both match the campaign's link, or the campaign has no link and two Specialists are at the Location
+When I review the campaign's visits
+Then the row shows "2 specialists match — choose" with no preselection
+And I can't advance until I have chosen
+```
+
+*Scenario CV006-G*
+```
+Given no Specialist at a Location matches the campaign's link
+When I review the campaign's visits
+Then the visit starts with the Location's Primary Rep
+```
+
+**Superseded:** US-006's single-condition Scope (Customer **or** Location Profile **or** Brand). Scenario 3's routing is refined by scenario CV006-E to G.
+
 ---
 
 ### US-007: Find and fix Unassigned Locations
@@ -468,6 +743,31 @@ Then all Unassigned Locations in Laragh resolve to Colm via Laragh
 ```
 Given every Location has a Primary Rep
 Then the list shows "All Locations have a responsible rep"
+```
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> An unassigned Location generates no visits, so it never becomes Overdue and never shows on the overview's exception columns. A list that has to be opened can't stop it being silently uncovered. Settled in `../uxdocs/05-manager.md` M15.1; row actions follow M7.2.
+
+*Scenario CV007-A*
+```
+Given 6 Locations have no Primary Rep
+When I open the Visit Planning overview
+Then its header shows "6 Locations unassigned" linking to the Unassigned list
+```
+
+*Scenario CV007-B*
+```
+Given every Location has a Primary Rep
+When I open the Visit Planning overview
+Then no unassigned line appears
+```
+
+*Scenario CV007-C*
+```
+Given Walsh's Shop and 4 other Laragh Locations are unassigned
+When I view the Unassigned list
+Then Walsh's row leads with "Assign Laragh (Town) to..." and states the Town's unassigned count, with "Assign just this shop to..." beside it
 ```
 
 ---
@@ -547,6 +847,38 @@ When I open Ciara's permissions
 Then I can view but not change them
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Permissions have two triggers: onboarding one rep (per-rep view, the source) and a cohort completing training (per-group view, added). Both views share one record. Settled in `../uxdocs/05-manager.md` M14.1.
+
+*Scenario CV009-A*
+```
+Given I open the Restriction Group "Pharmacy-only medicines"
+When the page loads
+Then I see the reps with Granted / Not granted and each one's last change
+```
+
+*Scenario CV009-B*
+```
+Given I select Colm, Aoife, Ciara, Brian and Niamh on the group's page
+When I grant with reason "Completed training 15 Sep 2026"
+Then each of the five has a separate grant record with the date, my name and that reason
+```
+
+*Scenario CV009-C*
+```
+Given I granted a permission from the group's page
+When I open that rep's permissions
+Then the grant appears there as Granted with the same record
+```
+
+*Scenario CV009-D*
+```
+Given I am a Sales Manager who does not manage Ciara and not a Head Office User
+When I open the group's page
+Then Ciara is listed but can't be selected for a change
+```
+
 ---
 
 ### US-010: See cross-team cover on my reps
@@ -583,9 +915,10 @@ Then the line no longer appears
 ## 6. Requires Clarification
 
 1. **Brands and Restriction Groups (resolved):** defined in Product Management with archive-not-delete; US-006 and US-009 are now Ready.
-2. **Batch reversal ownership:** should a reversal restore the derived owner or create a direct assignment (US-005, assumed restore)?
-3. **Area 6:** attribute sales by Assignment History at the time of the Accepted Order; brand totals overlap and must not be summed.
+2. ~~**Batch reversal ownership:** should a reversal restore the derived owner or create a direct assignment (US-005, assumed restore)?~~ **Resolved 23 Sep 2026:** restore, and flag Locations whose territory now resolves to someone else, offering a direct assignment to the returning rep.
+3. **Area 6:** attribute sales by Assignment History at the time of the Accepted Order; brand totals overlap and must not be summed. *23 Sep 2026:* inherited visits closed by the new rep are excluded from their performance.
 4. **Area 9 and area 1 amendments (applied):** campaign routing to Specialists, Handover Pending and cross-team cover on the overview; Restriction Groups and Left Visits on the tablet.
+5. **Assumed, to confirm (23 Sep 2026):** a Region moves with its last Counties, as a County moves with its last Towns; the inherited marker also applies to visits moved by Handover Move in a carve-out; the unassigned count on the overview is company-wide.
 
 ---
 

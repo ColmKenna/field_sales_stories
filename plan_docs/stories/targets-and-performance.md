@@ -1,6 +1,6 @@
 # Targets & Performance: UX & User Stories
 
-**Generated:** 18 September 2026 (amended 19 September 2026 for Promotions)
+**Generated:** 18 September 2026 (amended 19 September 2026 for Promotions; amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Performance, within Sales Operations
 **Primary users:** Sales Manager (setting and monitoring); Field Salesperson (own performance)
 **Scope:** The website screens where managers set targets that fit each rep's patch and watch actuals against them, and where reps see how they are doing. Five screens: Set Targets by Period, Set Targets by Range, Location/Chain Target, Rep Performance, Manager Performance Overview.
@@ -210,6 +210,26 @@ When I change it to €45,000
 Then his progress recalculates against €45,000 and the change is dated in history
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Targets usually change a little from one period to the next, so retyping every figure costs more than the anchoring risk. This is a deliberate exception to *propose, don't impose*. Settled in `../uxdocs/05-manager.md` M12.1–M12.2.
+
+*Scenario TP001-A*
+```
+Given Colm's Q4 2026 Rep Target was €40,000 and Brian had none
+When I choose period Q1 2027
+Then Colm's row shows €40,000, editable, and Brian's row is blank
+And the running total starts from the carried figures
+```
+
+*Scenario TP001-B*
+```
+Given I changed 2 of 8 rows and left 6 as carried
+When I save
+Then all 8 figures are saved as Q1 2027 targets and dated in history as set by me today
+And the confirmation states "6 of 8 targets were carried forward from Q4 unchanged. You can update them later." and names those reps
+```
+
 ---
 
 ### US-002: Set rep targets for a Range
@@ -244,6 +264,17 @@ Then it is not offered for a new target; existing targets against it still show 
 *Scenario 4: Running total is feedback only*
 ```
 Then the total is displayed while setting and is not stored, shown to reps, or reported as a team target
+```
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Targets usually change a little from one period to the next, so retyping every figure costs more than the anchoring risk. This is a deliberate exception to *propose, don't impose*. Settled in `../uxdocs/05-manager.md` M12.1–M12.2.
+
+*Scenario TP002-A*
+```
+Given Aoife had a Rep–Range Target for "Summer 2026" in Q2 2026
+When I set targets for the same Range for Q3 2026
+Then her row is pre-filled with that figure on the same terms
 ```
 
 ---
@@ -342,6 +373,58 @@ Given another rep took a chain order for a Location I hold
 Then it counts towards my actuals, shown in the breakdown against that Location
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> R-03 is a target-attainment view. Ordering by highest contribution foregrounds Locations already performing well rather than those needing attention.
+
+*Scenario TP004-A*
+```
+Given two or more Locations have targets in the selected period
+When I open the per-Location target breakdown
+Then targeted Locations are ordered by lowest percentage attainment first
+```
+
+*Scenario TP004-B*
+```
+Given one or more Locations have no target in the selected period
+When the Location breakdown uses the default "All" filter
+Then those Locations appear in a separate "No target set" section beneath targeted Locations
+And each shows its actual contribution and Accepted Order count without a percentage
+```
+
+*Scenario TP004-C*
+```
+Given the Location breakdown is open
+When I choose "With targets" or "No target"
+Then only Locations matching that target-status filter are shown
+And choosing "All" restores both sections
+```
+
+*Scenario TP004-D*
+```
+Given I have a target for the selected period
+When headline progress renders
+Then its progress bar includes a labelled straight-line pace marker
+And exact percentage attainment and time remaining are shown in text
+```
+
+*Scenario TP004-E*
+```
+Given a target may be naturally end-weighted
+When actual progress is behind the straight-line marker
+Then the rep view does not infer "off track", apply warning colour, or change ordering from that difference
+```
+
+*Scenario TP004-F*
+```
+Given a manager creates or edits a target
+When they define its period and amount
+Then no pacing model is requested or inferred
+And reps and managers use their commercial context to interpret the neutral reference marker
+```
+
+**Superseded:** US-004 scenario 3's `highest contribution first` ordering for the target breakdown.
+
 ---
 
 ### US-005: Watch the team against target
@@ -381,6 +464,40 @@ Then the same unfulfilled note appears, aggregated for the team
 *Scenario 5: Reps without targets*
 ```
 Then reps with no target for the period are listed separately with actuals only, so they are not read as 0%
+```
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> The sort decides who the manager looks at first. Percentage points behind pace ranks each rep against their own expectation; money behind pace shows the biggest holes in the team's number. Settled in `../uxdocs/05-manager.md` M13.1–M13.2.
+
+*Scenario TP005-A*
+```
+Given we are 75% through Q4, Colm is at 66% of €40,000 and Aoife is at 50% of €12,000
+When I open the overview
+Then Aoife (25 pts behind pace) is listed before Colm (9 pts behind pace)
+```
+
+*Scenario TP005-B*
+```
+Given the overview is open
+When I choose "Sort by € behind pace"
+Then Colm (€3,600 behind) is listed before Aoife (€3,000 behind)
+And every rep remains listed
+```
+
+*Scenario TP005-C*
+```
+Given Colm has a value target 8 pts ahead of pace and a units target 15 pts behind
+When the overview is ordered
+Then Colm is ranked by value (8 pts ahead)
+And his row still shows the units figure and its pace gap
+```
+
+*Scenario TP005-D*
+```
+Given a rep has a units-only target
+When the overview is ordered by percentage points
+Then that rep is ranked by units
 ```
 
 ---
@@ -459,6 +576,7 @@ Then the baseline falls back to the same period in previous years, and with no h
 5. **Capturing Rep (applied):** recorded on every Order in area 1 and Master & Branch Ordering.
 5b. **Promotion reporting:** what each offer cost and sold is not designed (Promotions item 2).
 6. **Elaboration:** US-12 lists territory as a target subject; now dropped. US-09's open question about seeing others' targets is resolved by one owner per target.
+7. **Inherited visits (23 Sep 2026):** visits inherited through a reassignment are excluded from the new rep's performance until they close (Coverage Management). Sales attribution is unchanged.
 
 ---
 

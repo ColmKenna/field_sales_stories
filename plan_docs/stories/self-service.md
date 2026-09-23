@@ -1,6 +1,6 @@
 # Self-service: UX & User Stories
 
-**Generated:** 18 September 2026
+**Generated:** 18 September 2026 (amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Self-service, within Ordering
 **Primary users:** Customer User (a Contact with a login); Sales Manager (approving accounts)
 **Scope:** The website and app where a customer orders for their own Locations without waiting for a visit, and the rep/manager screens that create their accounts. Seven screens: Create Account (rep/manager), Approve Account (manager), Invitation & First Sign-in, Catalogue & Search, Order Entry (single Location), Multi-Branch Grid, Order History & Detail.
@@ -131,7 +131,7 @@ flowchart TD
 
 - **Chose:** a rep or manager creates the Customer User; a rep-created account needs manager approval; the customer receives an invitation to set a password.
 - **Over:** the elaboration's self-signup with verification.
-- **Because:** giving a customer direct ordering access is a commercial decision, not a form submission; it removes unverified accounts, email verification and the whole signup surface; it matches the capture-then-approve pattern used for orders, range proposals and price overrides.
+- **Because:** giving a customer direct ordering access is a commercial decision, not a form submission; it removes unverified accounts, email verification and the whole signup surface; it matches the capture-then-approve pattern used for range proposals. *(Amended 23 Sep 2026: orders and price overrides are no longer approved by a person.)*
 - **Trade-off accepted:** a customer cannot get access without someone acting; there is a delay between a rep offering it and the customer having it.
 
 ### Scope follows the Contact, and a master carries its branches
@@ -154,6 +154,7 @@ flowchart TD
 - **Over:** cancel-only; read-only after submission; editing anyone's order for the Location.
 - **Because:** a buyer should not alter a colleague's order or one the rep took at a visit; being online means state is always current, so the offline caution that shaped the rep's rules does not apply; a customer who typed 12 instead of 2 should not need a phone call.
 - **Trade-off accepted:** a small race with head office, handled by telling the customer plainly rather than by restricting them.
+- **Affected 23 Sep 2026:** orders are now accepted automatically on receipt (Head Office Order Processing US-008), so the Pending window this decision relies on may be very short or none. See Requires Clarification 7.
 
 ### Nothing is hedged; the customer is online
 
@@ -576,6 +577,7 @@ Then a new Pending order is created; the original is unchanged
 4. **Head Office Order Processing (applied):** self-service orders have no Capturing Rep, and account approval is a queue item (US-006b).
 5. **App vs website:** assumed identical and online-only; confirm no offline mode is expected.
 6. **Customer-side contact changes:** whether a Customer User can update their own contact details, or only head office.
+7. **Editing while Pending (23 Sep 2026):** with orders accepted automatically on receipt, how long does a self-service order stay Pending and editable? For example, until a processing cut-off, or not at all.
 
 ---
 

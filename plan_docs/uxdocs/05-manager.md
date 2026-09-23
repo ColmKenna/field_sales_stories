@@ -1,4 +1,6 @@
-# 05 — Manager website (M-01 … M-15)
+# 05 — Manager website (M-01 … M-16)
+
+> M-01–M-15 follow the brief. **M-16 Add a one-off Visit Due** isn't in the brief and was added in session (Visit Planning US-015).
 
 **Device assumptions:** laptop, online, used by a Sales Manager planning and reviewing a team.
 **Consequence:** exception-first overview screens may be dense, but every summary must drill into the visits, Locations or assignments behind it.
@@ -210,11 +212,322 @@ The manager's change remains applied. This is an exception notice, not a separat
 
 ---
 
-## M-06 · Add a one-off Visit Due
+## M-06 · Territory assignment
+
+**Job:** set up or hand over a rep's book of territory, most often for a new rep, and see before saving which Locations change owner.
+
+```
++------------------------------------------------------------------------------------------+
+| < Coverage              Colm                                     Reports to: M. Byrne    |
++------------------------------------------------------------------------------------------+
+| 117 Locations as Primary  ·  Specialist: none                      [ Add assignment ]    |
+|                                                        [ Take over from another rep... ] |
++------------------------------------------------------------------------------------------+
+| ASSIGNMENTS          Filter [ Town or area...        ]                   [ Transfer... ] |
+|                                                                                          |
+| v Wicklow (County)                 140 Locations · 23 carved out (Rathdrum -> Aoife)     |
+|     Bray                            31                                                   |
+|     Greystones                      18                                                   |
+|     Arklow                          22                                                   |
+|     Rathdrum                        23 · carved out -> Aoife                             |
+|     ...                                                                                  |
+|   Byrne's Chemist (Location)         1 · assigned directly                               |
++------------------------------------------------------------------------------------------+
+| History >                                                                                |
++------------------------------------------------------------------------------------------+
+```
+
+*Drafting call:* placing the summary, actions and History link as shown. The regions follow Coverage US-008.
+
+> **DECISION M6.1 — the page is anchored on the rep. Settled.**
+> The usual triggers are about a person: most often a new rep, sometimes a rep leaving and being replaced. The page is a rep's book (their Territory Assignments by level, carved-out counts, effective Location count), and *Add assignment* starts from there. The rarer geography-led trigger, the company moving into a new territory, reaches the same result through Unassigned Locations (M-15) and Location coverage (M-07).
+
+> **DECISION M6.2 — transfer assignments in bulk: filter, select all, exclude, choose a rep. Settled.**
+> A rep's page lists their Territory Assignments. The manager can filter the list, choose `Transfer...`, and get a review with every assignment in the filtered set selected, from which they can remove individual rows before choosing the receiving rep. The impact preview then shows the assignments moving, the Locations changing owner and the open visits going to Handover (M-08). Transfer moves the **assignment itself** (Wicklow County goes from Colm to Niamh), so Locations keep resolving through the territory and future Locations in it follow the new rep. Splitting a leaving rep's patch across several reps is done by repeating the transfer with a different filter or selection. This follows the select-all-with-exclusions pattern of M2.3 and M4.4.
+> Bulk reassign (M-09) stays for temporary moves: it creates direct Location assignments saved as a reversible batch.
+> **Rejected:** only transferring Locations one by one, or through M-09's direct assignments, for a permanent replacement.
+
+> **DECISION M6.3 — a County row expands to its Towns, which can be filtered and selected. Settled.**
+> The assignment list is hierarchical: a County assignment shows its Towns as children, with their Location counts, and carved-out Towns are marked with their owner. The filter and the transfer selection work at Town level, so a County can be divided without first restructuring it.
+> ```
+> [x] Wicklow (County)               117 Locations
+>     [x] Bray                        31
+>     [x] Greystones                  18
+>     [ ] Arklow                      22
+>     [ ] Aughrim                      9
+>         Rathdrum                    23 · carved out → Aoife
+>     ...
+> ```
+
+> **DECISION M6.4 — partial selections become carve-outs; a County moves with its last Towns, and the preview says so. Settled.**
+> Transferring some of a County's Towns creates a Town assignment for each one, owned by the receiving rep, and the County assignment stays put. Transferring the whole County moves the County assignment. When a transfer takes every remaining Town that a rep holds through a County, the County assignment moves as well, so no rep is left holding an empty County that would catch new Towns. The impact preview states it: `Wicklow (County) moves to Ciara with its last Towns.` Ciara then holds *Wicklow (County) · 3 towns carved out → Niamh*, and a new Town in Wicklow resolves to her. The same rule applies one level up, from Counties to their Region *(confirm)*.
+> **Rejected:** a warning alone, which leaves an empty County with a rep who has left.
+
+> **DECISION M6.5 — the receiving rep's page can pull assignments: in place, or a whole book. Settled.**
+> On the receiving rep's page, `Add assignment` lists areas other reps hold, with their owner (`Rathdrum — Aoife's`). Choosing one asks `Transfer Rathdrum from Aoife to Niamh?` and continues to the same impact preview and handover as a push transfer. The page also offers `Take over from another rep...`, which opens the M6.2 transfer review on the chosen rep's list with the receiving rep already set. A push from the giving rep's page and a pull from the receiving rep's page produce the same transfer.
+> **Superseded:** the dead-end error in Coverage US-001 scenario 3 (`remove that assignment first`), for a manager adding an area at the same level as another rep's assignment.
+> **Rejected:** blocking and linking to the other rep's page.
+
+**Open:**
+- Does M6.4's "moves with its last Towns" rule apply one level up, a Region moving with its last Counties? *(Assumed yes.)*
+
+---
+
+## M-07 · Location coverage
+
+**Job:** answer "who covers this shop, and why?", and act on that Location without going elsewhere.
+
+```
++------------------------------------------------------------------------------------------+
+| < Coverage              Murphy's Pharmacy · Rathdrum                                     |
++------------------------------------------------------------------------------------------+
+| Primary      Aoife (via Rathdrum)                                                        |
+|              [ Change just this shop to... ]   [ Transfer Rathdrum (Town, 23) to... ]    |
+| Specialists  Brian (Brand: SunCo)                                                        |
++------------------------------------------------------------------------------------------+
+| [ Add one-off visit ]                                                     History >      |
++------------------------------------------------------------------------------------------+
+```
+
+Unassigned (Walsh's Shop, Laragh):
+
+```
++------------------------------------------------------------------------------------------+
+| Primary      Unassigned                                                                  |
+|              [ Assign Laragh (Town) to... ]   4 other Locations in Laragh are unassigned |
+|              [ Assign just this shop to... ]                                             |
++------------------------------------------------------------------------------------------+
+```
+
+*Drafting call:* History opens as its own view, newest first (US-002 scenario 4), rather than inline on the page.
+
+> **DECISION M7.1 — M-07 is the manager's Location page, with coverage first. Settled.**
+> Coverage (Effective Owner with its Source, Specialists) is the headline, followed by the Location's manager actions: assign or change coverage (M-06), add a one-off Visit Due (M-16), and Assignment History. One page per Location means the manager never has to remember which screen holds which fact about a shop. The Customer Directory keeps ownership of the Location's master data (brief §10, area 8).
+
+> **DECISION M7.2 — an unassigned Location leads with the Town assignment and keeps the single-Location one. Settled.**
+> `Primary: Unassigned` offers `Assign Laragh (Town) to...` first, with the cause visible — `4 other Locations in Laragh are also unassigned` — and `Assign just this shop to...` beside it. Leading with the Town fixes the reason the Location is uncovered and avoids accumulating direct assignments that would override future territory changes; the single-Location route stays for genuine one-offs. This matches US-007 scenarios 2 and 3, which offer both from the Unassigned list.
+> **Rejected:** offering only the direct Location assignment.
+
+> **DECISION M7.3 — no visits section; the page stays about coverage. Settled.**
+> M-07 shows coverage (Effective Owner with Source, Specialists), the Location's manager actions and Assignment History. Open Visit Dues, the last Call and Overdue/Missed investigation stay in Visit Planning (M-01). M7.1 adds actions for a Location, not a second place to monitor it.
+> **Rejected:** a compact Visits section; a single `Last Call` line.
+
+> **DECISION M7.4 — changing an already-covered Location leads with "just this shop". Settled.**
+> From Murphy's Pharmacy (`Aoife (via Rathdrum)`), `Change just this shop to...` comes first and creates a direct Location assignment. `Transfer Rathdrum (Town, 23 Locations) to...` sits beside it and continues to the M6.5 pull transfer. Unlike M7.2, a working assignment already exists, so a single exception is the likely intent.
+
+**Input for M-10 (from Colm, 22 Sep 2026):** the more common change from a shop is not its Primary Rep but a **secondary (specialist) assignment**: every Location matching a profile (for example "customer campaign X") **within an area** should get a given rep as specialist. Coverage US-006 scopes are Customer, Location Profile or Brand with no geographic limit, so this needs a scope combined with an area. To be settled on M-10. A Location can hold **many** profiles (BR-NEW-005), so a profile scope matches any Location holding that profile.
+
+**Open:**
+- *(none for M-07)*
+
+---
+
+## M-08 · Impact preview & handover
+
+**Job:** before a change of owner is saved, show which Locations move and settle what happens to the previous rep's open visits, without stranding any.
+
+> **DECISION M8.1 — the transfer asks once whether the previous rep is leaving; if so, open visits go to the new owner as visits needed. Settled.**
+> Starting a transfer asks `Is Colm leaving?`. **If yes**, Leave isn't offered and there's no per-visit handover: every open Visit Due at a Location that changes owner moves to that Location's new Primary Rep with its Scheduled Day cleared, so it appears as a visit needed on their planner. The new rep's schedule is built fresh around them, so the leaving rep's scheduled days aren't worth preserving. The impact preview states it: `9 open visits move to Niamh as visits needed (2 Overdue).` When a leaving rep's patch is split, each visit follows its own Location's new owner. **If no** (a carve-out while the rep stays), the source handover applies unchanged: Move or Leave per visit, Apply to all, and undecided visits become Handover Pending.
+> **Rejected:** always offering Leave; inferring "leaving" from the rep's account status.
+
+Impact preview when the previous rep is leaving:
+
+```
++------------------------------------------------------------------------------------------+
+| Transfer to Niamh                                                    Colm is leaving     |
++------------------------------------------------------------------------------------------+
+| Wicklow (County) and Byrne's Chemist move to Niamh                                       |
+| 117 Locations change owner                                                         v     |
+|                                                                                          |
+| 9 open visits move to Niamh as visits needed                                       v     |
+|    2 Overdue · inherited from Colm, not counted in Niamh's performance                   |
+|    3 had a Scheduled Day, now cleared                                                    |
++------------------------------------------------------------------------------------------+
+|                                                      [ Back ]   [ Transfer to Niamh ]    |
++------------------------------------------------------------------------------------------+
+```
+
+> **DECISION M8.2 — inherited visits keep their windows, are marked as inherited, and don't count against the new rep. Settled.**
+> Each Visit Due that was open at the handover and moves to the new rep keeps its due window. It shows `inherited from Colm` wherever it appears (planner, M-01, visit detail). It still counts in the new rep's operational figures on M-01 so it gets done, but it is excluded from their performance (R-03, M-13). That includes a Missed record if they don't reach it. The marker belongs to the visit and ends when the visit closes, completed or Missed. It is not a time-based grace period: new Visit Dues generated after the handover count normally. It applies to visits moved by M8.1's leaving path and by a manager's Move in the source handover *(confirm for Move)*.
+> **Rejected:** counting inherited visits as normal; restarting windows from the handover date; a grace period covering everything at the inherited Locations.
+
+**Open:**
+- Does M8.2's inherited marker also apply to visits moved by `Move` in a carve-out handover? *(Assumed yes.)*
+
+---
+
+## M-09 · Bulk reassign & batch reversal
+
+**Job:** move a set of Locations to another rep for a long period, then send them back later without relying on memory.
+
+> **DECISION M9.1 — short leave never uses bulk reassign; ownership stays with the absent rep. Settled.**
+> For short leave, the manager talks to the covering reps and decides per visit whether the Location needs a visit during the leave or can wait. Visits that are needed are handled by another rep for this visit only (Cover in M-02). Visits that can wait are extended, and Colm's schedule restarts when he returns. That's the M-02 absence flow (Extend / Keep / Cover), with no change of ownership, no batch and no reversal. Bulk reassign is only for absences long enough to justify moving ownership.
+
+> **DECISION M9.2 — M-09 is kept for long absence, as a named, reversible batch; open visits go to the covering rep as visits needed. Settled.**
+> For an absence such as six months of maternity leave, the manager bulk-reassigns the Locations as a named batch (`Colm → Aoife, Maternity cover, 5 Oct 2026, 23 Locations`), creating direct assignments as Coverage US-004 specifies. The absent rep is unavailable, so there's no Leave and no per-visit handover: open visits move to the covering rep with Scheduled Day cleared and are marked `inherited from Colm`, as in M8.1 and M8.2. The batch is the record that makes the later reversal possible without relying on memory.
+> **Rejected:** dropping M-09 and handling long absence as two ordinary M-06 transfers.
+
+> **DECISION M9.3 — reversing a batch uses the per-visit handover; the manager decides. Settled.**
+> On reversal both reps are working, and the returning rep may come back part-time, so the covering rep's open visits at the returning Locations go through the source handover: Move or Leave per visit, Apply to all, and undecided visits become Handover Pending. Leave lets Aoife finish visits she already has planned. Visits that Move are marked `inherited from Aoife` (M8.2). A part-time return can also use the source's partial reversal, unticking Locations to leave them with the covering rep.
+> **Rejected:** mirroring the outbound move, where every open visit returns as a visit needed.
+
+> **DECISION M9.4 — reversal restores the territory-derived owner and flags Locations where that isn't the returning rep. Settled.**
+> Reversing removes the batch's direct assignments, so each Location resolves through its territory again (`Colm (via Wicklow)`). If a territory changed during the batch and a Location would now resolve to someone else, the preview says so (`3 Locations would resolve to Niamh via Wicklow`), and each of those rows offers `Assign to Colm directly` or `Leave with Niamh`. This resolves Coverage clarification 2 and US-005's open question.
+> **Rejected:** always creating direct assignments to the returning rep; always restoring without flagging.
+
+**Open:**
+- *(none for M-09)*
+
+---
+
+## M-10 · Specialist assignments
+
+**Job:** attach a rep to the Locations that match a rule, without making them the owner, so campaign visits and scoped products reach the right person.
+
+> **DECISION M10.1 — scopes combine conditions with AND by default; an advanced mode allows OR and grouping. Settled.**
+> The default builder takes any number of conditions (Customer, Location Profile, Brand, Area), all of which must hold: `Brian · Profile: Customer campaign X · in Wicklow`. It reads as one sentence and covers the common case from M-07, a profile within an area. `Advanced` opens a full AND/OR builder for rules the default can't express (progressive disclosure). Scopes of either kind stay live: a Location that gains the profile or opens in the area joins automatically. Before saving, the scope shows as a sentence with the number of Locations it currently matches.
+> **Rejected:** a single condition with no area (the source model); an AND/OR builder as the only mode.
+
+*Follows from the source:* a specialist sees extra products on their Order Pad only through a Brand condition in their scope. A scope with no Brand condition (for example Profile + Area) routes visits but adds no products.
+
+> **DECISION M10.2 — campaign routing prefers the specialist matching the campaign's link; otherwise the manager chooses. Settled.**
+> In campaign Review (M-03, M3.3), each row starts from the specialists at that Location whose scope matches the campaign's link (a SunCo campaign → the SunCo specialist). If the campaign has no link, every specialist at the Location is a candidate.
+> - **None** → the Location's Primary Rep, as the source specifies.
+> - **One** → preselected, with other specialists at the Location noted (`also matches Brian`).
+> - **More than one** → no preselection. The row shows `2 specialists match — choose` and Review can't advance until the manager chooses. Bulk selection can resolve many rows at once.
+>
+> **Rejected:** the most specific scope winning; falling back to the Primary Rep when the link doesn't decide.
+
+**Open:**
+- *(none for M-10)*
+
+---
+
+## M-11 · Multi-branch order grid (laptop)
+
+**Job:** build and adjust a whole chain's order at a desk, seeing every branch at once. Used mainly by reps at a desk (Master & Branch US-006); shared with the rep website and echoed for customers (C-06).
+
+> **DECISION M11.1 — rows open with the chain's recently ordered products; search adds more; a toggle shows the full Agreed Range. Settled.**
+> The grid opens with the products on any branch's last 3 Accepted Orders (the rule the Suggested List already uses) as rows with **empty** cells. Quantities are never pre-filled (T7.7). Search adds any other product. `Show full Agreed Range` lists the rest of the chain's agreed products. This keeps the grid near the size of a typical session instead of the whole range.
+> **Rejected:** opening on the full Agreed Range; opening empty.
+
+> **DEFERRED M11.2 — grid layout to be revisited with usage feedback.** Version 1 is the brief's flat products × branches grid. Two alternatives Colm raised are to be evaluated once the screen is in use: product rows with collapsible branch sub-rows, and branch groups with collapsible product sub-rows. The layout can be changed later without touching the split outcome, which is identical whichever layout is used.
+
+> **DECISION M11.3 — changing `All` fills only the cells not changed by hand. Settled.**
+> Typing in a row's `All` cell sets every branch cell that hasn't been edited by hand. Hand-edited cells keep their values and are marked, and the row summarises `36 × 8 branches, 2 adjusted`, as the tablet's running summary does. A `Clear adjustments` action on the row returns every cell to the `All` value when the buyer really does mean every branch.
+> **Rejected:** `All` overwriting hand edits; a confirmation dialog each time.
+
+*Follows from the source:* branch columns use the same selection as the tablet: every branch is selected by default, Closed branches are excluded, and Temporarily Closed branches are flagged but stay selected (US-005). The grid ends in the same Split Review (US-007).
+
+**Open:**
+- *(none for M-11 beyond the deferred M11.2)*
+
+---
+
+## M-12 · Set targets (by period / by range)
+
+**Job:** set each rep's expectation for a period in one sitting, with figures that fit each patch.
+
+> **DECISION M12.1 — each rep's figure opens pre-filled with the previous period's target, editable. Settled.**
+> Choosing a period fills each rep's row with their target for the same subject (rep, or rep and Range/Product) in the previous period. A rep with no target in the previous period stays blank, because blank still means no target. The running total starts from the carried figures. This is a deliberate exception to *propose, don't impose*: targets usually change incrementally, and retyping every figure costs more than the anchoring risk.
+> **Rejected:** empty fields; empty fields with the previous period shown alongside.
+
+> **DECISION M12.2 — saving confirms carried figures; the confirmation says how many were carried unchanged. Settled.**
+> Save makes every figure on the screen a target for the new period, whether edited or carried. The dated history records them as set by this manager on this date (US-001 scenario 5). The save confirmation then states `6 of 8 targets were carried forward from Q4 unchanged. You can update them later.` and names those reps, so an interrupted review is visible without blocking the save.
+> **Rejected:** marking carried rows until touched; requiring explicit confirmation of carried rows.
+
+**Open:**
+- *(none for M-12)*
+
+---
+
+## M-13 · Manager performance overview
+
+**Job:** see who's behind, early enough to act before the period ends.
+
+> **DECISION M13.1 — "furthest behind" defaults to percentage points behind pace; the manager can re-sort by money behind pace. Settled.**
+> Pace is straight-line, as in R-03. By default reps are ordered by how far their percentage of target trails the expected percentage for this point in the period (`Aoife 50% vs 75% pace · 25 pts behind`), which ranks people against their own expectation whatever its size. `Sort by € behind pace` puts the biggest holes in the team's number first (`Colm €3,600 behind`). The choice is a sort, not a filter, and every rep stays listed. Reps with no target stay in their separate list (US-005 scenario 5).
+> **Rejected:** a single fixed order.
+
+> **DECISION M13.2 — when a rep has both value and units targets, value decides the order. Settled.**
+> Colm (value 8 pts ahead, units 15 pts behind) ranks as 8 pts ahead. The units figure and its pace gap are shown on his row but don't affect the order. A rep with a units-only target ranks by units, since that's the only measure they have.
+> **Rejected:** ranking by the worse of the two; averaging them.
+
+*Drafting call:* under `Sort by € behind pace`, reps with units-only targets are listed after those with value targets, still in order of units points behind.
+
+*Follows from the source:* the By Range view, the separate list of reps without targets, the team-level Unfulfilled note, and `Attributed` / `Captured` labelled as different measures (US-005, US-006).
+
+**Open:**
+- *(none for M-13)*
+
+---
+
+## M-14 · Rep permissions
+
+**Job:** grant or remove a rep's access to Restriction Groups, with a record, whether setting up one rep or a whole trained cohort.
+
+> **DECISION M14.1 — two views over one permission record: per rep and per group. Settled.**
+> **Per rep** (onboarding): the rep's page lists every Restriction Group with Granted / Not granted and the last change (US-009 scenario 3). **Per group** (training cohorts): the group's page lists reps with their state. The manager ticks several and enters **one** reason (`Completed training 15 Sep 2026`) that applies to every selected rep, and each grant is recorded separately with date, actor and reason. Both views read and write the same records, and a change made in one shows immediately in the other.
+> **Rejected:** a per-rep view only; a per-group view only.
+
+*Follows from the source:* reps the manager doesn't manage are shown but can't be changed, unless the manager is a Head Office User (US-009 scenario 4). A change takes effect at the rep's next Sync, and lines already captured still send (valid when captured).
+
+*Drafting call:* removing a permission shows the consequence before saving: `Colm will lose Pharmacy-only medicines at his next Sync. 2 lines already on In Progress orders will still send.`
+
+**Open:**
+- *(none for M-14)*
+
+---
+
+## M-15 · Unassigned locations
+
+**Job:** make sure no shop is silently uncovered.
+
+An unassigned Location has no Primary Rep, so it generates no Recurring Visit Dues. It never goes Overdue and never appears in M-01's exception columns. Without a push it is invisible.
+
+> **DECISION M15.1 — M-01 shows a standing unassigned count whenever it is above zero. Settled.**
+> The Visit Planning overview, the manager's landing page, shows `6 Locations unassigned >` in its header whenever any exist, linking to M-15. At zero the line doesn't appear. M-15 itself lists them grouped by Town (US-007), and each row leads with `Assign <Town> to...` and the Town's unassigned count, as on M-07 (M7.2).
+> **Rejected:** pull only (M-15 and By region); an additional "new since" signal.
+
+*Assumed (confirm):* unassigned Locations belong to no rep, so the count is company-wide and every Sales Manager and Head Office User sees it.
+
+**Open:**
+- Is the unassigned count company-wide for every manager, or limited to some notion of a manager's area? *(Assumed company-wide.)*
+
+---
+
+## M-16 · Add a one-off Visit Due
 
 **Job:** ask for one additional visit at a Location, with a clear reason and due window, without changing its recurring schedule.
 
-The form must capture the Location, due window, structured Due Reason Type, optional explanatory text and optional Suggested Day. The effective rep follows the Location assignment rules; saving creates one Visit Due which is completed by the next recorded Call at that Location, as defined by US-015.
+The form must capture the Location, due window, structured Due Reason Type, optional explanatory text and optional Suggested Day. Saving creates one Visit Due which is completed by the next recorded Call at that Location, as defined by US-015.
+
+> **DECISION M16.1 — the flow is anchored on the Location. Settled.**
+> A one-off visit is triggered by something about a Location (a complaint, a customer request, a problem account), so the manager has the Location in mind before any rep or date. Starting from the Location record carries it into the form. The rep is not the starting point: the nature of the visit decides who should go, and the manager may contact reps to see who is most available.
+
+> **DECISION M16.2 — the Primary Rep is the default; choosing another rep affects this visit only. Settled.**
+> The form opens with the Location's Primary Rep. The manager may choose another rep, usually one already assigned to the Location in a non-primary role, for one of two reasons: the Due Reason calls for particular knowledge (a specialist range, for example), or another rep will be nearer the Location in the next few days. Sending another rep is a convenience for this visit. It never changes the Location's assignment or Assignment History, which is consistent with M3.3 for campaign visits. The form states the consequence in text: `Aoife will make this visit. Colm remains Byrne's Primary Rep.`
+
+> **DECISION M16.3 — the rep picker is a plain list; availability is confirmed with the rep directly. Settled.**
+> Reps with any assignment at the Location are listed first, then the rest of the team. The picker shows no role or proximity context. A one-off visit is usually short notice, so the manager contacts the chosen rep to confirm regardless, and that conversation is the availability check. Since the picker doesn't depend on the due window, the form has no required field order.
+> **Rejected:** showing assignment role beside each rep; showing each rep's nearest planned day in the due window.
+
+> **DECISION M16.4 — no tablet delivery status for one-off visits. Settled.**
+> Saving the visit is the manager's final step in the system. The phone call to the rep is the handover, and the rep syncs after that call to receive the reason and Suggested Day. Even without a sync, any recorded Call at the Location completes the visit (US-015). The saved visit and the confirmation show no `waiting for sync` or `on tablet` state.
+> **Rejected:** showing whether the visit has reached the rep's tablet.
+
+> **DECISION M16.5 — a nearby scheduled visit is shown as information only; the manager decides afterwards. Settled (revised).**
+> When another visit is scheduled at the Location within a week of the one-off's due window, the form shows it with its rep and Scheduled Day: `Colm is scheduled at Byrne's on Thu 24 Sep.` The notice never blocks saving and asks for no choice on the form. The manager decides after saving what happens to the other visit (keep it, move it to another week so the customer isn't visited too often, or treat it as covered by the one-off). They have to contact the other rep anyway to tell them another visit is happening, and that conversation is where the decision gets made.
+> **Rejected:** offering to attach the reason to the existing visit instead; showing nothing; any choice about the other visit on the M-16 form.
+
+> ~~**DECISION M16.6 — when there is an overlap, the manager chooses whether the one-off's Call also completes the recurring visit.**~~ **Superseded by revised M16.5.** Colm rejected putting the choice on the form: the other visit is handled afterwards through normal planning, after speaking to its rep.
+
+> **DECISION M16.7 — a one-off's Call completes only the one-off, whoever holds the recurring visit. Settled.**
+> Aoife's Call at Byrne's completes her one-off Visit Due and leaves Colm's open recurring visit untouched. That visit stays open until the manager, Colm, or its own Call deals with it, so every option from M16.5 is still available afterwards: keep it, move it to another week, or cancel it as covered. The manager and reps agree between themselves, and the manager then updates the plan. This is an exception to "One Call clears all".
+> The same rule applies when the one-off's rep also holds the recurring visit. The same rep may still need two visits, for example the complaint with the owner and a routine visit with a different contact a few days later. When one visit is enough, the manager doesn't save the one-off: they move the existing visit forward in the planner and give the rep the reason on the phone. M-16 offers no in-form "move instead" action.
+> **Rejected:** a same-rep exception where one Call completes both; M-16 moving the existing visit itself.
 
 **Open:**
-- From which manager contexts should this flow be available?
+- ~~From which manager contexts should this flow be available?~~ **Resolved — Location first (M16.1).**
+- ~~**Does the one-off's Call complete the other rep's open recurring visit?**~~ **Resolved — no (M16.7).**
+- ~~Rep choice and override scope.~~ **Resolved — Primary Rep default, visit-only override (M16.2).** Amends US-015's "effective rep follows the Location assignment rules".

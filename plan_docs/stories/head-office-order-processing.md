@@ -1,6 +1,8 @@
 # Head Office Order Processing: UX & User Stories
 
-**Generated:** 18 September 2026 (amended same day for Pricing, Promotions, Prospecting and Self-service)
+**Generated:** 18 September 2026 (amended same day for Pricing, Promotions, Prospecting and Self-service; **amended 23 September 2026 from the UX design sessions: no order needs a person** — see `../uxdocs/04-user-stories-amendments.md`, BR-NEW-001 and US-NEW-005)
+
+> **Read first (23 Sep 2026):** orders are no longer accepted by a person. Every flag has an automatic disposition (below), the Worklist holds only range proposals, duplicate matches and account requests, and Order Detail is a read-only record. Text below that describes accepting, bulk-accepting or deciding orders is superseded where marked.
 **Bounded context:** Ordering — head office side
 **Primary user:** Head Office User
 **Scope:** The website screens where head office gets the day's orders to the warehouse, handles the few that need a person, decides Range Proposals, and records what the warehouse has despatched. Six screens: Worklist, Order Detail, Despatch Recording, Range Proposal Decision, Duplicate Review, Held Orders.
@@ -13,20 +15,21 @@
 
 - **Domain area:** Ordering, from the moment an Order arrives at head office until every line has been despatched. It also receives Range Proposals (Master & Branch Ordering). "Review" is the exception; "processing" is the norm, so the area is named for what it mostly does.
 - **Ubiquitous language:**
-  - **Worklist** — the queue of items awaiting head office. Three item types, each labelled: **Pending Orders** (routine or flagged), **Range Proposals** and **Duplicate Matches**. Proposals and Duplicate Matches are sorted above orders.
+  - **Worklist** — the queue of items awaiting head office. *Amended 23 Sep 2026:* it holds only **Range Proposals**, **Duplicate Matches** and **Customer User account requests**, each labelled with its type. Orders no longer appear on it. When empty it reads "Nothing needs a decision."
+  - **Disposition** — (added 23 Sep 2026) what happens automatically to an order carrying a flag. **Route** (Stock Shortfall, Oversold): accepted; the short quantity becomes Outstanding and goes to Stock Allocation. **Auto-resolve** (Unavailable Line): accepted; the line is removed with its reason recorded and the rep is prompted to tell the customer. **Annotate** (Large, Watched Product, Rep-flagged, New Location, Prospect Conversion): recorded on the order; no human step. **Divert**: none — Price Override and Free of Charge no longer divert, because their limits are enforced at capture (Pricing).
   - **Duplicate Match** — a new Prospect that matched an existing Location at Sync (Prospecting & Leads). Head office decides whether it is another rep's live account, a lapsed customer to hand over, an existing prospect to merge, or genuinely new, and the rep is told. The existing Location's last order date and previous ordering frequency are shown so a lapsed account can be judged against its own pattern.
-  - **Routine Order** — a Pending Order with no flags. Processed in bulk.
-  - **Flagged Order** — a Pending Order with one or more **Flags**. Opened individually.
+  - ~~**Routine Order** — a Pending Order with no flags. Processed in bulk.~~ *Superseded 23 Sep 2026: every order is processed automatically.*
+  - ~~**Flagged Order** — a Pending Order with one or more **Flags**. Opened individually.~~ *Superseded 23 Sep 2026: flags drive a Disposition, not a person.*
   - **Flag** — a reason a person should look. One of: **Large** (size relative to a **Baseline**), **Watched Product** (a product head office has marked for review), **Rep-flagged** (set by the rep, by informal agreement, sparingly), **Price Override** (a rep-entered price below the resolved one), **Free of Charge** (a rep-added zero-priced line), **New Location** (until a small number of orders have been Accepted), **Unavailable Line** (a product that became Unavailable after capture), **Oversold** (a Run-out line where Remaining went negative), **Prospect Conversion** (the Location's first order, which would convert it to a Customer), **Stock Shortfall** (a line the warehouse feed shows cannot be filled now; only when a feed exists).
   - **Baseline** — for the Large flag: the Location's or Range's Target for the period where one exists (comparison detail in area 6); otherwise the same period in previous years; otherwise no Large flag.
-  - **Accept at which price** — for an Order carrying a Price Override or a Free of Charge line, acceptance also decides the line: accept at the rep's price, or at the resolved price; accept the Order with the FOC line, or without it. Each such line is decided individually; the approved price is what is captured and what counts in actuals. An approved FOC line still consumes stock and reduces a Run-out Remaining.
-  - **Accept** — head office approves the Order. It is locked for the rep and customer, and its **Release** goes to the warehouse. A Prospect's Location becomes a Customer on Accept.
+  - ~~**Accept at which price** — for an Order carrying a Price Override or a Free of Charge line, acceptance also decides the line: accept at the rep's price, or at the resolved price; accept the Order with the FOC line, or without it. Each such line is decided individually; the approved price is what is captured and what counts in actuals. An approved FOC line still consumes stock and reduces a Run-out Remaining.~~ *Superseded 23 Sep 2026: rep prices and FOC lines are applied within allowances at capture and recorded on the order as facts.*
+  - **Accept** — the Order is approved, locked for the rep and customer, and its **Release** goes to the warehouse. A Prospect's Location becomes a Customer on Accept. *Amended 23 Sep 2026:* acceptance is automatic on receipt, applying each flag's Disposition.
   - **Release** — the quantities sent to the warehouse for an Accepted Order. Full by default; **Partial Release** sends what is available and leaves the rest **Outstanding** on the line. An Order is never split.
   - **Outstanding** — per line, quantity Accepted but not yet **Sent**.
   - **Despatch** — head office recording, from the warehouse's report, what was actually sent against an Order's lines and when. May be recorded several times for one Order.
   - **Order states** — Pending → **Accepted** (all lines Sent) / **Accepted — partly sent** (some Outstanding) / **Held** / **Rejected** (with reason) / Cancelled (by the rep or customer while Pending). A Held Order returns to Pending when released.
-  - **Hold** — parking an Order, usually for a Stock Shortfall, for the Stock Allocation area to work with. Held Orders are not editable by the rep.
-  - **Reject** — with a reason, visible to the rep or customer. Whole Order only; there is no line-level reject (use Partial Release and Outstanding instead).
+  - **Hold** — parking an Order, usually for a Stock Shortfall, for the Stock Allocation area to work with. Held Orders are not editable by the rep. *Open 23 Sep 2026:* whether Hold survives with no flag driving it (Requires Clarification 9).
+  - **Reject** — with a reason, visible to the rep or customer. Whole Order only; there is no line-level reject (use Partial Release and Outstanding instead). *Open 23 Sep 2026:* whether Reject survives (Requires Clarification 9).
   - **Range Proposal** — from Master & Branch Ordering; decided per product: confirm or reject each, with a reason per rejected line.
   - **Valid when captured** — an Order is judged against the rules and prices in force when the rep captured it. Flags inform; they never auto-reject.
 - **Upstream contexts:**
@@ -133,6 +136,7 @@ flowchart TD
 - **Over:** accepting or rejecting the whole Order because of one discretionary line.
 - **Because:** the rest of the order is usually fine and the customer is waiting; rejecting it wholesale to refuse a €2 discount is disproportionate.
 - **Trade-off accepted:** a rep may have promised something the customer does not get; they see the outcome and the reason at next Sync, as with any rejection.
+- **Superseded 23 Sep 2026:** guardrails over gatekeepers — discretion is limited at capture (Pricing: discount allowance, FOC allowance), so there is nothing to decide line by line.
 
 ### Process by default, review by exception
 
@@ -140,6 +144,7 @@ flowchart TD
 - **Over:** opening and deciding every order.
 - **Because:** most orders need processing, not judgement; per-order review is a bottleneck when reps sync a day's work at once.
 - **Trade-off accepted:** an unflagged problem goes through; the flag set is the mitigation and can grow.
+- **Amended 23 Sep 2026:** taken to its conclusion — no order needs a person. Every flag has a Disposition (Route, Auto-resolve, Annotate), and "Accept all routine" is gone. Keeping any flag as a human diversion was rejected, including Large. Slips are caught by the rep instead: Review marks unusually high quantities against the Location's last 3 accepted orders (area 1). Concepts: alarm fatigue; gatekeeper vs guardrail; exception routing.
 
 ### Large is relative, and targets are the preferred baseline
 
@@ -168,6 +173,7 @@ flowchart TD
 - **Over:** allocating from the order screen; blocking on shortfall.
 - **Because:** who gets short stock is a cross-order decision that cannot be made one order at a time; stock is often only temporarily short.
 - **Trade-off accepted:** two areas share the order's lifecycle; the boundary must be kept explicit in both.
+- **Amended 23 Sep 2026:** Stock Shortfall and Oversold are routed automatically: the order is accepted, what's available is released, and the short quantity goes to allocation as Outstanding. Partial Release as a manual decision is replaced by this routing.
 
 ### Despatch is entered at head office, feed-ready
 
@@ -186,7 +192,7 @@ flowchart TD
 |---|---|
 | **Story** | As a Head Office User, I want to accept all unflagged Pending Orders in one action so that the day's routine orders reach the warehouse in minutes |
 | **Priority** | Must Have |
-| **Status** | Ready |
+| **Status** | **Superseded 23 Sep 2026** — orders are accepted automatically (US-008); the Worklist no longer holds orders |
 | **Dependencies** | Warehouse outbound integration (or export) |
 
 **Acceptance criteria:**
@@ -231,7 +237,7 @@ Then they are processed identically and the Customer User sees Accepted on the w
 |---|---|
 | **Story** | As a Head Office User, I want each flagged order to state its flags in plain terms so that I know what to look at before opening it |
 | **Priority** | Must Have |
-| **Status** | Draft |
+| **Status** | **Superseded in part 23 Sep 2026** — flags are still computed and shown as plain-sentence annotations on the order record (US-008 scenario 6), but they no longer place orders in a Flagged section. Scenario 6a is superseded: Price Override and Free of Charge are not flags |
 | **Dependencies** | Targets (area 6) for the Large baseline; Product Management for Watched Product |
 
 **Acceptance criteria:**
@@ -289,7 +295,7 @@ Then it is flagged "Prospect — accepting converts to customer"
 |---|---|
 | **Story** | As a Head Office User, I want to open a flagged order, see its lines with the price and availability at capture, and accept, partially release, hold or reject it so that exceptions are handled deliberately |
 | **Priority** | Must Have |
-| **Status** | Ready |
+| **Status** | **Superseded 23 Sep 2026** — Order Detail is a read-only record (US-008 scenarios 6 and 7); Partial Release is replaced by routing short quantities to allocation; Unavailable lines are removed automatically. Whether Hold and Reject survive is open (Requires Clarification 9) |
 | **Dependencies** | US-002 |
 
 **Acceptance criteria:**
@@ -455,7 +461,7 @@ And the rep sees the outcome and its reason at next Sync
 |---|---|
 | **Story** | As a Head Office User, I want a list of Held Orders with why each is held and a link to allocation so that nothing parked is forgotten |
 | **Priority** | Should Have |
-| **Status** | Ready |
+| **Status** | **Affected 23 Sep 2026** — depends on whether Hold survives (Requires Clarification 9); if it is removed, this story's trigger needs redefining or the story retires |
 | **Dependencies** | US-003; Stock Allocation area |
 
 **Acceptance criteria:**
@@ -536,16 +542,79 @@ Then new Orders are no longer flagged; already-flagged ones keep the flag
 
 ---
 
+### US-008: Orders within policy go through without acceptance
+
+| Field | Value |
+|---|---|
+| **Story** | As a Head Office User, I want orders that are within policy to go through without my acceptance so that my worklist only holds things that genuinely need a decision |
+| **Priority** | Must Have |
+| **Status** | Ready (added 23 Sep 2026 from the UX design sessions; replaces the order-decision parts of US-001 to US-003) |
+| **Dependencies** | Pricing (discount and FOC allowances enforced at capture); Stock Allocation; area 1 "not supplied" prompt |
+
+**Acceptance criteria:**
+
+*Scenario 1: Annotate only*
+```
+Given a synced order has no flags, or only annotate flags
+When it is received
+Then it is accepted and released to the warehouse without a human step, and its flags are recorded on the order
+```
+
+*Scenario 2: Route a shortfall*
+```
+Given a synced order has a line flagged Stock Shortfall or Oversold
+When it is received
+Then the order is accepted, what's available is released, and the short quantity becomes Outstanding and appears in allocation
+```
+
+*Scenario 3: Auto-resolve an unavailable line*
+```
+Given a synced order has a line that is now Unavailable
+When it is received
+Then the order is accepted, that line is removed with its reason recorded, and the capturing rep is prompted to tell the customer
+```
+
+*Scenario 4: Worklist without orders*
+```
+When I open the Worklist
+Then it contains only range proposals, duplicate matches and customer account requests, each labelled with its type
+```
+
+*Scenario 5: Nothing to decide*
+```
+Given there are no range proposals, duplicate matches or account requests
+When I open the Worklist
+Then it reads "Nothing needs a decision." with no action offered
+```
+
+*Scenario 6: Order Detail is a record*
+```
+When I open an order's detail
+Then it shows the lines as captured, any line removed automatically with its reason, applied rep prices and free-of-charge lines with their working, the annotations as plain sentences, and "Total as captured" and "Total accepted" labelled separately
+```
+
+*Scenario 7: No decision controls*
+```
+When I view an order's detail
+Then there are no Accept, Partial Release or per-line override and free-goods decisions
+```
+
+**Edge cases addressed:** a free-of-charge line whose stock runs out is removed as unavailable like any line, and the rep is prompted.
+
+---
+
 ## 6. Requires Clarification
 
 1. **Area 6:** the Large comparison rule against a target (goal vs norm, cumulative vs per-order).
 2. **Stock Allocation area:** cross-order allocation view, the live stock feed, how Held Orders return.
 3. **Warehouse outbound:** integration or export format for Releases.
 4. **Rep-flag note:** optional free text assumed.
-5. **Area 1 amendments:** "Accepted, partly sent" status with per-line outstanding; rep flag on Ready to Send; "sent to customer" wording to avoid the Sent clash; price override and free-of-charge outcomes shown on the order.
+5. **Area 1 amendments:** "Accepted, partly sent" status with per-line outstanding; rep flag on Ready to Send; "sent to customer" wording to avoid the Sent clash; price override and free-of-charge outcomes shown on the order. *Amended 23 Sep 2026:* rep prices and FOC lines are shown as facts, not outcomes; removed lines prompt the rep ("not supplied").
 6. **Area 7 (resolved):** Customer Users see the same statuses and reasons; self-service orders have no Capturing Rep and nothing in the queue assumes one.
 7. **Product Management amendment:** Watched Product mark on the product record.
 8. **Free goods reporting:** whether head office needs a view of free goods by rep or period (Pricing item 8).
+9. **Hold and Reject (23 Sep 2026):** do they survive on Order Detail with no flag driving them? Affects US-003 and US-006.
+10. **Orders on the Worklist (23 Sep 2026):** do orders appear at all, e.g. as a read-only feed, or only via search and the customer record?
 
 ---
 

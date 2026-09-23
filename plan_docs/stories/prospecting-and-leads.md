@@ -1,6 +1,6 @@
 # Prospecting & Leads: UX & User Stories
 
-**Generated:** 18 September 2026
+**Generated:** 18 September 2026 (amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Prospecting, within Sales Operations
 **Primary users:** Field Salesperson (working and creating leads and prospects); Sales Manager (sourcing, assigning, deciding duplicates)
 **Scope:** How new business gets found and turned into customers. Six screens: My Leads, Lead Capture, Lead Detail, Create Prospect (in-shop), Complete Prospect (afterwards), Duplicate Review (head office).
@@ -475,6 +475,8 @@ Then the Location stays a Prospect and I see the reason
 Then the Location needs a Location Profile before visits are scheduled, and appears on head office's No Visit Schedule gap list
 ```
 
+*Amended 23 Sep 2026:* orders are now accepted automatically (Head Office Order Processing US-008). Prospect Conversion is an annotation, so a prospect's first order is accepted on receipt and converts the Location without a head office step. Scenario 3 depends on whether Reject survives (Head Office Requires Clarification 9).
+
 ---
 
 ## 6. Requires Clarification
@@ -484,7 +486,7 @@ Then the Location needs a Location Profile before visits are scheduled, and appe
 3. **Conversion reporting:** leads converted, prospects converted, and by whom — a Targets & Performance extension, not designed.
 4. **Prospect pricing:** which tier, if any, a prospect prices against before it is a Customer. Assumed Base Price plus general promotions.
 5. **Area 1 amendments (applied):** lead capture and My Leads on the tablet (US-021); prospect creation and completion (US-022); leads and prospects in the Sync payload.
-6. **Head Office Order Processing amendment (applied):** Duplicate Match is a queue item type alongside Orders and Range Proposals (US-005b).
+6. **Head Office Order Processing amendment (applied):** Duplicate Match is a queue item type alongside Orders and Range Proposals (US-005b). *23 Sep 2026:* orders no longer appear on the Worklist; Duplicate Matches remain.
 
 ---
 

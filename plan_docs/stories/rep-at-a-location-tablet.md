@@ -1,6 +1,6 @@
 # Rep at a Location (Tablet): UX & User Stories
 
-**Generated:** 16 September 2026 (amended 17–19 September 2026 for Visit Planning, Coverage Management, Range Lifecycle, Product Management, Master & Branch Ordering, Head Office Order Processing, Targets, Pricing, Promotions, Prospecting and Self-service)
+**Generated:** 16 September 2026 (amended 17–19 September 2026 for Visit Planning, Coverage Management, Range Lifecycle, Product Management, Master & Branch Ordering, Head Office Order Processing, Targets, Pricing, Promotions, Prospecting and Self-service; amended 23 September 2026 from the UX design sessions — see `../uxdocs/04-user-stories-amendments.md`)
 **Bounded context:** Sales Operations (field visit), with Ordering at its edge
 **Primary user:** Field Salesperson
 **Scope:** The tablet app a Field Salesperson uses to sync, find and schedule visits, record Calls and Stock Checks, and build Orders offline. Six screens: Sync & Unsent Items, Home (with week agenda), Location, Call & Stock Check, Order Entry, and Sent Item view.
@@ -20,7 +20,9 @@
   - **Stock Check** — per-product counts captured during a Call. Starts from a **Suggested List**: products on the last Stock Check at that Location (counted or Not checked) plus products on its last 3 Accepted Orders.
   - **Not checked** — a Suggested List line saved without a count. Stays on the next visit's Suggested List.
   - **Low** — a mark the rep sets on a counted line meaning "reorder this". Always the rep's judgement.
-  - **Low Stock Hint** — text shown when a count is at or below the **Low Stock Threshold** for that product in the Location's **Location Profile** (a Location grouping such as "Large pharmacy" that also carries Visit Frequency and Visit Duration defaults; see Visit Planning). Never pre-ticks Low.
+  - **Low Stock Hint** — text shown when a count is at or below the **Low Stock Threshold** for that product resolved from the Location's **Location Profiles** (groupings such as "Large pharmacy" that may also carry Visit Frequency and Visit Duration defaults; see Visit Planning). *Amended 23 Sep 2026:* a Location may hold several profiles; the highest threshold wins, so the hint appears earliest. Never pre-ticks Low.
+  - **Low tab** — (added 23 Sep 2026) a tab in Order entry beside Order pad and Search all, listing every item marked Low on this visit with exactly one state: not added, ADDED (with quantity), REMOVED, REPLACED (naming the replacement), or CAN'T ADD (with the reason). Its count shows only not added and CAN'T ADD. A catch-up list: most Low items are added at tick-time through the quantity popover.
+  - **Not supplied** — (added 23 Sep 2026) a line removed automatically at processing because the product became unavailable. Counted on Home's exception strip and shown on the sent item with "Let the customer know."
   - **Order** — a request for products and quantities for a Location, dated the day it was taken. Tablet states:
     - **In Progress** — being built; survives any number of Syncs.
     - **Ready to Send** — finished by the rep; uploads at next Sync. Can be reopened to In Progress before Sync.
@@ -40,8 +42,8 @@
   - **Resolved Price** — the price for this customer at this quantity, worked out on the tablet from the snapshot: Base Price, every **Price Tier** the Customer holds, any **Quantity Break**, and any live **Promotion**, with the lowest winning (**Best Price Wins**). The line shows the winner and its source, the runner-up tier price where there is one, and the full candidate list on demand.
   - **Break Prompt** — a line-level message relative to what is already ordered ("2 more for €2.00 each — save €4.00 on 10").
   - **Offer Summary** — an order-level statement of which promotions applied and what they saved, what is within reach, and any offer lost because the order changed.
-  - **Price Override** — a rep-entered price **below** the resolved price, with a reason, marked "subject to approval"; it flags the Order for head office.
-  - **Free of Charge line** — a product added at €0.00 with a reason, to sample a new line or clear discontinued stock. Also subject to approval; may carry Run-out and Unavailable products; its quantity still consumes stock.
+  - **Price Override** — a rep-entered price **below** the resolved price, with a reason. *Amended 23 Sep 2026:* **applied** within the rep's discount allowance (the button says Apply), never sent for approval; the sheet shows the lowest price the rep can offer before they type, and explains a block in a sentence the rep can give the customer (Pricing).
+  - **Free of Charge line** — *Amended 23 Sep 2026:* only for **Discontinuing** products, within the rep's monthly FOC allowance, applied without approval. An ordinary line at €0.00: stock, availability, allocation, despatch and removal behave as for any line.
   - **Capturing Rep** — recorded on every Order the rep takes, distinct from the Location the Order counts at.
   - **Sent to customer** — what the warehouse has despatched against an Accepted Order, shown per line as "24 sent 12 Oct · 12 outstanding". Distinct from the tablet's own **Sent**, which means uploaded to head office.
   - **Breadcrumb** — a product's full category path ("Health > Skincare > Suncare > Lotions"), shown in search and browsing; the tree can be 5–6 levels deep and products may sit on branch categories.
@@ -464,6 +466,39 @@ And after 9 October it no longer appears in my lists or search
 **Non-functional notes:**
 - Rows are large one-handed touch targets; the Location name is the dominant element.
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> With no human acceptance at head office, a line can be removed automatically when its product became unavailable. For most shops the rep is the only channel to the customer, and the total has changed since the rep quoted it, so the rep is actively prompted.
+
+*Scenario 8: Not supplied count*
+```
+Given a line on one of my orders was removed because the product was unavailable
+When the tablet next syncs
+Then Home shows a "not supplied" count in the exception strip alongside the unsent, cycle-decision and conflict counts
+```
+
+*Scenario 9: Open the count*
+```
+Given the "not supplied" count is above zero
+When I tap it
+Then I see each affected order with its Location, the removed line or lines, and the reason
+```
+
+*Scenario 10: Sent item wording*
+```
+Given I open an affected order
+Then the removed line reads "Not supplied — [reason]. Removed from the order. Let the customer know."
+```
+
+*Scenario 11: Nothing removed*
+```
+Given no lines have been removed from my orders
+Then no "not supplied" count is shown
+```
+
+**Open question:** what clears the count — opening the order, an explicit "Told them", or the next Call at that Location? (Requires Clarification 8.)
+
+
 ---
 
 ### US-004: Find and open any assigned Location
@@ -762,6 +797,61 @@ Then I see "Enter a quantity of 1 or more"
 And for a kg product I see "Enter at least 1.0 kg in steps of 0.5 kg"
 ```
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> Add to order opens a **quantity popover** rather than adding immediately. The rep confirms the quantity with the customer verbally anyway, so the popover costs no extra time. Suggested quantities were considered and dropped: the data holds a low-stock threshold, which is a floor, not a target level, and a pre-filled number anchors the rep.
+
+*Scenario 7: Quantity popover*
+```
+Given I have ticked Low on a stock-check line for an orderable product
+When I tap Add to order
+Then a quantity popover opens showing the product name, the count I recorded, the resolved price with its source, and an empty quantity field
+```
+
+*Scenario 8: Never pre-filled*
+```
+Given any route into the quantity popover
+When it opens
+Then the quantity field is empty
+```
+
+*Scenario 9: Break prompt as I type*
+```
+Given the quantity popover is open
+When I enter a quantity that brings a quantity break into reach
+Then the break prompt appears beneath the price and updates as I type
+```
+
+*Scenario 10: Confirm*
+```
+Given I have entered a valid quantity
+When I tap Add to order
+Then the line is added at that quantity and the item shows as ADDED with its quantity on the Low tab
+```
+
+*Scenario 11: Cancel*
+```
+When I tap Cancel in the popover
+Then nothing is added and the item remains not added
+```
+
+*Scenario 12: Measure validation*
+```
+Given the product is measure-based
+When I enter a quantity below the minimum or off the step
+Then the existing measure validation message is shown and Add to order is unavailable until corrected
+```
+
+*Scenario 13: Same popover from the Low tab*
+```
+Given an item on the Low tab is not added or REMOVED
+When I tap Add
+Then the same quantity popover opens
+```
+
+**Open question:** does the popover dismiss on add, or advance to the next not added Low item? (Requires Clarification 9.)
+
+
 ---
 
 ### US-009: See a Low Stock Hint
@@ -1033,6 +1123,99 @@ Then I see "Add at least one product"
 - Quantity controls usable standing.
 - "Remove line" placed away from quantity controls.
 
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+> **Low tab:** a catch-up list beside Order pad and Search all for anything marked Low but not added at tick-time. **Review marker:** with no human acceptance at head office, Review is the last point a slip (48 typed as 480) can be caught; Large stays an annotation.
+
+*Scenario 7: Low tab states*
+```
+Given the order follows a stock check with items marked Low
+When I open the Low tab
+Then every Low item is listed with exactly one state: not added; ADDED with its quantity; REMOVED; REPLACED naming the replacement and its quantity; or CAN'T ADD with the availability reason
+```
+
+*Scenario 8: Low tab count*
+```
+When any items are not added or CAN'T ADD
+Then the Low tab label shows a count of those items only; ADDED, REMOVED and REPLACED are not counted
+```
+
+*Scenario 9: Removed*
+```
+Given a Low item was added to the order
+When I remove its line from the order
+Then the item shows REMOVED with an Add action
+```
+
+*Scenario 10: Replaced*
+```
+Given I marked Low on an unavailable product and added a replacement
+When I open the Low tab
+Then the item shows REPLACED with the replacement product and quantity
+```
+
+*Scenario 11: Can't add*
+```
+Given a Low item is unorderable and no replacement was added
+When I open the Low tab
+Then it shows CAN'T ADD with the reason and a Find replacement action, and no quantity control
+```
+
+*Scenario 12: No bulk add*
+```
+Given there are several not added items
+Then there is no action that adds them all at once
+```
+
+*Scenario 13: Unticking Low keeps the line*
+```
+Given a Low item's product is on the order
+When I untick Low on the stock-check line
+Then the order line is unchanged
+```
+
+*Scenario 14: Unusually high quantity marked on Review*
+```
+Given a line's quantity is well above what this Location ordered of that product on its last 3 accepted orders
+When I view Review order
+Then the line shows "Usually about [N] here"
+```
+
+*Scenario 15: No history, no marker*
+```
+Given the Location has no accepted order containing the product
+When I view Review order
+Then no marker is shown on that line
+```
+
+*Scenario 16: High only*
+```
+Given a line's quantity is well below the Location's usual
+When I view Review order
+Then no marker is shown
+```
+
+*Scenario 17: Never blocks*
+```
+Given one or more lines are marked
+When I tap Mark Ready to Send
+Then the order is marked Ready to Send without any confirmation or acknowledgement step
+```
+
+*Scenario 18: Offline*
+```
+Given the tablet has no connection
+When I view Review order
+Then markers are still calculated from the order history already in the snapshot
+```
+
+**Superseded:** scenario 4e's "both lines read 'subject to approval' and the Order is flagged for head office". A rep price within the allowance and an FOC line on a Discontinuing product within the monthly allowance are applied immediately (Pricing US-007, US-009).
+
+**Edge cases addressed (23 Sep 2026):** the first order of a product at a Location has no marker, since there's nothing to compare against; the "well above" threshold is an implementation detail.
+
+**Open question:** what the Low tab shows on an order that doesn't follow a Stock Check, such as a phone order (Requires Clarification 10).
+
+
 ---
 
 ### US-013: Edit, reopen or delete an Unsent Order
@@ -1139,6 +1322,24 @@ Given a Call Sent at 07:42
 When I open it
 Then it is read-only with Open on website and a Record follow-up call action
 ```
+
+**UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
+
+*Scenario A1014-A*
+```
+Given a line on the order was removed as unavailable
+When I open the sent item
+Then the line reads "Not supplied — [reason]. Removed from the order. Let the customer know."
+```
+
+*Scenario A1014-B*
+```
+Given the order has a rep price or a free-of-charge line
+When I open the sent item
+Then they are shown as facts of the order ("SPF30 at your price €9.25"), not as the outcome of a request
+```
+
+**Superseded:** "outcomes of any override or free-goods request".
 
 ---
 
@@ -1526,13 +1727,17 @@ Then the pad includes the chain's Agreed Range, marked "In Hickey's agreed range
 
 ## 6. Requires Clarification
 
-1. **Location Profile:** confirm whether it is the existing Location Type or a new attribute, and whether per-Location threshold overrides exist (Customer Directory / Product Management).
+1. **Location Profile:** confirm whether it is the existing Location Type or a new attribute, and whether per-Location threshold overrides exist (Customer Directory / Product Management). *Partly settled 23 Sep 2026:* a Location may hold many profiles; the highest threshold wins.
 2. **Soft reminder time:** the head-office late-day time for US-002.
 3. **Elaboration corrections:** US-02, US-05, US-11, US-18 and US-21 need rewording for range-as-guide, the any-Active-Range rule, the availability lifecycle and the removal of self-signup.
 4. **Prospect pricing:** which tier, if any, a prospect prices against before it is a Customer (assumed Base Price plus general promotions).
 5. **Snapshot size:** the tablet now carries the catalogue with breadcrumbs, attributes, tiers, breaks, promotions, a master's branches and Agreed Range, Suggested Lists, thresholds and Replacements. This needs a spike.
 6. **Website corrections:** the corrections-vs-follow-up rule for synced Calls, and editing Pending Orders, both live in the website area.
 7. **Stock Allocation:** held and part-released orders will change what a rep sees on a Sent Order; not yet designed.
+8. **Not supplied (23 Sep 2026):** what clears Home's "not supplied" count — opening the order, an explicit "Told them", or the next Call at that Location?
+9. **Quantity popover (23 Sep 2026):** dismiss on add, or advance to the next not added Low item?
+10. **Low tab without a Stock Check (23 Sep 2026):** what does it show on an order that doesn't follow a Stock Check, e.g. a phone order? Related: does the Stock Check stay, collapse or disappear when the Call Channel is Phone?
+11. **Snapshot additions (23 Sep 2026):** applicable commercial policy rules and product membership, the rep's month-to-date FOC use, and resolved thresholds from multiple profiles (item 5).
 
 ---
 

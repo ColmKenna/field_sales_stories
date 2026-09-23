@@ -1,6 +1,6 @@
 # Customer Directory: UX & User Stories
 
-**Generated:** 18 September 2026
+**Generated:** 18 September 2026 (amended 23 September 2026 from the UX design sessions: a Location may hold many Location Profiles — see `../uxdocs/04-user-stories-amendments.md`, BR-NEW-005)
 **Bounded context:** Customer Directory
 **Primary users:** Head Office User; Field Salesperson (GPS capture and contact status in the field)
 **Scope:** The website screens where head office maintains Customers, Locations, Contacts and geography, and the small tablet additions that keep them accurate from the field. Six screens: Customer Record, Location Record, Contact Record, Main Contact Replacement, Geography, Gap Lists.
@@ -14,9 +14,9 @@
 - **Domain area:** Customer Directory. It owns who the customers are, where they are, and who to talk to. Every other area reads from it; only this area and the field GPS capture write to it.
 - **Ubiquitous language:**
   - **Customer** — the buying organisation. Has many Locations. Not a unit of performance measurement.
-  - **Location** — a physical place belonging to a Customer (or a Prospect, area 2). Carries a **Town** (required), an optional **Eircode**, coordinates, a **Location Type**, a **Location Profile**, Contacts, and optionally a **Master Location**. The unit of performance measurement.
+  - **Location** — a physical place belonging to a Customer (or a Prospect, area 2). Carries a **Town** (required), an optional **Eircode**, coordinates, a **Location Type**, any number of **Location Profiles**, Contacts, and optionally a **Master Location**. The unit of performance measurement.
   - **Location Type** — what the place is: Pharmacy, Convenience store, Supermarket, Head office. Reference classification with a description. Optional.
-  - **Location Profile** — how the place is serviced: Large pharmacy, Small rural shop. Carries defaults for **Visit Frequency**, **Visit Duration** and **Low Stock Thresholds** (per product). Optional; a Location without one generates no Recurring Visit Dues and appears on the **No Visit Schedule** list.
+  - **Location Profile** — how the place is serviced or grouped: Large pharmacy, Small rural shop, Customer campaign X. May carry defaults for **Visit Frequency**, **Visit Duration** and **Low Stock Thresholds** (per product); a profile carrying none is purely a grouping, used for selection (specialist scopes, campaign filters, reporting). **A Location may hold many profiles.** Where several supply the same default, each field resolves separately to the **most demanding value** (most frequent visits, longest duration, highest threshold), and a per-Location override beats every profile. Every resolved default is shown with its source ("Every 2 weeks (from Large pharmacy)"). Optional; a Location with no profile carrying a Visit Frequency generates no Recurring Visit Dues and appears on the **No Visit Schedule** list.
   - **Master Location** — a Location that other Locations of the same Customer report to (a head office or main shop). A Location with a master is a **Branch Location**. Recorded here; what a master does (range agreements, multi-branch orders, master-vs-branch call types) is the Master & Branch Ordering area.
   - **Contact** — a person. Has a **Contact Type**, contact details, and links to one or more Locations. States: **Active**, **Inactive** (left, or no longer to be asked for; never deleted because Calls reference them).
   - **Main Contact** — exactly one Active Contact per Location. Removing or unlinking a Main Contact requires naming a replacement, or marking the Contact Inactive, which leaves the Location flagged **Replacement Needed**.
@@ -137,6 +137,7 @@ flowchart TD
 - **Over:** one combined classification; a required Profile at creation.
 - **Because:** a large pharmacy and a large supermarket can share servicing; a head office is a different type from its shops but may share nothing; the person creating a Location often does not yet know how it will be serviced.
 - **Trade-off accepted:** a Location can exist with no visits due until someone works the gap list; the list is shown beside Unassigned so both are cleared together.
+- **Amended 23 Sep 2026:** a Location may hold many Location Profiles, and defaults resolve field by field to the most demanding value, each shown with its source. **Trade-off accepted:** the resolved set can mix profiles, so it may match no single profile a manager set up; showing each value's source is the mitigation.
 
 ### Main Contact is the one thing that cannot be left blank
 
@@ -269,6 +270,27 @@ Then it is rejected with "This would make the locations report to each other"
 ```
 When I change Profile from "Large pharmacy" to "Small rural shop" (every 8 weeks)
 Then future Cycle Periods follow 8 weeks and the current open Visit Due is unchanged
+```
+
+**UX amendments (23 Sep 2026)** — many profiles per Location (BR-NEW-005 in `../uxdocs/04-user-stories-amendments.md`).
+
+*Scenario 7: Several profiles, most demanding wins*
+```
+Given Byrne's has Profiles "Large pharmacy" (every 2 weeks, 45 min, SPF30 warn at 6) and "Rural shop" (every 4 weeks, 20 min, SPF30 warn at 12)
+Then Byrne's resolves to every 2 weeks, 45 minutes, and warns at 12 for SPF30
+And each value shows its source, e.g. "Every 2 weeks (from Large pharmacy)", "Warn at 12 (from Rural shop)"
+```
+
+*Scenario 8: Grouping-only profile*
+```
+When I add Profile "Customer campaign X", which carries no defaults, to Byrne's
+Then Byrne's defaults are unchanged and the profile is available to specialist scopes, campaign filters and reporting
+```
+
+*Scenario 9: Override beats every profile*
+```
+Given Byrne's has a per-Location Visit Frequency override of every 3 weeks
+Then it is visited every 3 weeks whatever its profiles supply
 ```
 
 ---
@@ -452,6 +474,8 @@ Then Delete is not shown; Archive shows "Used by 40 locations — they keep thei
 ```
 
 **Open questions:** per-Location threshold overrides are still assumed out of scope; confirm.
+
+*Amended 23 Sep 2026:* because a Location may hold several profiles, a changed default affects only Locations where this profile supplies the winning value; the impact message in scenario 3 counts those.
 
 ---
 
