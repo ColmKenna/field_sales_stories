@@ -708,6 +708,12 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **Then** the Wicklow County assignment moves to Ciara as well
 - **And** the impact preview states "Wicklow (County) moves to Ciara with its last Towns."
 
+**AC-CV001-E2:**
+- **Given** Colm holds South East (Region), and Wicklow (County) has already been transferred to Ciara
+- **When** I transfer Wexford, the last County Colm holds through South East, to Ciara
+- **Then** the South East Region assignment moves to Ciara as well
+- **And** the impact preview states "South East (Region) moves to Ciara with its last Counties."
+
 **AC-CV001-F:**
 - **Given** I am on Niamh's page and Rathdrum (Town) is assigned to Aoife
 - **When** I choose `Add assignment`
@@ -774,6 +780,12 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **When** a new Visit Due is generated there after the handover
 - **Then** it is not marked inherited and counts in her performance normally
 
+**AC-CV003-H:**
+- **Given** Arklow is carved out from Colm to Niamh and Colm is not leaving
+- **When** I choose Move for Carey's Pharmacy's open Visit Due in the handover
+- **Then** it moves to Niamh with its due window unchanged, marked "inherited from Colm"
+- **And** it is excluded from Niamh's performance until it closes, as in AC-CV003-F
+
 **Recommended Acceptance Tests:**
 
 - `Should_AskIfPreviousRepLeaving_When_TransferStarts`
@@ -788,6 +800,8 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
   → The new rep isn't penalised for debt they didn't cause.
 - `Should_CountNormally_When_VisitGeneratedAfterHandover`
   → The marker ends with the visit, not a time window.
+- `Should_MarkInherited_When_VisitMovedInCarveOutHandover`
+  → The new rep didn't set the window, whoever chose to move it.
 
 ---
 
@@ -988,7 +1002,7 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ### Targets & Performance US-005 — what "furthest behind" means
 
-> **Context:** the sort decides who the manager looks at first. Percentage points behind pace ranks each rep against their own expectation; money behind pace shows the biggest holes in the team's number. Settled in `05-manager.md` M13.1–M13.2.
+> **Context:** the sort decides who the manager looks at first. Percentage points behind pace ranks each rep against their own expectation; money behind pace shows the biggest holes in the team's number. Settled in `05-manager.md` M13.1–M13.3.
 
 **Additional Acceptance Criteria:**
 
@@ -1014,6 +1028,11 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **When** the overview is ordered by percentage points
 - **Then** that rep is ranked by units
 
+**AC-TP005-E:**
+- **Given** Niamh has a units-only target 14 pts behind pace
+- **When** I choose `Sort by € behind pace`
+- **Then** Niamh is listed under a separate "Units targets" heading below the reps ranked by €, ordered by points behind pace
+
 **Recommended Acceptance Tests:**
 
 - `Should_OrderByPointsBehindPace_When_OverviewOpens`
@@ -1022,12 +1041,14 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
   → The team-total view is one click away.
 - `Should_RankByValue_When_RepHasValueAndUnitsTargets`
   → One predictable rule; units stay visible on the row.
+- `Should_GroupUnitsOnlyRepsSeparately_When_SortedByMoney`
+  → A rep with no € figure isn't implied to be least behind.
 
 ---
 
 ### Coverage US-009 — grant permissions to a cohort from the group's page
 
-> **Context:** permissions have two triggers: onboarding one rep (per-rep view, the source) and a cohort completing training (per-group view, added). Both views share one record. Settled in `05-manager.md` M14.1.
+> **Context:** permissions have two triggers: onboarding one rep (per-rep view, the source) and a cohort completing training (per-group view, added). Both views share one record. Settled in `05-manager.md` M14.1; removal states its consequence first (M14.2).
 
 **Additional Acceptance Criteria:**
 
@@ -1051,6 +1072,16 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **When** I open the group's page
 - **Then** Ciara is listed but can't be selected for a change
 
+**AC-CV009-E:**
+- **Given** Colm is granted Pharmacy-only medicines and has 2 lines from that group on In Progress orders
+- **When** I remove the permission and save
+- **Then** I am first told "Colm will lose Pharmacy-only medicines at his next Sync. 2 lines already on In Progress orders will still send."
+
+**AC-CV009-F:**
+- **Given** I have selected Colm, Aoife and Niamh on the Pharmacy-only medicines group page
+- **When** I remove the permission from all three and save
+- **Then** I am first told once how many reps lose it at their next Sync and how many In Progress lines will still send
+
 **Recommended Acceptance Tests:**
 
 - `Should_RecordEachGrantSeparately_When_CohortGrantedFromGroupPage`
@@ -1059,19 +1090,21 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
   → One record, two views.
 - `Should_PreventChange_When_RepNotManagedAndNotHeadOffice`
   → Source permission rule applies in the new view.
+- `Should_StateConsequence_When_PermissionRemoved`
+  → The effect is delayed and lands on the rep's tablet; the manager learns it before saving, not never.
 
 ---
 
 ### Coverage US-007 — unassigned Locations pushed to the overview
 
-> **Context:** an unassigned Location generates no visits, so it never becomes Overdue and never shows on the overview's exception columns. A list that has to be opened can't stop it being silently uncovered. Settled in `05-manager.md` M15.1; row actions follow M7.2.
+> **Context:** an unassigned Location generates no visits, so it never becomes Overdue and never shows on the overview's exception columns. A list that has to be opened can't stop it being silently uncovered. Settled in `05-manager.md` M15.1–M15.3; row actions follow M7.2.
 
 **Additional Acceptance Criteria:**
 
 **AC-CV007-A:**
-- **Given** 6 Locations have no Primary Rep
+- **Given** 6 Locations in my area have no Primary Rep
 - **When** I open the Visit Planning overview
-- **Then** its header shows "6 Locations unassigned" linking to the Unassigned list
+- **Then** its header shows "6 Locations unassigned in your area" linking to the Unassigned list
 
 **AC-CV007-B:**
 - **Given** every Location has a Primary Rep
@@ -1083,18 +1116,48 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **When** I view the Unassigned list
 - **Then** Walsh's row leads with `Assign Laragh (Town) to...` and states the Town's unassigned count, with `Assign just this shop to...` beside it
 
+**AC-CV007-D:**
+- **Given** Niamh reports to me and holds Arklow and Rathdrum (Towns), and no one holds Wicklow (County)
+- **When** a Location in Aughrim, a Town nobody holds, becomes unassigned
+- **Then** it counts in the unassigned line on my overview
+
+**AC-CV007-E:**
+- **Given** no rep holds any Town in the same County as an unassigned Location, but one of my reps holds a Territory Assignment in its Region
+- **When** I open the Visit Planning overview
+- **Then** that Location counts in my unassigned line
+
+**AC-CV007-F:**
+- **Given** no rep holds anything in an unassigned Location's County or Region
+- **When** a Head Office User opens the Visit Planning overview
+- **Then** that Location counts as "with no nearby team" and appears on no Sales Manager's line
+
+**AC-CV007-G:**
+- **Given** my reps and another manager's reps both hold Towns in Wicklow (County)
+- **When** a Location in Wicklow becomes unassigned
+- **Then** it counts on both managers' overviews
+
+**AC-CV007-H:**
+- **Given** my overview shows "4 Locations unassigned in your area" and 6 more are unassigned elsewhere
+- **When** I follow the link
+- **Then** the Unassigned list opens showing only my 4
+- **And** `All unassigned` shows all 10
+
 **Recommended Acceptance Tests:**
 
 - `Should_ShowUnassignedCountOnOverview_When_AnyLocationUnassigned`
   → Unassigned shops produce no other signal.
 - `Should_HideUnassignedLine_When_CountIsZero`
   → No decoration without meaning.
+- `Should_ScopeUnassignedCountToNearestTeam_When_ManagerViewsOverview`
+  → A count everyone sees is owned by no one; the nearest team owns it, with nothing to set up.
+- `Should_ShowToHeadOffice_When_NoTeamHoldsCountyOrRegion`
+  → No unassigned shop falls outside every count.
 
 ---
 
 ### Coverage US-002 — the Location page as the manager's home for a Location
 
-> **Context:** M-07 answers "who covers this shop, and why?" and carries the Location's manager actions, so a manager never has to remember which screen holds which fact about a shop. It stays about coverage: visits are monitored in Visit Planning. Settled in `05-manager.md` M7.1–M7.4.
+> **Context:** M-07 answers "who covers this shop, and why?" and carries the Location's manager actions, so a manager never has to remember which screen holds which fact about a shop. It stays about coverage: visits are monitored in Visit Planning. Settled in `05-manager.md` M7.1–M7.5.
 
 **Additional Acceptance Criteria:**
 

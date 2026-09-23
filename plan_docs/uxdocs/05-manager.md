@@ -237,7 +237,9 @@ The manager's change remains applied. This is an exception notice, not a separat
 +------------------------------------------------------------------------------------------+
 ```
 
-*Drafting call:* placing the summary, actions and History link as shown. The regions follow Coverage US-008.
+> **DECISION M6.6 — actions sit next to what they act on. Settled (23 Sep 2026).**
+> The regions follow Coverage US-008. The inbound actions (`Add assignment`, `Take over from another rep...`) sit by the rep's summary. `Transfer...` sits on the Assignments list, because a transfer starts from filtering and selecting its rows (proximity). History is at the foot.
+> **Rejected:** all three actions in a single bar at the top, which separates Transfer from the selection it depends on.
 
 > **DECISION M6.1 — the page is anchored on the rep. Settled.**
 > The usual triggers are about a person: most often a new rep, sometimes a rep leaving and being replaced. The page is a rep's book (their Territory Assignments by level, carved-out counts, effective Location count), and *Add assignment* starts from there. The rarer geography-led trigger, the company moving into a new territory, reaches the same result through Unassigned Locations (M-15) and Location coverage (M-07).
@@ -260,7 +262,7 @@ The manager's change remains applied. This is an exception notice, not a separat
 > ```
 
 > **DECISION M6.4 — partial selections become carve-outs; a County moves with its last Towns, and the preview says so. Settled.**
-> Transferring some of a County's Towns creates a Town assignment for each one, owned by the receiving rep, and the County assignment stays put. Transferring the whole County moves the County assignment. When a transfer takes every remaining Town that a rep holds through a County, the County assignment moves as well, so no rep is left holding an empty County that would catch new Towns. The impact preview states it: `Wicklow (County) moves to Ciara with its last Towns.` Ciara then holds *Wicklow (County) · 3 towns carved out → Niamh*, and a new Town in Wicklow resolves to her. The same rule applies one level up, from Counties to their Region *(confirm)*.
+> Transferring some of a County's Towns creates a Town assignment for each one, owned by the receiving rep, and the County assignment stays put. Transferring the whole County moves the County assignment. When a transfer takes every remaining Town that a rep holds through a County, the County assignment moves as well, so no rep is left holding an empty County that would catch new Towns. The impact preview states it: `Wicklow (County) moves to Ciara with its last Towns.` Ciara then holds *Wicklow (County) · 3 towns carved out → Niamh*, and a new Town in Wicklow resolves to her. The same rule applies one level up: a Region moves with its last Counties (confirmed 23 Sep 2026: a Region is just the parent of its Counties).
 > **Rejected:** a warning alone, which leaves an empty County with a rep who has left.
 
 > **DECISION M6.5 — the receiving rep's page can pull assignments: in place, or a whole book. Settled.**
@@ -269,7 +271,7 @@ The manager's change remains applied. This is an exception notice, not a separat
 > **Rejected:** blocking and linking to the other rep's page.
 
 **Open:**
-- Does M6.4's "moves with its last Towns" rule apply one level up, a Region moving with its last Counties? *(Assumed yes.)*
+- ~~Does M6.4's "moves with its last Towns" rule apply one level up, a Region moving with its last Counties?~~ **Resolved (23 Sep 2026):** yes. A Region is just the parent of its Counties, so the same rule applies.
 
 ---
 
@@ -299,7 +301,12 @@ Unassigned (Walsh's Shop, Laragh):
 +------------------------------------------------------------------------------------------+
 ```
 
-*Drafting call:* History opens as its own view, newest first (US-002 scenario 4), rather than inline on the page.
+> **DECISION M7.5 — History opens as its own view, newest first. Settled (23 Sep 2026).**
+> The page stays short with the manager's actions in view, and the full record is one click away (US-002 scenario 4).
+> **Rejected:** full History inline; the latest change inline with the rest behind a link.
+
+> **DECISION M7.6 — layout as drawn. Settled (23 Sep 2026).**
+> Coverage leads (Primary with its Source and change actions, then Specialists). The Location's other manager actions sit in a footer row, with `Add one-off visit` on the left and `History >` on the right.
 
 > **DECISION M7.1 — M-07 is the manager's Location page, with coverage first. Settled.**
 > Coverage (Effective Owner with its Source, Specialists) is the headline, followed by the Location's manager actions: assign or change coverage (M-06), add a one-off Visit Due (M-16), and Assignment History. One page per Location means the manager never has to remember which screen holds which fact about a shop. The Customer Directory keeps ownership of the Location's master data (brief §10, area 8).
@@ -348,11 +355,11 @@ Impact preview when the previous rep is leaving:
 ```
 
 > **DECISION M8.2 — inherited visits keep their windows, are marked as inherited, and don't count against the new rep. Settled.**
-> Each Visit Due that was open at the handover and moves to the new rep keeps its due window. It shows `inherited from Colm` wherever it appears (planner, M-01, visit detail). It still counts in the new rep's operational figures on M-01 so it gets done, but it is excluded from their performance (R-03, M-13). That includes a Missed record if they don't reach it. The marker belongs to the visit and ends when the visit closes, completed or Missed. It is not a time-based grace period: new Visit Dues generated after the handover count normally. It applies to visits moved by M8.1's leaving path and by a manager's Move in the source handover *(confirm for Move)*.
+> Each Visit Due that was open at the handover and moves to the new rep keeps its due window. It shows `inherited from Colm` wherever it appears (planner, M-01, visit detail). It still counts in the new rep's operational figures on M-01 so it gets done, but it is excluded from their performance (R-03, M-13). That includes a Missed record if they don't reach it. The marker belongs to the visit and ends when the visit closes, completed or Missed. It is not a time-based grace period: new Visit Dues generated after the handover count normally. It applies to visits moved by M8.1's leaving path and by a manager's Move in the source handover (confirmed 23 Sep 2026: the new rep didn't set the window, whoever chose to move it).
 > **Rejected:** counting inherited visits as normal; restarting windows from the handover date; a grace period covering everything at the inherited Locations.
 
 **Open:**
-- Does M8.2's inherited marker also apply to visits moved by `Move` in a carve-out handover? *(Assumed yes.)*
+- ~~Does M8.2's inherited marker also apply to visits moved by `Move` in a carve-out handover?~~ **Resolved (23 Sep 2026):** yes. It's one rule everywhere; the new rep didn't set the window.
 
 ---
 
@@ -453,7 +460,9 @@ Impact preview when the previous rep is leaving:
 > Colm (value 8 pts ahead, units 15 pts behind) ranks as 8 pts ahead. The units figure and its pace gap are shown on his row but don't affect the order. A rep with a units-only target ranks by units, since that's the only measure they have.
 > **Rejected:** ranking by the worse of the two; averaging them.
 
-*Drafting call:* under `Sort by € behind pace`, reps with units-only targets are listed after those with value targets, still in order of units points behind.
+> **DECISION M13.3 — under `Sort by € behind pace`, reps with units-only targets sit in their own group. Settled (23 Sep 2026).**
+> They have no € figure, so they can't be placed in a € ranking without implying something false. Listing them at the bottom would read as "least behind" even when they're the worst. They appear below the € list under their own heading, `Units targets`, ordered by points behind pace. Under the default points sort they stay interleaved (M13.2), because points are comparable.
+> **Rejected:** appending them after the € rows without a heading; interleaving them by points under the € sort.
 
 *Follows from the source:* the By Range view, the separate list of reps without targets, the team-level Unfulfilled note, and `Attributed` / `Captured` labelled as different measures (US-005, US-006).
 
@@ -472,7 +481,9 @@ Impact preview when the previous rep is leaving:
 
 *Follows from the source:* reps the manager doesn't manage are shown but can't be changed, unless the manager is a Head Office User (US-009 scenario 4). A change takes effect at the rep's next Sync, and lines already captured still send (valid when captured).
 
-*Drafting call:* removing a permission shows the consequence before saving: `Colm will lose Pharmacy-only medicines at his next Sync. 2 lines already on In Progress orders will still send.`
+> **DECISION M14.2 — removing a permission states its consequence before saving. Settled (23 Sep 2026).**
+> The effect is delayed (next Sync) and lands on someone else's tablet, so the manager would never see it. The save states it first (feedforward): `Colm will lose Pharmacy-only medicines at his next Sync. 2 lines already on In Progress orders will still send.` Removing from several reps on the group's page states it once for all of them: `3 reps will lose Pharmacy-only medicines at their next Sync. 5 lines already on In Progress orders will still send.`
+> **Rejected:** a plain save with the effect explained only in help text.
 
 **Open:**
 - *(none for M-14)*
@@ -489,10 +500,16 @@ An unassigned Location has no Primary Rep, so it generates no Recurring Visit Du
 > The Visit Planning overview, the manager's landing page, shows `6 Locations unassigned >` in its header whenever any exist, linking to M-15. At zero the line doesn't appear. M-15 itself lists them grouped by Town (US-007), and each row leads with `Assign <Town> to...` and the Town's unassigned count, as on M-07 (M7.2).
 > **Rejected:** pull only (M-15 and By region); an additional "new since" signal.
 
-*Assumed (confirm):* unassigned Locations belong to no rep, so the count is company-wide and every Sales Manager and Head Office User sees it.
+> **DECISION M15.2 — the unassigned count is scoped to the manager's area, derived from the nearest held geography. Settled (23 Sep 2026).**
+> A count shown identically to every manager is owned by none of them (diffusion of responsibility), so each manager sees only the unassigned Locations nearest their own team. Nothing is set up: an unassigned Location belongs to every Sales Manager whose reps hold another Town in the same County; failing that, a Territory Assignment in the same Region; failing that, it goes to Head Office Users. When two managers' reps both hold Towns in the County, both see it. Example: Niamh (reports to M. Byrne) holds Arklow and Rathdrum; a new shop in Aughrim, a Town nobody holds, counts on M. Byrne's overview.
+> **Rejected:** a company-wide count for everyone; a declared area set per manager (one more setting to keep in line with the territory).
+
+> **DECISION M15.3 — M-15 opens on the count that was clicked. Settled (23 Sep 2026).**
+> M-01's header reads `4 Locations unassigned in your area >`. A Head Office User also sees `2 with no nearby team >`. Each link opens M-15 filtered to what it counted, with `All unassigned` one click away, so the page keeps the header's promise and the ownership M15.2 created isn't diluted by the default view.
+> **Rejected:** opening on every unassigned Location with the viewer's area marked or sorted first.
 
 **Open:**
-- Is the unassigned count company-wide for every manager, or limited to some notion of a manager's area? *(Assumed company-wide.)*
+- ~~Is the unassigned count company-wide for every manager, or limited to some notion of a manager's area?~~ **Resolved (23 Sep 2026):** scoped, derived from nearest held geography (M15.2).
 
 ---
 

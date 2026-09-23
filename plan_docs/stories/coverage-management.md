@@ -16,7 +16,7 @@
   - **Primary Rep** — the one rep responsible for a Location: owner of its Recurring Visit Dues, Missed records and performance. Exactly one, or none (then the Location is **Unassigned**).
   - **Territory Assignment** — an assignment of a rep to a Region, County, Town, or a single Location. Determines Primary Rep by the **Most-Specific Rule**.
   - **Most-Specific Rule** — when Territory Assignments overlap, the narrowest wins: Location beats Town, Town beats County, County beats Region. Two assignments at the same level for the same unit are not allowed; adding one that another rep holds offers a **Transfer** instead of an error.
-  - **Transfer** — moving Territory Assignments themselves from one rep to another (not their Locations), so Locations keep resolving through the territory and new Locations follow the new rep. Started from the giving rep (filter, select all, exclude) or pulled from the receiving rep. Selecting only some of a County's Towns creates Town assignments (carve-outs); taking a County's last remaining Towns moves the County assignment too. Used for permanent changes such as a new rep replacing a leaving one.
+  - **Transfer** — moving Territory Assignments themselves from one rep to another (not their Locations), so Locations keep resolving through the territory and new Locations follow the new rep. Started from the giving rep (filter, select all, exclude) or pulled from the receiving rep. Selecting only some of a County's Towns creates Town assignments (carve-outs); taking a County's last remaining Towns moves the County assignment too, and taking a Region's last remaining Counties moves the Region assignment. Used for permanent changes such as a new rep replacing a leaving one.
   - **Effective Owner** — the Primary Rep a Location resolves to, always shown with its **Source** ("Aoife (via Rathdrum)").
   - **Specialist Assignment** — an additional rep attached to Locations for a **Scope**, without becoming Primary. Receives Visit Dues in that scope (e.g. a campaign for that Brand) and sees the scope's products on their Order Pad. Never receives Recurring Visit Dues.
   - **Scope** — a rule that selects Locations and products for a Specialist Assignment, built from conditions on **Customer**, **Location Profile**, **Brand** and **Area** (Region, County or Town). By default every condition must hold ("Profile: Customer campaign X · in Wicklow"); an Advanced mode allows AND/OR grouping. Always shown as a sentence with its current match count. Rule-based, so new matching Locations join automatically. Only a Brand condition adds products to the specialist's Order Pad.
@@ -272,6 +272,14 @@ Then the Wicklow County assignment moves to Ciara as well
 And the impact preview states "Wicklow (County) moves to Ciara with its last Towns."
 ```
 
+*Scenario CV001-E2*
+```
+Given Colm holds South East (Region), and Wicklow (County) has already been transferred to Ciara
+When I transfer Wexford, the last County Colm holds through South East, to Ciara
+Then the South East Region assignment moves to Ciara as well
+And the impact preview states "South East (Region) moves to Ciara with its last Counties."
+```
+
 *Scenario CV001-F*
 ```
 Given I am on Niamh's page and Rathdrum (Town) is assigned to Aoife
@@ -337,7 +345,7 @@ Then I see entries newest first, e.g. "17 Sep 2026 14:02 — Colm → Aoife — 
 
 **UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
 
-> M-07 answers "who covers this shop, and why?" and carries the Location's manager actions, so a manager never has to remember which screen holds which fact about a shop. It stays about coverage: visits are monitored in Visit Planning. Settled in `../uxdocs/05-manager.md` M7.1–M7.4.
+> M-07 answers "who covers this shop, and why?" and carries the Location's manager actions, so a manager never has to remember which screen holds which fact about a shop. It stays about coverage: visits are monitored in Visit Planning. Settled in `../uxdocs/05-manager.md` M7.1–M7.5.
 
 *Scenario CV002-A*
 ```
@@ -473,6 +481,14 @@ And the inherited marker ends when the visit closes
 Given Niamh inherited Byrne's
 When a new Visit Due is generated there after the handover
 Then it is not marked inherited and counts in her performance normally
+```
+
+*Scenario CV003-H*
+```
+Given Arklow is carved out from Colm to Niamh and Colm is not leaving
+When I choose Move for Carey's Pharmacy's open Visit Due in the handover
+Then it moves to Niamh with its due window unchanged, marked "inherited from Colm"
+And it is excluded from Niamh's performance until it closes, as in CV003-F
 ```
 
 ---
@@ -747,13 +763,13 @@ Then the list shows "All Locations have a responsible rep"
 
 **UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
 
-> An unassigned Location generates no visits, so it never becomes Overdue and never shows on the overview's exception columns. A list that has to be opened can't stop it being silently uncovered. Settled in `../uxdocs/05-manager.md` M15.1; row actions follow M7.2.
+> An unassigned Location generates no visits, so it never becomes Overdue and never shows on the overview's exception columns. A list that has to be opened can't stop it being silently uncovered. Settled in `../uxdocs/05-manager.md` M15.1–M15.3; row actions follow M7.2.
 
 *Scenario CV007-A*
 ```
-Given 6 Locations have no Primary Rep
+Given 6 Locations in my area have no Primary Rep
 When I open the Visit Planning overview
-Then its header shows "6 Locations unassigned" linking to the Unassigned list
+Then its header shows "6 Locations unassigned in your area" linking to the Unassigned list
 ```
 
 *Scenario CV007-B*
@@ -768,6 +784,42 @@ Then no unassigned line appears
 Given Walsh's Shop and 4 other Laragh Locations are unassigned
 When I view the Unassigned list
 Then Walsh's row leads with "Assign Laragh (Town) to..." and states the Town's unassigned count, with "Assign just this shop to..." beside it
+```
+
+*Scenario CV007-D*
+```
+Given Niamh reports to me and holds Arklow and Rathdrum (Towns), and no one holds Wicklow (County)
+When a Location in Aughrim, a Town nobody holds, becomes unassigned
+Then it counts in the unassigned line on my overview
+```
+
+*Scenario CV007-E*
+```
+Given no rep holds any Town in the same County as an unassigned Location, but one of my reps holds a Territory Assignment in its Region
+When I open the Visit Planning overview
+Then that Location counts in my unassigned line
+```
+
+*Scenario CV007-F*
+```
+Given no rep holds anything in an unassigned Location's County or Region
+When a Head Office User opens the Visit Planning overview
+Then that Location counts as "with no nearby team" and appears on no Sales Manager's line
+```
+
+*Scenario CV007-G*
+```
+Given my reps and another manager's reps both hold Towns in Wicklow (County)
+When a Location in Wicklow becomes unassigned
+Then it counts on both managers' overviews
+```
+
+*Scenario CV007-H*
+```
+Given my overview shows "4 Locations unassigned in your area" and 6 more are unassigned elsewhere
+When I follow the link
+Then the Unassigned list opens showing only my 4
+And "All unassigned" shows all 10
 ```
 
 ---
@@ -849,7 +901,7 @@ Then I can view but not change them
 
 **UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
 
-> Permissions have two triggers: onboarding one rep (per-rep view, the source) and a cohort completing training (per-group view, added). Both views share one record. Settled in `../uxdocs/05-manager.md` M14.1.
+> Permissions have two triggers: onboarding one rep (per-rep view, the source) and a cohort completing training (per-group view, added). Both views share one record. Settled in `../uxdocs/05-manager.md` M14.1; removal states its consequence first (M14.2).
 
 *Scenario CV009-A*
 ```
@@ -877,6 +929,20 @@ Then the grant appears there as Granted with the same record
 Given I am a Sales Manager who does not manage Ciara and not a Head Office User
 When I open the group's page
 Then Ciara is listed but can't be selected for a change
+```
+
+*Scenario CV009-E*
+```
+Given Colm is granted Pharmacy-only medicines and has 2 lines from that group on In Progress orders
+When I remove the permission and save
+Then I am first told "Colm will lose Pharmacy-only medicines at his next Sync. 2 lines already on In Progress orders will still send."
+```
+
+*Scenario CV009-F*
+```
+Given I have selected Colm, Aoife and Niamh on the Pharmacy-only medicines group page
+When I remove the permission from all three and save
+Then I am first told once how many reps lose it at their next Sync and how many In Progress lines will still send
 ```
 
 ---
@@ -918,7 +984,7 @@ Then the line no longer appears
 2. ~~**Batch reversal ownership:** should a reversal restore the derived owner or create a direct assignment (US-005, assumed restore)?~~ **Resolved 23 Sep 2026:** restore, and flag Locations whose territory now resolves to someone else, offering a direct assignment to the returning rep.
 3. **Area 6:** attribute sales by Assignment History at the time of the Accepted Order; brand totals overlap and must not be summed. *23 Sep 2026:* inherited visits closed by the new rep are excluded from their performance.
 4. **Area 9 and area 1 amendments (applied):** campaign routing to Specialists, Handover Pending and cross-team cover on the overview; Restriction Groups and Left Visits on the tablet.
-5. **Assumed, to confirm (23 Sep 2026):** a Region moves with its last Counties, as a County moves with its last Towns; the inherited marker also applies to visits moved by Handover Move in a carve-out; the unassigned count on the overview is company-wide.
+5. **Resolved 23 Sep 2026:** a Region moves with its last Counties, as a County moves with its last Towns (CV001-E2). The inherited marker also applies to visits moved by Handover Move in a carve-out (CV003-H). The unassigned count is scoped to each manager's area, derived from the nearest held geography: same County, then Region, else Head Office (CV007-D to G).
 
 ---
 

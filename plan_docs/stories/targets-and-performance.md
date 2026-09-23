@@ -468,7 +468,7 @@ Then reps with no target for the period are listed separately with actuals only,
 
 **UX amendments (23 Sep 2026)** — settled in the UX design sessions; full record in `../uxdocs/04-user-stories-amendments.md`.
 
-> The sort decides who the manager looks at first. Percentage points behind pace ranks each rep against their own expectation; money behind pace shows the biggest holes in the team's number. Settled in `../uxdocs/05-manager.md` M13.1–M13.2.
+> The sort decides who the manager looks at first. Percentage points behind pace ranks each rep against their own expectation; money behind pace shows the biggest holes in the team's number. Settled in `../uxdocs/05-manager.md` M13.1–M13.3.
 
 *Scenario TP005-A*
 ```
@@ -498,6 +498,13 @@ And his row still shows the units figure and its pace gap
 Given a rep has a units-only target
 When the overview is ordered by percentage points
 Then that rep is ranked by units
+```
+
+*Scenario TP005-E*
+```
+Given Niamh has a units-only target 14 pts behind pace
+When I choose "Sort by € behind pace"
+Then Niamh is listed under a separate "Units targets" heading below the reps ranked by €, ordered by points behind pace
 ```
 
 ---
