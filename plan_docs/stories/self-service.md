@@ -69,7 +69,7 @@
 
 - **Role:** a Contact at one or more Locations — a shop owner, a pharmacist, or a chain's head office buyer.
 - **Responsibilities:** orders stock for the Locations they are responsible for, between or instead of rep visits.
-- **Context on arrival:** at a desk or on a phone, usually reordering what they always order; untrained, infrequent, and not interested in how the system works.
+- **Context on arrival:** at a desk or on a phone, usually ordering the products they always order — the same products, but rarely the same order (24 Sep 2026); untrained, infrequent, and not interested in how the system works.
 - **Goal:** "Order what I usually order, for the shops I'm responsible for, without waiting for a visit."
 - **Pain points:** hunting for a product they buy every month; not knowing whether something is coming back or gone for good; not being able to fix a quantity they got wrong five minutes ago.
 
@@ -169,6 +169,13 @@ flowchart TD
 - **Over:** one Unavailable state covering both "out of stock" and "gone".
 - **Because:** "back around 25 October" tells the customer to wait and "no longer available" tells them to buy something else — collapsing them loses a sale either way; the system holds no warehouse stock, so a person enters it as they do run-out quantities.
 - **Trade-off accepted:** another state for head office to maintain and for reps to see (with sync hedging on the tablet); an Expected Back date that slips must be extended by hand.
+
+### Land on the person's usual products *(24 Sep 2026)*
+
+- **Chose:** once a shop is chosen, the customer lands on their own usual products (ordered at least twice in six months), each marked when someone else has already ordered it for the shop; a new user sees the shop's regulars as a starting point until their 3rd order.
+- **Over:** landing on the curated catalogue; building the landing page around repeating past orders; a Location-wide usual list.
+- **Because:** customers buy the same products but rarely the same order; hunting for a monthly product is the persona's main pain point; the mark prevents ordering what the rep or a colleague has just ordered.
+- **Trade-off accepted:** a product ordered once from the starting-point section is found by search until it has been ordered twice.
 
 ### Repeat prefills, never submits
 
@@ -306,6 +313,15 @@ When I attempt to open a Location I am not linked to
 Then I am prevented
 ```
 
+**UX amendments (24 Sep 2026)** — the shop choice isn't remembered; full record in `../uxdocs/04-user-stories-amendments.md` (US-NEW-007) and `../uxdocs/06-customer.md` (C2.1). Users with several shops are most often managers moving between them, where a remembered choice leads to ordering for the wrong shop.
+
+*Scenario 6: Chosen on every visit*
+```
+Given I am linked to Hickey's Rathdrum and Hickey's Arklow
+When I sign in, on any visit
+Then I am asked which shop the order is for, and my previous choice is not preselected
+```
+
 ---
 
 ### US-004: Find products
@@ -357,6 +373,36 @@ Given a product is Unavailable with Replacements
 Then it is shown as unavailable with its replacements offered
 ```
 
+**UX amendments (24 Sep 2026)** — the landing page is the person's usual products (C-09); full record in `../uxdocs/04-user-stories-amendments.md` (US-NEW-007) and `../uxdocs/06-customer.md` (C9.1–C9.4, C9.7). Customers buy the same products but rarely the same order, so the page is built around frequent products; the curated catalogue is reached by search. Scenario 1 now describes browsing and search, not the landing page.
+
+*Scenario 7: Usual products*
+```
+Given I have ordered Hand Cream 75ml for Rathdrum on two of my own orders in the last six months, and Arnica Gel once
+When I open Rathdrum's page
+Then Hand Cream is under "Your usual products" and Arnica Gel is not
+And products ordered only by others (the rep, colleagues, the chain's head office) never join my usual list
+```
+
+*Scenario 8: Starting point for a new user*
+```
+Given I have placed fewer than 3 orders for Rathdrum
+Then a separate section "Often ordered for Hickey's Rathdrum" lists products ordered at least twice in the last six months on any order for the Location
+And after my 3rd order the section is no longer shown
+```
+
+*Scenario 9: Ordered by someone else*
+```
+Given the rep ordered 6 Sudocrem for Rathdrum on 2 Oct and it has not been despatched
+Then Sudocrem shows "Ordered 2 Oct by your rep · 6 on the way", and I can still add it without any confirmation
+And once despatched on 4 Oct it shows "Despatched 4 Oct · expected soon" until the company's expected-delivery period has passed
+And the mark appears on the usual products page only, never on catalogue or search rows
+```
+
+*Scenario 10: Orders reached by a link*
+```
+Then the page carries no summary of open orders; order history is reached by a link
+```
+
 ---
 
 ### US-005: Place an order for one Location
@@ -398,6 +444,17 @@ Then the quantity control steps accordingly and shows the unit
 ```
 When I submit with no lines
 Then I see "Add at least one product"
+```
+
+**UX amendments (24 Sep 2026)** — adding from the usual products page; full record in `../uxdocs/04-user-stories-amendments.md` (US-NEW-007) and `../uxdocs/06-customer.md` (C9.5, C9.6). The usual products page is a launchpad; the order is reviewed on its own page.
+
+*Scenario 6: Add with a quantity*
+```
+Given I am on Rathdrum's usual products page
+When I tap Add on Hand Cream 75ml
+Then a quantity popover opens with an empty field — my last quantity is neither prefilled nor offered
+And on Add it closes, I stay on the page, and the row reads "In order · 12"
+And a bar shows the line count with "View order", which opens the order
 ```
 
 ---

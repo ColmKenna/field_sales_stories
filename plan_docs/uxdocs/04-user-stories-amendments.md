@@ -23,6 +23,7 @@
 | US-NEW-004 | New story | Out-of-pattern quantity marker on Review | Tablet (T-07) |
 | US-NEW-005 | New story | Orders processed without head office acceptance | Head office (H-01, H-02) |
 | US-NEW-006 | New story | Manage Visit Due Reason Types | Manager/admin website |
+| US-NEW-007 | New story | Usual products landing page, marked when others have ordered | Customer (C-09, C-02) |
 | Pricing US-008 *(confirm)* | Amendment | Price override applied within allowance | Tablet |
 | Pricing US-009 *(confirm)* | Amendment | Free of charge restricted and applied | Tablet |
 | Promotions US-007 *(confirm)* | Amendment | Spend threshold qualifies before rep discounts | Tablet, customer |
@@ -548,6 +549,87 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
   → Prevents indistinguishable options.
 - `Should_SaveReasonType_When_IconAndColourChosenFromControlledSet`
   → Keeps planner indicators configurable but visually constrained.
+
+---
+
+### US-NEW-007: As a Customer User, I want to land on the products I usually order for this shop, marked when someone else has already ordered them, so that I can build an order without hunting and without ordering twice.
+
+> **Context:** settled 24 Sep 2026 (C-09, C2.1, `06-customer.md`). Customers buy the same products but rarely the same order, so the landing page is built around frequent products, not past orders. Folded into Self-service US-003, US-004 and US-005 as "UX amendments (24 Sep 2026)" scenarios.
+
+**Acceptance Criteria:**
+
+**AC-NEW-007-1:**
+- **Given** I am linked to Hickey's Rathdrum and Hickey's Arklow
+- **When** I sign in, on any visit
+- **Then** I am asked which shop the order is for, and my previous choice is not preselected
+
+**AC-NEW-007-2:**
+- **Given** I have ordered Hand Cream 75ml for Rathdrum on two of my own orders in the last six months, and Arnica Gel once
+- **When** I open Rathdrum's page
+- **Then** Hand Cream is under "Your usual products" and Arnica Gel is not
+
+**AC-NEW-007-3:**
+- **Given** the rep has ordered Sudocrem 125g for Rathdrum many times, and I never have
+- **When** I open Rathdrum's page after my 3rd order
+- **Then** Sudocrem is not under "Your usual products"
+
+**AC-NEW-007-4:**
+- **Given** I have placed fewer than 3 orders for Rathdrum
+- **When** I open Rathdrum's page
+- **Then** a separate section "Often ordered for Hickey's Rathdrum" lists products ordered at least twice in the last six months on any order for the Location, from any source
+
+**AC-NEW-007-5:**
+- **Given** I have just submitted my 3rd order for Rathdrum
+- **When** I next open Rathdrum's page
+- **Then** the "Often ordered for" section is no longer shown
+
+**AC-NEW-007-6:**
+- **Given** the rep ordered 6 Sudocrem for Rathdrum on 2 Oct and it has not been despatched
+- **When** I view Sudocrem on the page
+- **Then** it shows "Ordered 2 Oct by your rep · 6 on the way", and I can still add it without any confirmation
+
+**AC-NEW-007-7:**
+- **Given** that order was despatched on 4 Oct
+- **When** I view Sudocrem within the company's expected-delivery period after despatch
+- **Then** it shows "Despatched 4 Oct · expected soon"; after that period, no mark is shown
+
+**AC-NEW-007-8:**
+- **Given** a colleague's order for Rathdrum has Hand Cream with 24 of 36 despatched
+- **When** I view Hand Cream on the page
+- **Then** the mark shows both what was sent and what is outstanding
+
+**AC-NEW-007-9:**
+- **Given** I am on Rathdrum's page
+- **When** I tap Add on Hand Cream 75ml
+- **Then** a quantity popover opens with an empty field; on Add it closes, I stay on the page, and the row reads "In order · 12"
+
+**AC-NEW-007-10:**
+- **Given** I am on Rathdrum's page
+- **Then** there is no summary of open orders on it; order history is reached by a link
+
+**AC-NEW-007-11:**
+- **Given** the rep ordered a product for Rathdrum that is neither in my usual products nor in the starting-point section
+- **When** I find it through search or the catalogue
+- **Then** its row carries no mark (C9.9)
+
+**Recommended Acceptance Tests:**
+
+- `Should_AskForShop_When_UserHasSeveralLocations_EveryVisit`
+  → Verifies the shop choice is never remembered.
+- `Should_ListProduct_When_OwnOrdersContainItTwiceInSixMonths`
+  → Verifies the frequency rule and the own-orders scope.
+- `Should_NotListProduct_When_OnlyOthersOrderedIt`
+  → Verifies other people's orders don't feed the usual list.
+- `Should_ShowShopRegulars_When_FewerThanThreeOwnOrders`
+  → Verifies the starting-point section and its removal.
+- `Should_MarkProduct_When_AnotherUserOrderedItForTheLocation`
+  → Verifies the on-the-way and despatched stages, and that adding isn't blocked.
+- `Should_ClearDespatchedMark_When_ExpectedDeliveryPeriodPasses`
+  → Verifies the second stage ends on the company setting.
+- `Should_OpenEmptyPopoverAndStay_When_AddTapped`
+  → Verifies no prefill and no navigation.
+
+> **Note:** the expected-delivery period is a company setting. Mark wording (C9.8) is a drafting call awaiting confirmation.
 
 ---
 
@@ -2011,6 +2093,7 @@ Depends on RC-NEW-003. If Hold is removed, this story's trigger needs redefining
 - **EC-NEW-005 — Low unticked after adding.** The order line stays (US-NEW-002).
 - **EC-NEW-006 — one-off and recurring visit held by different reps.** Aoife's one-off Call at Byrne's on Tue 22 Sep leaves Colm's recurring visit open. The manager and Colm decide whether to keep it, move it or cancel it as covered (Visit Planning US-015, AC-VP015-F).
 - **EC-NEW-007 — second removal on a told order.** Tue: Quinn's order loses SPF30; the rep phones and marks it told. Thu: Hand Cream on the same part-despatched order goes unavailable and is removed. The order counts again with only Hand Cream flagged; SPF30 keeps "Told Tue 14:20" (US-NEW-003, AC-NEW-003-9).
+- **EC-NEW-008 — product ordered once from the starting-point section.** Mary orders Arnica Gel once from "Often ordered for Hickey's Rathdrum", then places her 3rd order. The section is removed and Arnica Gel isn't yet in her usual list, so she finds it through search until she has ordered it twice (US-NEW-007, C9.4).
 
 ---
 
