@@ -125,6 +125,29 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 **Affects:** Coverage US-006, where a Location Profile scope matches a Location holding that profile among any others; Visit Planning Visit Due generation; the tablet's Low Stock Hint (resolved thresholds must be in the snapshot); M-03 campaign filters.
 
+### BR-NEW-007 — "As of sync" only when the last sync wasn't today
+
+*Settled 24 Sep 2026 (T8.1, convention §3 rule 4).*
+
+1. Server-derived facts on the tablet (order status, despatch figures, Run-out Remaining, "back in stock around" dates, availability) carry **no** "as of sync" wording when the tablet has synced today.
+2. When the last sync was before today, each such fact carries "as of [day date]", e.g. "Accepted, partly sent — as of Mon 21 Sep"; "About 120 left as of Mon 21 Sep".
+3. The chip still attaches to the fact, one per panel (T8.1), never to the page.
+
+**Supersedes:** the always-on "as of HH:MM sync" wording in brief §2.1 and in the scenarios that quote it: Rep at a Location glossary (Run-out, Temporarily Unavailable) and US-010, US-014; Head Office Order Processing US-001 and the partial-release scenario; Range Lifecycle's Run-out scenario. Those scenarios hold when the last sync was before today, with the date in place of the time.
+
+**Example:** Colm synced at 07:42 today: T-08 reads "Accepted, partly sent". Colm didn't sync today, last synced Mon 21 Sep: T-08 reads "Accepted, partly sent — as of Mon 21 Sep".
+
+### BR-NEW-006 — Work is judged as captured
+
+*Settled 24 Sep 2026 (T1.1).*
+
+1. An Order or Call uploaded from the tablet is validated against the business rules **in force when it was captured**, as held in the rep's snapshot, not against the rules at upload.
+2. A business-rule change after capture never rejects the work. Examples: the Location was reassigned to another rep, or archived; a price, tier or promotion changed (already the case: prices resolve from the morning snapshot); a commercial policy or allowance changed.
+3. Needs Attention on T-01 therefore holds **only technical faults**, such as an incomplete or corrupt upload or a duplicate submission, never a business-rule rejection.
+4. **Supply facts are not business rules.** Stock and availability are still handled after capture by the existing dispositions (BR-NEW-001: Route to allocation, Auto-resolve an unavailable line with the rep prompted). The order is accepted; what can be supplied is a separate question.
+
+**Superseded:** US-017's example rejections "Location no longer exists" and T-01's "Rejected: this location is no longer assigned to you".
+
 ---
 
 ## New stories
@@ -245,6 +268,49 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - `Should_KeepOrderLine_When_LowUnticked`
   → Verifies unticking Low doesn't remove an order line.
 
+**Additional Acceptance Criteria (24 Sep 2026 — RC-NEW-007 resolved, T7.13):**
+
+> **Context:** an order started with no Call of its own (e.g. T-05 → New order for a phoned-in order). The tab stays, and carries the gaps from the Location's most recent Call.
+
+**AC-NEW-002-8:**
+- **Given** Carey's most recent Call on Tue 15 Sep left Nappy Wipes not added and Aftersun CAN'T ADD, and Sudocrem not added
+- **And** Sudocrem was ordered at Carey's on 18 Sep
+- **When** I start an order at Carey's with no Call and open the Low tab
+- **Then** it reads "Still open from your call at Carey's - Tue 15 Sep" and lists Nappy Wipes (not added) and Aftersun (CAN'T ADD) only
+
+**AC-NEW-002-9:**
+- **Given** the Low tab shows carried items
+- **When** the tab label renders
+- **Then** the count includes them under AC-NEW-002-2, and Add and Find replacement behave as for any Low item
+
+**AC-NEW-002-10:**
+- **Given** the most recent Call at the Location was 10 weeks ago
+- **When** I start an order with no Call
+- **Then** its gaps are still carried, labelled with that Call's date
+
+**AC-NEW-002-11:**
+- **Given** the Location has no earlier Call, or its most recent Call has no gaps left
+- **When** I open the Low tab on an order with no Call
+- **Then** it shows Low (0) and "No stock check with this order." with a Record call link
+
+**AC-NEW-002-12:**
+- **Given** the Low tab on an order with no Call shows carried items
+- **When** I use Record call and save a Call at the Location
+- **Then** the order is linked to that Call and the Low tab shows that Call's Low items in place of the carried ones
+
+**Recommended Acceptance Tests:**
+
+- `Should_CarryGapsFromMostRecentCall_When_OrderHasNoCall`
+  → Verifies only not added and CAN'T ADD items carry.
+- `Should_ExcludeCarriedItem_When_ProductOrderedSinceCall`
+  → Verifies later orders by any route close a gap.
+- `Should_CarryRegardlessOfAge_When_LastCallIsOld`
+  → Verifies there is no cut-off; the date label is the guard.
+- `Should_ShowEmptyState_When_NoEarlierCallOrNoGaps`
+  → Verifies the tab stays with an explanation and a Record call link.
+- `Should_ReplaceCarriedRows_When_CallRecordedDuringOrder`
+  → Verifies a new Call supersedes the carry-over.
+
 ---
 
 ### US-NEW-003: As a Field Salesperson, I want to be told on Home when a line was removed from one of my orders so that I can tell the customer before their delivery arrives short.
@@ -284,7 +350,56 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - `Should_HideCount_When_NoLinesRemoved`
   → Verifies the strip doesn't show a zero counter.
 
-> **Open:** what clears the count (RC-NEW-001).
+**Additional Acceptance Criteria (24 Sep 2026 — RC-NEW-001 resolved):**
+
+> **Context:** reps phone the shop the same day, so the rep declares the call was made. The next Call at the Location is a backstop for a skipped tap. The count counts orders, because one call covers a whole order. See T2.6 and T8.3 in `01-tablet-day.md`.
+
+**AC-NEW-003-5:**
+- **Given** an order in the "not supplied" list or open on T-08 has removed lines not yet marked told
+- **When** I tap "Told them"
+- **Then** every such removed line on that order is recorded as told with the time, and the order no longer counts toward the "not supplied" count
+
+**AC-NEW-003-6:**
+- **Given** I have just marked an order told in the "not supplied" list
+- **When** the list is still open
+- **Then** the order stays in the list, greyed, showing "Told [time]" with "Undo", and leaves the list only once I leave it
+
+**AC-NEW-003-7:**
+- **Given** I marked an order told by mistake
+- **When** I tap "Undo" in the list or on T-08
+- **Then** the told record is removed and the order counts toward the "not supplied" count again
+
+**AC-NEW-003-8:**
+- **Given** one or more orders at a Location have removed lines not yet marked told
+- **When** I log a Call at that Location, by visit or by phone
+- **Then** those lines are recorded as told by that Call, and the orders no longer count
+
+**AC-NEW-003-9:**
+- **Given** an order whose removed lines are all marked told
+- **When** a later sync removes a further line from it
+- **Then** the order counts again, only the new line is flagged, and the earlier lines keep their told record
+
+**AC-NEW-003-10:**
+- **Given** I open an affected order on T-08
+- **When** I leave it without tapping "Told them"
+- **Then** the order still counts
+
+**Recommended Acceptance Tests:**
+
+- `Should_MarkAllRemovedLinesTold_When_ToldThemTappedOnOrder`
+  → Verifies the tap is per order and records every open removed line.
+- `Should_KeepToldOrderInListWithUndo_When_ListStillOpen`
+  → Verifies mis-tap recovery until the rep leaves the list.
+- `Should_RestoreCount_When_ToldUndone`
+  → Verifies Undo reverses the told record.
+- `Should_ClearNotSuppliedAtLocation_When_CallLoggedThere`
+  → Verifies the Call backstop covers every affected order at the Location.
+- `Should_RaiseOrderAgainWithNewLineOnly_When_LineRemovedAfterTold`
+  → Verifies a later removal is treated as a new issue.
+- `Should_KeepCount_When_OrderOpenedWithoutTold`
+  → Verifies viewing is not a completion signal.
+
+> ~~**Open:** what clears the count (RC-NEW-001).~~ **Resolved (24 Sep 2026)** — AC-NEW-003-5 to -10.
 
 ---
 
@@ -1710,6 +1825,168 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ---
 
+### Area 1 US-006, US-007 — "Stock mentioned" on a phone Call
+
+> **Context:** settled 24 Sep 2026 (T6.5). A rep can't count stock down a phone line; the shopkeeper most likely says "we're low on X" or "we're out of Y". That is unconfirmed, so counts stay possible at one extra tap.
+
+**Additional Acceptance Criteria:**
+
+**AC-A1006-A:**
+- **Given** I am recording a Call at Doyle's with a suggested list of 16 products
+- **When** I choose Channel "Phone"
+- **Then** the stock section reads "Stock mentioned", lists the same 16 products with a filter box, and each row offers Low, Out, Add to order and "Add count" with no stepper
+
+**AC-A1006-B:**
+- **Given** Channel "Phone"
+- **When** I type "sudo" in the filter box
+- **Then** the list narrows to matching products, and if none match I can search the catalogue and add the product as a row
+
+**AC-A1006-C:**
+- **Given** Channel "Phone"
+- **When** I mark Sudocrem 125g Out
+- **Then** it is also marked Low and recorded with a count of 0
+
+**AC-A1006-D:**
+- **Given** Channel "Phone", SPF30 marked Low, Sudocrem marked Out and 14 rows untouched
+- **When** I tap Review and save
+- **Then** the review reads "Phone · 2 marked Low (1 out)", only the 2 marked products are recorded, and the 14 untouched rows are not saved as Not checked
+
+**AC-A1006-E:**
+- **Given** Channel "Phone"
+- **When** I tap "Add count" on a row and enter 3
+- **Then** the row records a count of 3, as it would in person
+
+**AC-A1006-F:**
+- **Given** I have entered counts or marks
+- **When** I switch Channel between In person and Phone
+- **Then** nothing I entered is lost: counts show as the row's count on Phone, and Out rows show a count of 0 in person
+
+**Recommended Acceptance Tests:**
+
+- `Should_ShowStockMentionedWithoutSteppers_When_ChannelPhone`
+  → Verifies the section adapts to the channel mode.
+- `Should_FilterSuggestedRowsThenFallToCatalogue_When_TypingOnPhone`
+  → Verifies the filter box covers both recognised and unlisted products.
+- `Should_RecordLowWithZeroCount_When_OutMarked`
+  → Verifies Out stores the same data as an in-person count of 0.
+- `Should_NotSaveUntouchedRowsAsNotChecked_When_ChannelPhone`
+  → Verifies a phone Call doesn't pollute the next suggested list.
+- `Should_KeepEnteredValues_When_ChannelSwitched`
+  → Verifies switching mode never discards input.
+
+**Superseded:** US-006 Scenario 2's "a Stock Check of 4 products" on Phone is now four products mentioned (marked or counted), not a counted stock check.
+
+---
+
+### Area 1 US-009 — Low Stock Hint wording
+
+> **Context:** settled 24 Sep 2026 (T6.3). The hint fires from a threshold, which is a floor; no "usual level" exists in the data (T7.7).
+
+**AC-A1009-A:**
+- **Given** the resolved threshold for "Cold & Flu Relief 16s" at Murphy's Pharmacy is 6
+- **When** I enter a count of 3
+- **Then** I see "Below low-stock level (6)" under the Low tick, and Low stays unticked
+
+**Recommended Acceptance Tests:**
+
+- `Should_ShowThresholdWording_When_CountBelowResolvedThreshold`
+  → Verifies the hint names the floor, never a "usual" level.
+
+**Superseded:** Scenario 1's "Below usual level" beside the count.
+
+---
+
+### Customer Directory US-005 — Set from GPS only while unconfirmed
+
+> **Context:** settled 24 Sep 2026 (T5.3). Once a rep has confirmed the position on site, the action has no job; a wrong confirmation is a head-office revert.
+
+**AC-CD005-A:**
+- **Given** Quinn's Centra has Precision "Town" or "Eircode"
+- **When** I open the Location on the tablet
+- **Then** I see "Map position approximate" with Set from GPS, highlighted on my first visit only
+
+**AC-CD005-B:**
+- **Given** Precision is "Confirmed on site" (sent or not yet sent)
+- **When** I open the Location
+- **Then** Set from GPS is not shown
+
+**AC-CD005-C:**
+- **Given** head office reverts a confirmed capture
+- **When** my tablet next syncs
+- **Then** Set from GPS is shown again
+
+**Recommended Acceptance Tests:**
+
+- `Should_ShowSetFromGps_When_PrecisionIsDefaulted`
+  → Verifies the action appears while the position is approximate.
+- `Should_HideSetFromGps_When_PositionConfirmedOnSite`
+  → Verifies the action disappears once confirmed, including before sync.
+- `Should_ShowSetFromGpsAgain_When_CaptureReverted`
+  → Verifies the revert path restores the action.
+
+**Superseded:** Scenario 4 (available but not highlighted, with "Replace the confirmed position?").
+
+---
+
+### Area 1 US-023 — the chain's agreed range as a section on a branch order
+
+> **Context:** settled 24 Sep 2026 (T7.14). A branch order works through the agreed range as a set, so it sits together at the top; each product appears once.
+
+**AC-A1023-A:**
+- **Given** Hickey's Pharmacy has an Agreed Range of 30 products
+- **When** I open an Order at Hickey's Rathdrum
+- **Then** the pad opens with a section "Hickey's agreed range (30)" above the normal pad, including products outside my ranges
+
+**AC-A1023-B:**
+- **Given** SPF30 Sun Lotion 200ml is in both the agreed range and my ranges
+- **When** the pad renders
+- **Then** SPF30 appears only in the agreed range section, not again under Sun care
+
+**Recommended Acceptance Tests:**
+
+- `Should_ShowAgreedRangeSectionFirst_When_OrderAtBranch`
+  → Verifies the agreed range reads as a set at the top.
+- `Should_ListProductOnce_When_InAgreedRangeAndRepRange`
+  → Verifies no duplicate rows between the section and the pad.
+
+**Superseded:** Scenario 5's per-row "In Hickey's agreed range" marker within the pad.
+
+---
+
+### Area 1 US-017 — Needs Attention holds technical faults only
+
+> **Context:** settled 24 Sep 2026 (BR-NEW-006). Work is judged as captured, so a later business-rule change never bounces it.
+
+**Additional Acceptance Criteria:**
+
+**AC-A1017-A:**
+- **Given** I captured an Order at Quinn's Centra while it was assigned to me
+- **When** Quinn's is reassigned to Aoife before I sync
+- **Then** the Order uploads and is accepted, and nothing appears in Needs Attention
+
+**AC-A1017-B:**
+- **Given** an upload arrived incomplete
+- **When** the Sync finishes
+- **Then** the item appears in Needs Attention with "Couldn't be sent - the upload was incomplete" and Open and Delete
+
+**AC-A1017-C:**
+- **Given** the server can't say anything the rep can act on
+- **When** the item appears in Needs Attention
+- **Then** it reads "This couldn't be sent - contact the office", with the raw reason kept for support and not shown by default (T1.2)
+
+**Recommended Acceptance Tests:**
+
+- `Should_AcceptOrder_When_LocationReassignedAfterCapture`
+  → Verifies work is judged against the rules at capture.
+- `Should_AcceptOrder_When_LocationArchivedAfterCapture`
+  → Verifies an archived Location doesn't bounce captured work.
+- `Should_ShowPlainReasonWithOpenAndDelete_When_UploadIncomplete`
+  → Verifies Needs Attention holds technical faults with a plain sentence.
+
+**Superseded:** Scenario 1's "Location no longer exists" as a rejection reason.
+
+---
+
 ### Head Office US-001, US-002 — worklist *(superseded in part)*
 
 Superseded: the Flagged Orders and Routine Orders sections, and the "Accept all routine" action. Orders no longer appear on the worklist (US-NEW-005).
@@ -1733,18 +2010,19 @@ Depends on RC-NEW-003. If Hold is removed, this story's trigger needs redefining
 - **EC-NEW-004 — first order of a product at a location.** No out-of-pattern marker, since there's nothing to compare against (US-NEW-004).
 - **EC-NEW-005 — Low unticked after adding.** The order line stays (US-NEW-002).
 - **EC-NEW-006 — one-off and recurring visit held by different reps.** Aoife's one-off Call at Byrne's on Tue 22 Sep leaves Colm's recurring visit open. The manager and Colm decide whether to keep it, move it or cancel it as covered (Visit Planning US-015, AC-VP015-F).
+- **EC-NEW-007 — second removal on a told order.** Tue: Quinn's order loses SPF30; the rep phones and marks it told. Thu: Hand Cream on the same part-despatched order goes unavailable and is removed. The order counts again with only Hand Cream flagged; SPF30 keeps "Told Tue 14:20" (US-NEW-003, AC-NEW-003-9).
 
 ---
 
 ## Open clarifications
 
-- **RC-NEW-001** — What clears the "not supplied" count: opening the order, an explicit "Told them", or the next call at that location?
+- ~~**RC-NEW-001** — What clears the "not supplied" count: opening the order, an explicit "Told them", or the next call at that location?~~ **Resolved (24 Sep 2026):** "Told them", marked per order on the list and on T-08, with Undo; the next Call logged at the Location is the backstop; a later removal re-raises the order with only the new line (US-NEW-003, EC-NEW-007).
 - ~~**RC-NEW-002** — Are the rep discount allowance and the free-of-charge cap one figure for everyone, set per rep, or per category?~~ **Resolved at UX level:** a manager groups eligible products into a commercial policy profile with rules such as 10% rep discount and X FOC units per rep per month.
 - **RC-NEW-003** — Do Hold and Reject survive on H-02 with no flag driving them?
 - **RC-NEW-004** — Do orders appear on H-01 at all, e.g. as a read-only feed, or only via search and the customer record?
-- **RC-NEW-005** — Does the quantity popover dismiss on add, or advance to the next not added Low item?
+- ~~**RC-NEW-005** — Does the quantity popover dismiss on add, or advance to the next not added Low item?~~ **Resolved (24 Sep 2026):** it always dismisses on add, wherever it was opened.
 - **RC-NEW-006** — Does the spend-threshold discount apply to the final order total (assumed) or the pre-discount total?
-- **RC-NEW-007** — What does the Low tab show on an order that doesn't follow a stock check (a phone order, say)? Not discussed.
+- ~~**RC-NEW-007** — What does the Low tab show on an order that doesn't follow a stock check (a phone order, say)?~~ **Resolved (24 Sep 2026):** a phone Call now has "Stock mentioned" (Area 1 US-006/US-007). An order with no Call carries the gaps (not added, CAN'T ADD) from the Location's most recent Call, minus products ordered since, dated, with no age limit (US-NEW-002 AC-8–12).
 - ~~**RC-NEW-008** — If a Product is outside a commercial policy profile, is the corresponding action unavailable?~~ **Resolved:** yes; product membership explicitly enables the action.
 - **RC-NEW-009** — Does the commercial policy profile replace or extend the catalogue's existing one-per-product Product Profile, or become a separate rule/membership model? The UX name is provisional until the business rules are firmer.
 - ~~**RC-NEW-010** — When an offline rep adds an FOC line, does it consume the monthly allowance immediately, and how is that reservation reconciled?~~ **Resolved:** FOC is an ordinary €0.00 order line; its quantity counts while the line exists and normal line removal releases it. The tablet combines the synced balance with local lines.

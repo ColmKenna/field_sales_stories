@@ -89,23 +89,50 @@ flowchart TD
   | Carey's Pharmacy                    Handover - finish visit |
 ```
 
-> **DECISION T2.1 — Today stays at the top even when Overdue is non-empty.**
+> **DECISION T2.1 — Today stays at the top even when Overdue is non-empty.** *(confirmed 24 Sep 2026)*
 > The tempting alternative is to float Overdue above Today when it has items. I've kept Today first: the rep opens this screen between every visit, so the cost of demoting the answer to "where next" is paid ten times a day, while Overdue is a once-a-morning read. Overdue is a collapsed section with a live count, which is enough to be noticed without displacing the primary job.
 
-> **DECISION T2.2 — the three exception counts are one strip, not three cards.**
+> **DECISION T2.2 — the three exception counts are one strip, not three cards.** *(confirmed 24 Sep 2026)*
 > *Hick's law.* Three cards read as three places to go and cost a scan before every visit. One strip of three small counters reads as a status line — glanceable, and only tapped when a number is non-zero.
 
-> **DECISION T2.3 — done visits stay in place rather than moving to a "done" section.**
+> **DECISION T2.3 — done visits stay in place rather than moving to a "done" section.** *(confirmed 24 Sep 2026)*
 > Keeps the day's shape stable. The rep's model of the day is a route, and a route doesn't reorder itself as you drive it.
 
-> **DECISION T2.4 — deadline reason is on the card, not behind an icon.**
+> **DECISION T2.4 — deadline reason is on the card, not behind an icon.** *(confirmed 24 Sep 2026)*
 > "Deadline: Autumn range order - Fri 25 Sep" is the single most consequential thing on that card and it fits. *Recognition over recall.*
 
 > **DECISION T2.5 — a fourth counter: lines that couldn't be supplied.**
 > When an unavailable line is auto-removed at head office (see 02, H1.7), the order total changes after the rep quoted it, and for most shops the rep is the only channel to the customer. The counter prompts that call. It's a different kind of item from the other three — an action in the world, not on the tablet — so the tablet can't observe it being done. With four counters, T2.2's Hick's-law argument is at its limit; a fifth should force a rethink of the strip.
-> **Open:** what clears it — opening the order, an explicit "Told them", or the next call at that location.
+> ~~**Open:** what clears it — opening the order, an explicit "Told them", or the next call at that location.~~ **Resolved (24 Sep 2026)** — see T2.6.
 
-**Open:** does the drag handle appear in normal mode too, or only in Reorder mode? Drawn as Reorder-only, because a persistent handle on every card is a persistent mis-tap target.
+**Not supplied list** — opened from the counter; one card per affected order:
+
+```
++----------------------------------------------------------------+
+| < Home                 Not supplied (1)                        |
++----------------------------------------------------------------+
+| Quinn's Centra - Order Tue 22 Sep                        >     |
+|   (x) SPF30 Sun Lotion 200ml - no longer available             |
+|   (x) Nappy Wipes 64pk - no longer in an active range          |
+|                                       [ Told them ]            |
++----------------------------------------------------------------+
+| Carey's Pharmacy - Order Mon 21 Sep                      >     |
+|   (x) Hand Cream 75ml - no longer available                    |
+|   Told 14:20                               [ Undo ]            |
++----------------------------------------------------------------+
+```
+
+> **DECISION T2.6 — "Told them" clears the count; the next Call at the Location is the backstop.** *(settled 24 Sep 2026)*
+> Reps phone the shop the same day, so the completion signal is *declared*. Opening the order clears too early (the rep opens it to see what to say, and a failed call would leave no trace). Waiting for the next call clears too late. A declared signal goes stale if the rep skips the tap, so an inferred **backstop** sits behind it: any Call logged at the Location, visit or phone, clears every affected order there, because by then the rep has spoken to the shop.
+> - **Unit is the order.** The count counts orders. "Told them" is marked once per order and records against every removed line on it, because one phone call covers the whole order.
+> - **In both places.** "Told them" appears on each order in the list behind the counter and on T-08, next to the lines it confirms (*proximity*).
+> - **Mis-tap recovery.** A told order stays in the list, greyed, with "Told 14:20" and "Undo", until the rep leaves the list (*user control and freedom*). T-08 keeps the record.
+> - **A declaration covers what was known.** If a later sync removes another line from an order already marked told (e.g. a part-despatched order), the order comes back into the count with only the new line flagged; earlier lines keep their "Told" record. A new removal is a new issue.
+> - **Rejected:** clearing on opening the order; clearing on the next call only; delivery as the backstop; no backstop; per-line or per-Location marking; order staying cleared after a later removal.
+
+> **DECISION T2.7 — reordering happens only in Reorder mode, with ^/v buttons.** *(settled 24 Sep 2026)*
+> Cards are tapped about ten times a day to open a Location, and reordered at most once a day. A mode keeps the rare, disruptive action away from the frequent, harmless one: in normal mode a tap always opens the card. ^/v buttons are more reliable than dragging when used one-handed.
+> **Rejected:** an always-visible drag handle (a mis-tap target, and a slipped drag silently reorders the route); long-press to drag (can't be discovered, and triggers by accident).
 
 ---
 
@@ -124,7 +151,7 @@ flowchart TD
 | NEEDS ATTENTION (1)                                             |
 | +------------------------------------------------------------+ |
 | | Order - Quinn's Centra - 12 lines                           | |
-| | Rejected: this location is no longer assigned to you        | |
+| | Couldn't be sent - the upload was incomplete                | |
 | |                             [ Open ]        [ Delete ]      | |
 | +------------------------------------------------------------+ |
 +----------------------------------------------------------------+
@@ -173,14 +200,16 @@ flowchart TD
   |                    [  Sync now  ]                             |
 ```
 
-> **DECISION T1.1 — Needs Attention is first and is the only section with per-item buttons.**
+> **DECISION T1.1 — Needs Attention is first and is the only section with per-item buttons.** *(confirmed 24 Sep 2026)*
 > Ready to Send and In Progress need no decision from the rep; Needs Attention needs two. Putting the only actionable buttons in the only actionable section stops the screen reading as a wall of controls.
+> *24 Sep 2026:* work is **judged as captured** (BR-NEW-006). A reassignment, archive or other rule change after capture never rejects it, so Needs Attention holds only technical faults (an incomplete or corrupt upload, a duplicate) and should be rare.
 
-> **DECISION T1.2 — the rejection reason is a sentence, not a code.**
+> **DECISION T1.2 — the rejection reason is a sentence, not a code.** *(confirmed 24 Sep 2026)*
 > *Help users recognise, diagnose and recover.* The server's reason is rendered in the rep's vocabulary. Anything the rep can't act on ("FK constraint violation") should surface as "This couldn't be sent — contact the office" with the raw text available to support, not shown by default.
 
-> **DECISION T1.3 — no automatic sync on regaining signal.**
+> **DECISION T1.3 — no automatic sync on regaining signal.** *(confirmed 24 Sep 2026)*
 > The brief describes sync as deliberate. An automatic background sync would make the counts on Home change while the rep isn't looking, which undermines the entire "you can see what hasn't gone" contract. Notifications nudge; the rep presses the button.
+> *Confirmed 24 Sep 2026:* manual only, in both directions. When signal returns and there is unsent work, a gentle reminder with Sync now appears, at most once an hour (Area 1 US-002 Scenario 2). **Rejected:** automatic upload with manual download; automatic both ways.
 
 ---
 
@@ -220,7 +249,7 @@ flowchart TD
 |  ( ) Mon 21    ( ) Tue 22    ( ) Wed 23    ( ) Thu 24           |
 |  ( ) Fri 25    ( ) Sat 26    ( ) Sun 27                         |
 |                                                                 |
-|  (!) Fri 25 is after this visit's due date.                     |
+|  (!) Sat 26 is after this visit's due date.                     |
 |      The Autumn range order deadline is Fri 25 Sep.             |
 |                                                                 |
 |                              [ Cancel ]   [ Move visit ]        |
@@ -235,11 +264,11 @@ flowchart TD
 |                              [ Leave them ]  [ Move them too ]  |
 ```
 
-> **DECISION T3.1 — the same-town prompt fires after the move, not before.**
+> **DECISION T3.1 — the same-town prompt fires after the move, not before.** *(confirmed 24 Sep 2026)*
 > Asking first turns one decision into two before anything has happened. Asking after means the rep's intended move always succeeds, and the bulk offer is a genuine convenience rather than an obstacle. *User control and freedom* — the offer is dismissible and nothing is pre-applied (§2.6).
 
-> **DECISION T3.2 — the past-due warning escalates in wording only when a reason exists.**
-> Plain: "Fri 25 is after this visit's due date." With a reason, the deadline sentence is appended. Both still allow the move. The brief is explicit that this is a warning, not a block.
+> **DECISION T3.2 — the past-due warning escalates in wording only when a reason exists.** *(confirmed 24 Sep 2026)*
+> Plain: "Sat 26 is after this visit's due date." With a reason, the deadline sentence is appended. Both still allow the move. The brief is explicit that this is a warning, not a block.
 
 ---
 
@@ -269,7 +298,7 @@ flowchart TD
 | Only locations assigned to you can be searched on the tablet.   |
 ```
 
-> **DECISION T4.1 — the "assigned only" explanation appears on the empty result, not above the field.**
+> **DECISION T4.1 — the "assigned only" explanation appears on the empty result, not above the field.** *(confirmed 24 Sep 2026)*
 > A permanent caveat above the search box is read once and then never again; the same sentence at the moment of failure is read every time it matters. *Error prevention* is preferable to error messages generally, but a permanent banner here would be noise on every successful search.
 
 ---
@@ -292,7 +321,7 @@ flowchart TD
 |              [   Record call   ]      [   New order   ]         |
 +----------------------------------------------------------------+
 | RECENT                                                          |
-| Order 12 lines   Accepted, partly sent   as of 07:42 sync  >    |
+| Order 12 lines   Accepted, partly sent                     >    |
 | Call 3 Sep       13 counted, 2 low                         >    |
 | Order 9 lines    Accepted, sent in full                    >    |
 |                                                    Show more v  |
@@ -313,16 +342,19 @@ flowchart TD
   | Closed until 14 Oct                         [ Change dates ]  |
 
   Permanently closed        entire screen read-only, no actions
+
+  Position confirmed        the "Map position approximate / Set from GPS" row is absent
 ```
 
-> **DECISION T5.1 — two primary actions, side by side, equal weight.**
+> **DECISION T5.1 — two primary actions, side by side, equal weight.** *(confirmed 24 Sep 2026)*
 > The brief implies a visit usually means call-then-order, but phone orders and call-only visits are both common. Making "Record call" the single primary and burying "New order" would punish the phone-order path. Two equal targets, both thumb-sized. If usage shows one dominates, demote the other later — that's a cheap change.
 
-> **DECISION T5.2 — the inactive main contact appears in the identity block, not in a warnings area.**
+> **DECISION T5.2 — the inactive main contact appears in the identity block, not in a warnings area.** *(confirmed 24 Sep 2026)*
 > The contact *is* part of who this shop is to the rep. Pulling it into a separate warnings region separates the problem from the thing it's a problem about. *Proximity.*
 
-> **DECISION T5.3 — "Set from GPS" is quiet by default, and is highlighted exactly once.**
+> **DECISION T5.3 — "Set from GPS" shows only while the position is unconfirmed; quiet, highlighted exactly once.** *(confirmed and amended 24 Sep 2026)*
 > The brief's "quiet control, highlighted once if unconfirmed" is drawn as a plain secondary button with the precision statement above it. The one-time highlight is a first-visit-only treatment, not a standing badge — a standing badge would be ignored within a week.
+> *Amended 24 Sep 2026:* the action appears **only while the position is not set** — Precision is Eircode or Town (defaulted), not "Confirmed on site". Once confirmed, the row and the action are absent. A wrong confirmed position is corrected by head office reverting the capture (Customer Directory US-005 Scenario 5), which brings the action back. **Superseded:** the action staying available, unhighlighted, with "Replace the confirmed position?".
 
 ---
 
@@ -348,7 +380,7 @@ flowchart TD
 | +------------------------------------------------------------+ |
 | | SPF30 Sun Lotion 200ml               [ - ]   2   [ + ]      | |
 | | On last 3 orders                               [x] Low      | |
-| | Below usual level (usually 8)                               | |
+| | Below low-stock level (6)                                   | |
 | |                                     [ Add to order ]        | |
 | +------------------------------------------------------------+ |
 | +------------------------------------------------------------+ |
@@ -436,21 +468,66 @@ Break prompts appear live beneath the price as the number is typed, so "2 more f
   |                            [ Record a follow-up call ]         |
 ```
 
-> **DECISION T6.1 — one scrolling page with collapsed secondary sections, not a wizard.**
+> **DECISION T6.1 — one scrolling page with collapsed secondary sections, not a wizard.** *(confirmed 24 Sep 2026)*
 > Stock check is 80% of the time on this screen and 100% of the reason it exists; pitch notes, competitor notes and campaign outcomes are occasional. A wizard would impose four steps on a task that is usually one. *Progressive disclosure* — the occasional sections are collapsed headers with counts, so their presence is visible and their bulk isn't.
 
-> **DECISION T6.2 — channel selection sits at the top as two large unselected options.**
-> Both start unselected, per §2.6. Its position is first because it's the only field that changes what the rest of the screen means (a phone call has no stock check in practice, though the brief doesn't say to hide it — flagging that as a question below).
+> **DECISION T6.2 — channel selection sits at the top as two large unselected options.** *(confirmed 24 Sep 2026)*
+> Both start unselected, per §2.6. Its position is first because it's the only field that changes what the rest of the screen means (on Phone the stock check becomes "Stock mentioned" — T6.5).
 
-> **DECISION T6.3 — the "below usual level" hint sits under the Low tick, not next to the count.**
+> **DECISION T6.3 — the low-stock hint sits under the Low tick, not next to the count.** *(confirmed 24 Sep 2026)*
 > It is *about* the Low decision, not about the count. Placing it next to the number invites the rep to read it as a target quantity.
+> *Wording settled 24 Sep 2026:* "Below low-stock level (6)", naming the resolved threshold (BR-NEW-005). "Below usual level (usually 8)" is superseded: no usual level exists in the data (T7.7), and "usually" implies a top-up target. **Rejected:** "Looks low for this shop" (no number); "Below 6" (doesn't say what 6 is).
 
-> **DECISION T6.4 — save review is a dialog, not a page.**
+> **DECISION T6.4 — save review is a dialog, not a page.** *(confirmed 24 Sep 2026)*
 > It's a confirmation of work already done. The one thing it adds is the `(!)` on the unrecorded campaign outcome — which is the real reason the screen exists, since a missed campaign outcome is invisible everywhere else.
 
+**Channel = Phone** — the stock check becomes "Stock mentioned" (`*` marks the selected channel):
+
+```
++----------------------------------------------------------------+
+| < Doyle's                 Record call                          |
++----------------------------------------------------------------+
+| HOW                                                            |
+|   +---------------------------+  +---------------------------+ |
+|   |       In person           |  |      * Phone              | |
+|   +---------------------------+  +---------------------------+ |
++----------------------------------------------------------------+
+| STOCK MENTIONED                                 2 marked Low   |
+| [ Filter or search...                                     ]    |
+| +------------------------------------------------------------+ |
+| | SPF30 Sun Lotion 200ml                [x] Low   [ ] Out    | |
+| | On last 3 orders                       [ Add to order ]    | |
+| |                                        Add count           | |
+| +------------------------------------------------------------+ |
+| +------------------------------------------------------------+ |
+| | Sudocrem 125g                         [x] Low   [x] Out    | |
+| | Counted last visit                     [ Add to order ]    | |
+| |                                        count 0             | |
+| +------------------------------------------------------------+ |
+| +------------------------------------------------------------+ |
+| | Loose Porridge Oats                   [ ] Low   [ ] Out    | |
+| | Counted last visit                     Add count           | |
+| +------------------------------------------------------------+ |
+| ...                                                            |
++----------------------------------------------------------------+
+| PITCH NOTES                                                v   |
++----------------------------------------------------------------+
+|                          [ Review and save ]                   |
++----------------------------------------------------------------+
+```
+
+> **DECISION T6.5 — on Phone, the stock check becomes "Stock mentioned".** *(settled 24 Sep 2026)*
+> Channel is a *mode*: the screen follows it. On a phone call the shopkeeper most likely says "we're low on X" or "we're out of Y" rather than reading counts, but that is unconfirmed, so the shape is chosen to be cheap if wrong.
+> - **No steppers.** Each row has Low, Out and "Add to order"; "Add count" per row covers the shopkeeper who does read a number (one extra tap if that turns out common).
+> - **Same starting rows as in person** (the suggested list), with a **filter box** on top: typing narrows the list, and a product not in it falls through to catalogue search (*recognition over recall* without the scan cost).
+> - **Out is its own mark** (*match between system and real world* — the shopkeeper distinguishes low from out). It is stored as Low with a count of 0, the same data an in-person count of 0 produces. Out ticks Low with it.
+> - **Header counts what was marked** ("2 marked Low"), never "not checked". Unmarked rows on a phone call are not recorded, so they are **not** saved as Not checked and don't disturb the next visit's suggested list. Save review reads "Phone · 2 marked Low (1 out)".
+> - **Switching channel keeps what was entered:** counts taken in person show as the row's count on Phone; Out rows show a count of 0 in person.
+> - **Rejected:** unchanged screen with optional counts; starting empty with search only; no stock section on Phone; Low covering out; Low plus count 0 as the only way to record out.
+
 **Open:**
-- Does selecting **Phone** collapse or hide the stock check? Drawn as unchanged, because the brief doesn't say — but a rep can't count stock down a phone line.
-- 3 not checked out of 16: is "not checked" a state the rep sets, or just the absence of a count? Drawn as absence.
+- ~~Does selecting **Phone** collapse or hide the stock check?~~ **Resolved (24 Sep 2026)** — T6.5.
+- ~~3 not checked out of 16: is "not checked" a state the rep sets, or just the absence of a count? Drawn as absence.~~ **Resolved (24 Sep 2026)** — absence of a count; the save review is where a forgotten row is caught (matches Area 1 US-007 Scenario 4). Phone calls excepted (T6.5).
 
 ---
 
@@ -522,6 +599,43 @@ Break prompts appear live beneath the price as the number is typed, so "2 more f
 | `CAN'T ADD` | unorderable, no replacement chosen | otherwise the rep keeps tapping a dead row |
 
 The tab count `Low (3)` counts `not added` and `CAN'T ADD` only — the states that still want something from the rep.
+
+**Low tab on an order with no Call** — e.g. Carey's phones in an order and the rep goes T-05 → New order:
+
+```
+| [ Order pad ]  [ Low (2) ]  [ Search all ]                     |
++----------------------------------------------------------------+
+| No stock check with this order.                                |
+| Still open from your call at Carey's - Tue 15 Sep              |
+| +------------------------------------------------------------+ |
+| | Nappy Wipes 64pk                  not added                | |
+| | marked Low 15 Sep                     [    Add    ]        | |
+| +------------------------------------------------------------+ |
+| +------------------------------------------------------------+ |
+| | Aftersun Gel 200ml                CAN'T ADD                | |
+| | (x) Back in stock 25 Oct     [ Find replacement ]          | |
+| +------------------------------------------------------------+ |
+| [ Record call ]                                                |
++----------------------------------------------------------------+
+
+  No earlier call, or nothing still open
+| [ Order pad ]  [ Low (0) ]  [ Search all ]                     |
++----------------------------------------------------------------+
+| No stock check with this order.                                |
+| [ Record call ]                                                |
++----------------------------------------------------------------+
+```
+
+> **DECISION T7.13 — with no Call, the Low tab carries the gaps from the Location's most recent Call.** *(settled 24 Sep 2026)*
+> The tab stays (T7.1's stable screen model) and surfaces known gaps rather than an empty panel.
+> - **Which items:** only that Call's gaps — `not added` and `CAN'T ADD` — **minus any product ordered at the Location since** (by any route). On 15 Sep Carey's had 5 Low: SPF30 and Hand Cream were added, Sudocrem and Nappy Wipes not added, Aftersun CAN'T ADD; Sudocrem was ordered on 18 Sep, so Nappy Wipes and Aftersun remain (*signal over noise*).
+> - **No age limit.** The date label ("Still open from your call at Carey's - Tue 15 Sep") is the guard; the rep judges staleness.
+> - Carried items behave as any Low item: `[ Add ]` opens the quantity popover, CAN'T ADD offers replacements, and the tab count includes them.
+> - The same Call's rows appear on the Low tab of the order linked to that Call; the carry-over applies only to an order with no Call of its own.
+> - **Rejected:** hiding the tab; empty state only; all Low marks with their states; gaps ignoring later orders; a cut-off by visit cycle or fixed days.
+>
+> - The tab shows "No stock check with this order." with a `[ Record call ]` link, both when nothing carries and above carried items *(confirmed 24 Sep 2026)*.
+> - Recording a Call during the order **replaces** the carried rows with that Call's Low items *(confirmed 24 Sep 2026)*.
 
 > **DECISION T7.6 — no "Add all".**
 > A bulk add was only coherent while the system was guessing quantities. Once each line needs a number the rep confirms aloud with the customer, per-item pacing matches the actual conversation and a bulk action would have to either invent quantities or open five dialogs.
@@ -670,21 +784,26 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 > **DECISION T7.1 — the Low list is a tab. Settled.**
 > The brief says it sits "alongside" the Order Pad; on a tablet there is no alongside. Three shapes were considered — a strip pinned above the pad (shrinks to nothing when empty, but eats vertical space whenever it isn't), a bottom sheet (thumb-friendly, but a rep who never drags it never learns it exists), and a tab strip. Tabs chosen: the count `Low (n)` keeps the list's existence visible at zero vertical cost, and it survives the shift to a catch-up list — a strip that appears and vanishes between visits costs the rep a stable mental model of the screen. Accepted cost: switching tabs loses scroll position in the pad.
 
-> **DECISION T7.2 — overrides and free goods live on Review, not on the pad row.**
+> **DECISION T7.2 — overrides and free goods live on Review, not on the pad row.** *(confirmed 24 Sep 2026)*
 > Both are exceptional, both require a reason, and both are bounded by limits the tablet enforces. Putting them on the pad row would add two controls to every row to serve maybe one row in fifty. *Progressive disclosure*, and it keeps the row from §2.4 buildable.
 
-> **DECISION T7.3 — categories are collapsible section headers with the full breadcrumb.**
+> **DECISION T7.3 — categories are collapsible section headers with the full breadcrumb.** *(confirmed 24 Sep 2026)*
 > A 5–6 level tree can't be a nav sidebar on a tablet. Breadcrumb-as-header means the rep always knows where they are in the catalogue without a separate navigation model. *Visibility of system status.*
 
-> **DECISION T7.4 — "Mark Ready to Send", never "Submit" or "Send".**
+> **DECISION T7.4 — "Mark Ready to Send", never "Submit" or "Send".** *(confirmed 24 Sep 2026)*
 > The rep is offline. A button saying "Send" that doesn't send is the single most damaging word choice available on this screen. *Match between system and the real world.*
 
-> **DECISION T7.5 — restricted products are absent with no trace.**
+> **DECISION T7.5 — restricted products are absent with no trace.** *(confirmed 24 Sep 2026)*
 > Deliberately different from unavailable products (§2.3 rule 2), which are always findable with a reason. A restricted product the rep may never sell isn't a gap in their mental model — but it's worth confirming this is really what the business wants, because a rep who knows the product exists will report the app as broken.
+> *Confirmed 24 Sep 2026:* no trace, accepting that risk. **Rejected:** a "Not available to you" row.
 
 **Open:**
-- Does the sticky footer show line count and value, or line count only? Drawn with value — but the customer may be reading over the rep's shoulder and the value is pre-confirmation.
-- Where does the chain's agreed range appear for a branch of a master? Drawn as merged into the pad; an alternative is a labelled section at the top.
+- ~~Does the sticky footer show line count and value, or line count only? Drawn with value — but the customer may be reading over the rep's shoulder and the value is pre-confirmation.~~ **Resolved (24 Sep 2026)** — line count and value, as drawn. Prices resolve from the morning snapshot, so the running value is accurate at capture. **Rejected:** line count only; value revealed by tapping the footer.
+- ~~Where does the chain's agreed range appear for a branch of a master?~~ **Resolved (24 Sep 2026)** — T7.14.
+
+> **DECISION T7.14 — on a branch order, the chain's agreed range is a labelled section at the top; each product appears once.** *(settled 24 Sep 2026)*
+> A branch order is worked through the agreed range as a set, so the set sits together (*proximity*): "Hickey's agreed range (30)" above the normal pad, including products outside the rep's ranges. A product in both lists appears **only in the section**, never again in its category below (*one item, one place*). Search all still finds it.
+> **Rejected:** merged into the pad with a per-row marker; merged with an "Agreed range only" filter; a shared line in both places; a pointer row in the category.
 
 ---
 
@@ -696,7 +815,7 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 +----------------------------------------------------------------+
 | < Quinn's Centra          Order 12 Oct                          |
 +----------------------------------------------------------------+
-| Accepted, partly sent                       as of 07:42 sync    |
+| Accepted, partly sent                                           |
 +----------------------------------------------------------------+
 | SPF30 Sun Lotion 200ml                                          |
 |   24 sent to customer 12 Oct - 12 outstanding                   |
@@ -707,6 +826,7 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 | Nappy Wipes 64pk                                                |
 |   (x) Not supplied - no longer in an active range.              |
 |       Removed from the order. Let the customer know.            |
+|                                        [ Told them ]            |
 +----------------------------------------------------------------+
 | SPF30 at your price EUR 9.25 (resolved EUR 9.99)                |
 | Aftersun Gel 150ml x6 free - being discontinued                 |
@@ -716,26 +836,31 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 +----------------------------------------------------------------+
 ```
 
-> **DECISION T8.1 — the sync chip attaches to the status line only.**
+> **DECISION T8.1 — the sync chip attaches to the status line only, and only when the last sync wasn't today.** *(amended 24 Sep 2026)*
 > The line-level despatch figures came down in the same snapshot, but repeating "as of 07:42 sync" six times trains the rep to stop reading it. One chip on the headline fact governs the panel beneath it (see convention §3).
+> *Amended 24 Sep 2026:* reps sync every morning, so the chip appears only when the last sync was before today, reading "as of Mon 21 Sep" (convention §3 rule 4). On a normal day the status line has no chip, as drawn.
 
-> **DECISION T8.2 — "Open on website" is shown and disabled with its reason, rather than hidden offline.**
+> **DECISION T8.2 — "Open on website" is shown and disabled with its reason, rather than hidden offline.** *(confirmed 24 Sep 2026)*
 > Hiding it means the rep who needs it can't learn it exists. Showing it greyed with "Needs a connection" teaches the capability and explains the block in four words. This is a deliberate exception to §2.8's rule against greyed-out controls, which is about *destructive* actions being hidden rather than disabled.
+
+> **DECISION T8.3 — "Told them" sits beside the removed lines.** *(settled 24 Sep 2026)*
+> Same action as the Not supplied list (T2.6), marked per order. Once marked, the removed lines read "Customer told, 14:20" with "Undo". A line removed at a later sync shows its own "Told them" until marked.
 
 ---
 
 ## Open questions from this file
 
 1. ~~T-07 Low list: tabs, pinned strip, or bottom sheet?~~ **Resolved — tab.** (T7.1)
-2. **Quantity popover: does it dismiss on add, or advance to the next un-added Low item?** Drawn as dismiss. Advancing turns a five-item catch-up into one continuous pass, but breaks the convention that a popover closes when its job is done.
-3. **T-06 with channel = Phone** — does the stock check stay, collapse, or disappear?
-4. **T-02 Overdue** — confirm it stays below Today when non-empty. (T2.1 chose below.)
-5. **T-07 footer** — does the running order value show while the customer can see the screen?
-6. **T-07 agreed range** for a branch — merged into the pad or a labelled section?
+2. ~~**Quantity popover: does it dismiss on add, or advance to the next un-added Low item?**~~ **Resolved (24 Sep 2026)** — always dismisses, from T-06 and from the Low tab. Predictable everywhere; the rep taps Add on the next row. **Rejected:** advance from the Low tab only; always advance.
+3. ~~**T-06 with channel = Phone** — does the stock check stay, collapse, or disappear?~~ **Resolved (24 Sep 2026)** — it becomes "Stock mentioned": same rows with a filter, Low / Out / Add to order, optional count, no Not checked. (T6.5)
+4. ~~**T-02 Overdue** — confirm it stays below Today when non-empty.~~ **Confirmed (24 Sep 2026)** — below Today. (T2.1)
+5. ~~**T-07 footer** — does the running order value show while the customer can see the screen?~~ **Resolved (24 Sep 2026)** — yes, line count and value.
+6. ~~**T-07 agreed range** for a branch — merged into the pad or a labelled section?~~ **Resolved (24 Sep 2026)** — labelled section at the top; each product once. (T7.14)
 7. **T-05** — do two equal primary actions survive contact with real usage, or does one dominate?
-8. **T-01** — confirm no automatic sync on regaining signal. (T1.3 chose manual only.)
-9. **T-02 "not supplied" counter** — what clears it: opening the order, an explicit "Told them", or the next call at that location?
+8. ~~**T-01** — confirm no automatic sync on regaining signal.~~ **Confirmed (24 Sep 2026)** — manual, with a once-an-hour reminder when signal returns and work is unsent. (T1.3)
+9. ~~**T-02 "not supplied" counter** — what clears it: opening the order, an explicit "Told them", or the next call at that location?~~ **Resolved (24 Sep 2026)** — "Told them" per order, on the list and T-08, with the next Call at the Location as backstop; a later removal re-raises the order. (T2.6, T8.3)
 10. ~~**T-07 allowance and FOC cap granularity and accounting.**~~ **Resolved at UX level — a manager groups eligible products into a commercial policy profile containing rules such as 10% rep discount and X FOC units per rep per month.** Products outside such a policy cannot use those actions. An FOC item is an ordinary order line at €0.00; while the line exists its quantity counts against the rep's monthly allowance, and normal line removal releases it. The profile/entity shape is provisional and may become explicit business rules. (Only promotions count as an "offer"; tier and quantity-break prices are the base.)
 11. ~~T-07 out-of-pattern marker — threshold and direction?~~ **Resolved.** High only; a non-blocking fallback. (T7.11)
 12. ~~T-07 allowance vs multi-buy promotions~~ **Resolved.** Buy X get Y, bundle and mix-and-match lines never take a rep discount. (T7.9)
 13. ~~T-07 allowance vs spend-threshold promotions~~ **Resolved.** Qualification is checked before rep discounts. (T7.9)
+14. ~~**T-07 Low tab on an order with no stock check**~~ **Resolved (24 Sep 2026)** — shows the gaps (not added, CAN'T ADD) from the Location's most recent Call, minus products ordered since, dated, no age limit. (T7.13)

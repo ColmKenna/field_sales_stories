@@ -433,6 +433,16 @@ When head office reverts a capture
 Then the previous Eircode or Town position is restored with its Precision
 ```
 
+**UX amendments (24 Sep 2026)** — T5.3; `../uxdocs/04-user-stories-amendments.md` (Customer Directory US-005). **Superseded:** Scenario 4 (action available but not highlighted, with "Replace the confirmed position?").
+
+*Scenario 6: Shown only while unconfirmed*
+```
+Given Precision is "Confirmed on site" (sent or not yet sent)
+When I open the Location on the tablet
+Then Set location from GPS is not shown
+And when head office reverts the capture, the action is shown again
+```
+
 **Non-functional notes:** the action is a quiet control on the Location screen, highlighted once for unconfirmed Locations; no prompt on every visit.
 
 ---

@@ -32,6 +32,7 @@
   - **Order Pad** — the opening view of Order entry: products in the rep's assigned Ranges plus unranged products. Search reaches beyond it.
   - **Sellability** — a product can be ordered unless it is **Unavailable** or hidden as **Restricted**. Range assignment is a guide, not a limit.
   - **Outside your ranges** — neutral marker on a product not in the rep's assigned Ranges. Does not disable anything.
+  - **"As of sync" wording** — *(amended 24 Sep 2026, BR-NEW-007 in `../uxdocs/04-user-stories-amendments.md`)* shown only when the last Sync was before today, and then as the date ("as of Mon 21 Sep"). The "as of 07:42 sync" wording quoted in scenarios below applies only on such days, with the date in place of the time.
   - **Availability State** — set in the Product Catalogue; the tablet shows it as of the last Sync:
     - **Active** — orderable normally.
     - **Discontinuing** — orderable, flagged "Discontinuing" with its Replacements.
@@ -496,7 +497,45 @@ Given no lines have been removed from my orders
 Then no "not supplied" count is shown
 ```
 
-**Open question:** what clears the count — opening the order, an explicit "Told them", or the next Call at that Location? (Requires Clarification 8.)
+**UX amendments (24 Sep 2026)** — what clears the count (Requires Clarification 8, resolved). Reps phone the shop the same day, so the rep declares it; the next Call at the Location is a backstop. The count counts orders.
+
+*Scenario 12: Told them*
+```
+Given an order in the "not supplied" list or open on the Sent Order has removed lines not yet marked told
+When I tap "Told them"
+Then every such removed line on that order is recorded as told with the time
+And the order no longer counts toward the "not supplied" count
+```
+
+*Scenario 13: Mis-tap recovery*
+```
+Given I have just marked an order told in the "not supplied" list
+Then the order stays in the list, greyed, showing "Told [time]" with "Undo", until I leave the list
+When I tap "Undo" in the list or on the Sent Order
+Then the told record is removed and the order counts again
+```
+
+*Scenario 14: Call backstop*
+```
+Given one or more orders at a Location have removed lines not yet marked told
+When I log a Call at that Location, by visit or by phone
+Then those lines are recorded as told by that Call and the orders no longer count
+```
+
+*Scenario 15: Later removal on a told order*
+```
+Given an order whose removed lines are all marked told
+When a later sync removes a further line from it
+Then the order counts again with only the new line flagged
+And the earlier lines keep their told record
+```
+
+*Scenario 16: Viewing is not telling*
+```
+Given I open an affected order
+When I leave it without tapping "Told them"
+Then the order still counts
+```
 
 
 ---
@@ -681,6 +720,47 @@ And the campaign Visit Due stays open; an outcome can be added later on a Follow
 **Non-functional notes:**
 - Channel is two large options, none pre-selected.
 
+**UX amendments (24 Sep 2026)** — "Stock mentioned" on a phone Call; full record in `../uxdocs/04-user-stories-amendments.md` (Area 1 US-006, US-007). Scenario 2 now means four products mentioned (marked or counted), not a counted Stock Check.
+
+> A rep can't count stock down a phone line; the shopkeeper most likely says "we're low on X" or "we're out of Y". Counts stay possible at one extra tap in case that proves wrong.
+
+*Scenario 8: Stock mentioned*
+```
+Given I am recording a Call at Doyle's with a Suggested List of 16 products
+When I choose Channel "Phone"
+Then the stock section reads "Stock mentioned" and lists the same 16 products with a filter box
+And each row offers Low, Out, Add to order and "Add count", with no stepper
+```
+
+*Scenario 9: Filter then search*
+```
+Given Channel "Phone"
+When I type in the filter box
+Then the list narrows to matching products, and if none match I can search the catalogue and add the product as a row
+```
+
+*Scenario 10: Out*
+```
+Given Channel "Phone"
+When I mark Sudocrem 125g Out
+Then it is also marked Low and recorded with a count of 0
+```
+
+*Scenario 11: Only what was mentioned is saved*
+```
+Given Channel "Phone", SPF30 marked Low, Sudocrem marked Out and 14 rows untouched
+When I tap Review and save
+Then the review reads "Phone · 2 marked Low (1 out)"
+And only the 2 marked products are recorded; the 14 are not saved as Not checked
+```
+
+*Scenario 12: Switching Channel*
+```
+Given I have entered counts or marks
+When I switch Channel between In person and Phone
+Then nothing I entered is lost
+```
+
 ---
 
 ### US-007: Stock Check from a Suggested List
@@ -849,7 +929,12 @@ When I tap Add
 Then the same quantity popover opens
 ```
 
-**Open question:** does the popover dismiss on add, or advance to the next not added Low item? (Requires Clarification 9.)
+*Scenario 14: Popover closes on add (24 Sep 2026)*
+```
+Given the quantity popover is open, from a stock-check line or from the Low tab
+When I tap Add to order with a valid quantity
+Then the popover closes and I return to where I opened it
+```
 
 
 ---
@@ -884,6 +969,15 @@ Then the line saves as not Low and no Order line is added
 Given "Vitamin D 1000IU 90s" has no threshold in that profile
 When I enter 1
 Then no hint is shown
+```
+
+**UX amendments (24 Sep 2026)** — hint wording and placement (T6.3; `../uxdocs/04-user-stories-amendments.md`, Area 1 US-009). **Superseded:** Scenario 1's "Below usual level" beside the count.
+
+*Scenario 4: Hint wording and placement*
+```
+Given the resolved threshold for "Cold & Flu Relief 16s" at Murphy's Pharmacy is 6
+When I enter a count of 3
+Then I see "Below low-stock level (6)" under the Low tick, and Low stays unticked
 ```
 
 **Open questions:**
@@ -1213,7 +1307,37 @@ Then markers are still calculated from the order history already in the snapshot
 
 **Edge cases addressed (23 Sep 2026):** the first order of a product at a Location has no marker, since there's nothing to compare against; the "well above" threshold is an implementation detail.
 
-**Open question:** what the Low tab shows on an order that doesn't follow a Stock Check, such as a phone order (Requires Clarification 10).
+**UX amendments (24 Sep 2026)** — Low tab on an order with no Call (Requires Clarification 10, resolved). The tab stays and carries the gaps from the Location's most recent Call; full record in `../uxdocs/04-user-stories-amendments.md` (US-NEW-002 AC-8–12).
+
+*Scenario 19: Gaps carried from the last Call*
+```
+Given Carey's most recent Call on Tue 15 Sep left Nappy Wipes and Sudocrem not added and Aftersun CAN'T ADD
+And Sudocrem was ordered at Carey's on 18 Sep
+When I start an Order at Carey's with no Call and open the Low tab
+Then it reads "Still open from your call at Carey's - Tue 15 Sep"
+And it lists Nappy Wipes (not added) and Aftersun (CAN'T ADD) only, counted in the tab label
+```
+
+*Scenario 20: No age limit*
+```
+Given the most recent Call at the Location was 10 weeks ago
+When I start an Order with no Call
+Then its gaps are still carried, labelled with that Call's date
+```
+
+*Scenario 21: Nothing to carry*
+```
+Given the Location has no earlier Call, or its most recent Call has no gaps left
+When I open the Low tab on an Order with no Call
+Then it shows Low (0) and "No stock check with this order." with a Record call link
+```
+
+*Scenario 22: Call recorded during the Order*
+```
+Given the Low tab on an Order with no Call shows carried items
+When I use Record call and save a Call at the Location
+Then the Order is linked to that Call and the Low tab shows that Call's Low items in place of the carried ones
+```
 
 
 ---
@@ -1466,6 +1590,28 @@ Then the Unsent count includes it and reminders say "1 needs attention"
 
 **Edge cases addressed:**
 - Calls may be deleted here only, since the server never accepted them.
+
+**UX amendments (24 Sep 2026)** — work is judged as captured (BR-NEW-006 in `../uxdocs/04-user-stories-amendments.md`). A business-rule change after capture, such as reassignment or an archived Location, never rejects an upload, so Needs Attention holds only technical faults. **Superseded:** Scenario 1's "Location no longer exists" as a rejection reason.
+
+*Scenario 5: Reassigned after capture*
+```
+Given I captured an Order at Quinn's Centra while it was assigned to me
+When Quinn's is reassigned to Aoife before I Sync
+Then the Order uploads and is accepted, and nothing appears in Needs Attention
+```
+
+*Scenario 6: Technical fault*
+```
+Given an upload arrived incomplete
+When the Sync finishes
+Then the item appears in Needs Attention with "Couldn't be sent - the upload was incomplete" and Open and Delete
+```
+
+*Scenario 7: Nothing the rep can act on*
+```
+Given the server can't say anything the rep can act on
+Then the item reads "This couldn't be sent - contact the office", with the raw reason kept for support
+```
 
 ---
 
@@ -1723,6 +1869,16 @@ When I later open an Order at Hickey's Rathdrum
 Then the pad includes the chain's Agreed Range, marked "In Hickey's agreed range", even where those products are outside my ranges
 ```
 
+**UX amendments (24 Sep 2026)** — T7.14; `../uxdocs/04-user-stories-amendments.md` (Area 1 US-023). **Superseded:** Scenario 5's per-row "In Hickey's agreed range" marker within the pad.
+
+*Scenario 6: Agreed range as its own section*
+```
+Given Hickey's Pharmacy has an Agreed Range of 30 products, including SPF30 Sun Lotion 200ml, which is also in my ranges
+When I open an Order at Hickey's Rathdrum
+Then the pad opens with a section "Hickey's agreed range (30)" above the normal pad
+And SPF30 appears only in that section, not again under Sun care
+```
+
 ---
 
 ## 6. Requires Clarification
@@ -1734,10 +1890,10 @@ Then the pad includes the chain's Agreed Range, marked "In Hickey's agreed range
 5. **Snapshot size:** the tablet now carries the catalogue with breadcrumbs, attributes, tiers, breaks, promotions, a master's branches and Agreed Range, Suggested Lists, thresholds and Replacements. This needs a spike.
 6. **Website corrections:** the corrections-vs-follow-up rule for synced Calls, and editing Pending Orders, both live in the website area.
 7. **Stock Allocation:** held and part-released orders will change what a rep sees on a Sent Order; not yet designed.
-8. **Not supplied (23 Sep 2026):** what clears Home's "not supplied" count — opening the order, an explicit "Told them", or the next Call at that Location?
-9. **Quantity popover (23 Sep 2026):** dismiss on add, or advance to the next not added Low item?
-10. **Low tab without a Stock Check (23 Sep 2026):** what does it show on an order that doesn't follow a Stock Check, e.g. a phone order? Related: does the Stock Check stay, collapse or disappear when the Call Channel is Phone?
-11. **Snapshot additions (23 Sep 2026):** applicable commercial policy rules and product membership, the rep's month-to-date FOC use, and resolved thresholds from multiple profiles (item 5).
+8. ~~**Not supplied (23 Sep 2026):** what clears Home's "not supplied" count — opening the order, an explicit "Told them", or the next Call at that Location?~~ **Resolved 24 Sep 2026:** "Told them" per order, with Undo, and the next Call at the Location as backstop; a later removal re-raises the order (US-003 Scenarios 12–16).
+9. ~~**Quantity popover (23 Sep 2026):** dismiss on add, or advance to the next not added Low item?~~ *Resolved 24 Sep 2026:* always dismisses (US-008 Scenario 14).
+10. ~~**Low tab without a Stock Check (23 Sep 2026):** what does it show on an order that doesn't follow a Stock Check, e.g. a phone order?~~ *Resolved 24 Sep 2026:* it carries the gaps from the Location's most recent Call, minus products ordered since (US-012 Scenarios 19–22). ~~Related: does the Stock Check stay, collapse or disappear when the Call Channel is Phone?~~ *Resolved 24 Sep 2026:* it becomes "Stock mentioned" (US-006 Scenarios 8–12).
+11. **Snapshot additions (23 Sep 2026):** applicable commercial policy rules and product membership, the rep's month-to-date FOC use, and resolved thresholds from multiple profiles (item 5). *24 Sep 2026:* also each Location's most recent Call's unresolved Low items, and products ordered at the Location since (by any route).
 
 ---
 

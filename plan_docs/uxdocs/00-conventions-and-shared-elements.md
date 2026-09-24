@@ -154,14 +154,18 @@ One label component, five states, never colour alone.
 A single chip, used wherever server-derived data appears on the tablet.
 
 ```
-   Accepted, partly sent        as of 07:42 sync
-   About 120 left               as of 07:42 sync
+   Synced today (normal)        Accepted, partly sent
+                                About 120 left
+
+   No sync yet today            Accepted, partly sent   as of Mon 21 Sep
+                                About 120 left          as of Mon 21 Sep
 ```
 
 Rules for the component:
 1. It attaches to the **fact**, not to the screen. One stale figure gets one chip; it does not license a page-level "this page may be out of date" banner, which teaches people to distrust everything and therefore nothing.
 2. It never appears on R, M, H or C screens.
 3. It does not appear on data the rep captured on this device today — the rep's own unsent order is not stale, it is unsent, which is a different thing and has its own vocabulary (§4).
+4. **It appears only when the last sync was before today** *(settled 24 Sep 2026, BR-NEW-007)*. Reps sync every morning, so "as of this morning" is the normal state and an always-on chip becomes wallpaper (*signal by exception*). When it does appear it names the **date** of the last sync — "as of Mon 21 Sep" — because a time alone would hide that it's yesterday's. **Supersedes** brief §2.1's always-on "as of 07:42 sync".
 
 ---
 

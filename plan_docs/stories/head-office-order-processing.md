@@ -163,6 +163,7 @@ flowchart TD
 ### One Order, never split; fulfilment tracked per line
 
 - **Chose:** Partial Release and Despatch record sent and Outstanding quantities on each line; the Order stays one record with a "partly sent" state; the rep sees "12 of 36 outstanding" as of their sync.
+- *Amended 24 Sep 2026 (BR-NEW-007 in `../uxdocs/04-user-stories-amendments.md`):* the tablet shows "as of sync" wording only when the rep's last Sync was before today, and then as a date ("as of Mon 21 Sep").
 - **Over:** splitting into back orders; head office editing quantities.
 - **Because:** the customer and rep look up one order; a chain of splits is confusing and loses the capture date and price; editing quantities silently changes what was promised.
 - **Trade-off accepted:** the state model is richer; there is no line-level reject.
