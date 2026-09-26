@@ -207,11 +207,13 @@ The tablet is used standing in a shop, one-handed, sometimes with no signal, som
 - **Purpose:** work a chain's head office.
 - **Must show:** branches (closed excluded, temporarily closed flagged), the agreed range with availability, open proposals awaiting head office.
 - **Actions:** start a Range Review call; start a multi-branch order.
+- **Lead action (T11.1, 26 Sep 2026):** "Start multi-branch order" is the one primary action; the Range Review starts from "Record call".
 - **Stories:** Master & Branch US-001; Area 1 US-023.
 
 ### T-12 · Range Review (section within T-06)
 - **Purpose:** capture what the buyer agreed to add or drop.
 - **Must show:** current agreed range; proposed adds and drops; "subject to head office confirmation" stated plainly.
+- **Whole Ranges (T12.2, 26 Sep 2026):** a chain's Agreed Ranges are catalogue Ranges assigned to it. The review lists the assigned Ranges with Remove, and "Add a range" picks from active catalogue Ranges; it never changes a Range's products. Ranges are created by head office (BR-NEW-008 rule 5). T12.1's product-level drops are superseded.
 - **Stories:** Master & Branch US-002.
 
 ### T-13 · Multi-branch order (tablet)
@@ -338,11 +340,11 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 - **Purpose:** make sure no shop is silently uncovered.
 - **Stories:** Coverage US-007.
 
-### M-17 · Online ordering approvals *(added in session, 26 Sep 2026)*
+### M-17 · Online ordering approvals *(added in session, 26 Sep 2026; replaces H-07)*
 - **Purpose:** approve or decline rep-created customer accounts, and send re-invitations for Locations with no assigned rep (C8.2, M17.1).
 - **Must show:** who set up each account and when, the invitation email, and what the contact will be able to order for.
 - **Actions:** Approve; Decline with a required reason the rep sees; Send new invitation. The manager is emailed with a link to this page when an item arrives.
-- **Stories:** Self-service US-001, US-002.
+- **Stories:** Self-service US-001, US-002; Head Office US-006b.
 
 ---
 
@@ -367,7 +369,7 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 - **Stories:** Head Office US-004.
 
 ### H-04 · Range proposal decision
-- **Purpose:** confirm or reject a chain's agreed-range changes, per product, with a reason per rejected line.
+- **Purpose:** confirm or reject a chain's agreed-range changes, *(revised 26 Sep 2026, T12.2)* **per Range assigned or removed**, with a reason per rejected line. Ranges are shared catalogue Ranges, so no product-level changes arrive here.
 - **Stories:** Head Office US-005; Master & Branch US-003.
 
 ### H-05 · Duplicate review
@@ -380,8 +382,9 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 - **Must show:** hold note, days held, short products, a link into allocation.
 - **Stories:** Head Office US-006.
 
-### H-07 · Customer user account approval
-- **Purpose:** approve or decline online ordering access a rep set up.
+### ~~H-07 · Customer user account approval~~ — replaced by M-17 (26 Sep 2026)
+- **Replaced:** the approver in Head Office US-006b is the Sales Manager, so approval lives on the manager website as M-17 Online ordering approvals. Account requests no longer appear on H-01.
+- **Purpose (original):** approve or decline online ordering access a rep set up.
 - **Must show:** the contact, their locations, and what they'd be able to order for ("Hickey's Head Office and its 12 branches").
 - **Stories:** Head Office US-006b; Self-service US-001.
 
@@ -576,7 +579,7 @@ flowchart LR
         O --> Hold[H-06 Held orders] --> AL[H-10 Allocation] --> REL[H-11 Release]
         W --> P[H-04 Range proposal]
         W --> D[H-05 Duplicate review]
-        W --> ACC[H-07 Account approval]
+        %% H-07 Account approval replaced by M-17 (26 Sep 2026)
         WH[(Warehouse report)] --> DS[H-03 Despatch recording]
         DS --> W
     end

@@ -1,6 +1,6 @@
 # 05 — Manager website (M-01 … M-17)
 
-> M-01–M-15 follow the brief. **M-16 Add a one-off Visit Due** isn't in the brief and was added in session (Visit Planning US-015). **M-17 Online ordering approvals** isn't in the brief either; it was added in session (26 Sep 2026) from C-08 (Self-service US-001).
+> M-01–M-15 follow the brief. **M-16 Add a one-off Visit Due** isn't in the brief and was added in session (Visit Planning US-015). **M-17 Online ordering approvals** was added in session (26 Sep 2026) from C-08 (Self-service US-001) and replaces the brief's head office H-07.
 
 **Device assumptions:** laptop, online, used by a Sales Manager planning and reviewing a team.
 **Consequence:** exception-first overview screens may be dense, but every summary must drill into the visits, Locations or assignments behind it.
@@ -432,8 +432,23 @@ Impact preview when the previous rep is leaving:
 
 *Follows from the source:* branch columns use the same selection as the tablet: every branch is selected by default, Closed branches are excluded, and Temporarily Closed branches are flagged but stay selected (US-005). The grid ends in the same Split Review (US-007).
 
+> **DECISION M11.4 — with several Agreed Ranges, a range picker beside the grid replaces `Show full Agreed Range`. Settled 26 Sep 2026.**
+> The grid still opens on recently ordered products (M11.1). A picker beside it lists the chain's Agreed Ranges, oldest first as on the tablet (T7.18), and adds the chosen range's products as rows with empty cells. The laptop grid deliberately differs from the tablet pad's stacked sections (T7.15): M11.1 keeps the grid near the size of one session, and a picker grows it by one range at a time.
+> **Rejected:** one option adding every range; one option per range.
+> *Confirmed 26 Sep 2026:* the picker's first option is "Recently ordered" (M11.1's opening, no range); rows with quantities stay at the top whatever is picked, as in the customer grid (C5.8); a product in several ranges shows once.
+> *Revised 26 Sep 2026 (BR-NEW-008 rule 0):* the picker lists the catalogue Ranges assigned to the chain, by their catalogue names; the decision otherwise stands.
+
+```
++------------------------------------------------------------------------------------------------+
+| Hickey's chain order                       Range [ Recently ordered          v ]   [ Search ]    |
+|                                                  |  Recently ordered           |               |
+|                                                  |  Everyday (30)              |               |
+|                                                  |  2026 Christmas gift packs  |               |
++------------------------------------------------------------------------------------------------+
+```
+
 **Open:**
-- **BR-NEW-008 follow-up (26 Sep 2026):** a chain may now hold multiple separate Agreed Ranges. M11.1's recent-order opening remains settled, but `Show full Agreed Range` needs a choice of which range to show. Do not infer the customer grid's default-range behaviour for reps. M11.2's layout remains deferred.
+- ~~**BR-NEW-008 follow-up (26 Sep 2026):** a chain may now hold multiple separate Agreed Ranges. M11.1's recent-order opening remains settled, but `Show full Agreed Range` needs a choice of which range to show. Do not infer the customer grid's default-range behaviour for reps. M11.2's layout remains deferred.~~ **Resolved 26 Sep 2026 — range picker (M11.4).** M11.2's layout remains deferred.
 
 ---
 
@@ -559,11 +574,11 @@ The form must capture the Location, due window, structured Due Reason Type, opti
 
 ## M-17 · Online ordering approvals
 
-> Not in the brief. Added in session (26 Sep 2026) from C-08, and numbered after M-16 so it doesn't clash with the brief's IDs.
+> Not in the brief as a manager screen. Added in session (26 Sep 2026) from C-08, and numbered after M-16 so it doesn't clash with the brief's IDs. **It replaces the brief's H-07 Customer user account approval**, whose story (Head Office US-006b) names the Sales Manager as approver; account requests no longer appear on H-01.
 
 **Job:** approve or decline customer online-ordering accounts that reps have set up, and re-invitation requests from Locations with no assigned rep, without them waiting for the manager to go looking.
 
-**From the source:** a rep-created account is Pending approval in "my manager's queue"; on approval the invitation is sent; a decline needs a reason, which the rep sees (Self-service US-001 S1, S3). Re-invitations normally go to the rep (C1.2), except for a Location with no assigned rep, which goes to the manager who sees it as Unassigned (M15.2).
+**From the source:** a rep-created account is Pending approval in "my manager's queue"; on approval the invitation is sent; a decline needs a reason, which the rep sees (Self-service US-001 S1, S3; Head Office US-006b S1–S3, which also asks for the contact's Locations and the "Hickey's Head Office and its 12 branches" scope line). Re-invitations normally go to the rep (C1.2), except for a Location with no assigned rep, which goes to the manager who sees it as Unassigned (M15.2).
 
 ```
 +------------------------------------------------------------------------------------------------+

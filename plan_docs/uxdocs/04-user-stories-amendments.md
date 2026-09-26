@@ -50,7 +50,9 @@
 | Coverage US-003 | Amendment | Handover when the previous rep is leaving; inherited visits | Manager website (M-08), rep website, performance |
 | Coverage US-004, US-005 | Amendment | Bulk reassign for long absence only; reversal restores and flags | Manager website (M-09) |
 | Coverage US-006 | Amendment | Multi-condition specialist scopes; campaign routing when several match | Manager website (M-10, M-03) |
-| Master & Branch US-006 | Amendment | Grid opens on recently ordered products; `All` keeps adjusted cells | Rep/manager website (M-11) |
+| Master & Branch US-001 | Clarification | Master Location view leads with "Start multi-branch order" | Tablet (T-11) |
+| Master & Branch US-002, US-003 | Amendment | Agreed Ranges are assigned catalogue Ranges; a Range Review assigns or removes whole Ranges, confirmed per Range | Tablet (T-12), Head office (H-04) |
+| Master & Branch US-006 | Amendment | Grid opens on recently ordered products; `All` keeps adjusted cells; range picker with several Agreed Ranges | Rep/manager website (M-11) |
 | Targets & Performance US-001, US-002 | Amendment | Targets carried forward from the previous period | Manager website (M-12) |
 | Coverage US-007 | Amendment | Unassigned count pushed to the Visit Planning overview | Manager website (M-15, M-01) |
 | Coverage US-009 | Amendment | Cohort grants from the Restriction Group's page | Manager website (M-14) |
@@ -159,19 +161,20 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ---
 
-### BR-NEW-008 — Multiple Agreed Ranges per chain
+### BR-NEW-008 — A chain's Agreed Ranges are catalogue Ranges assigned to it
 
-*Settled 26 Sep 2026 (C5.4).*
+*Settled 26 Sep 2026 (C5.4). **Revised the same day:** Colm — "there are no real chain ranges, there are just ranges in general"; "for now a chain doesn't have its own … range, may be added in a later iteration".*
 
-1. A Master Location may hold multiple separate, named Agreed Ranges, for example a default range and “2026 Christmas gift packs”. Each has its own confirmed product membership.
-   A product may belong to more than one of that chain's Agreed Ranges (C5.10).
+0. **There are no chain-specific product lists in this iteration.** A chain's **Agreed Ranges** are ordinary catalogue Ranges (Range Lifecycle; built on H-18), such as "Everyday" and "2026 Christmas gift packs", **assigned** to the Master Location as Ranges are assigned to any customer. A Range Review agrees which Ranges the chain takes, as whole Ranges (T12.2). Chain-owned ranges may come in a later iteration.
+1. A Master Location may be assigned several Ranges. A product may belong to more than one of them (C5.10), which is ordinary for catalogue Ranges.
 2. The customer multi-branch grid offers the chain's Agreed Ranges in a dropdown; the signed-in buyer's personal default appears automatically on opening when they have set one (C5.3, C5.6). Until then, the first dropdown option is shown as a provisional fallback (C5.7), without saving a personal default. Entered product rows and quantities remain visible at the top of the grid when the buyer changes ranges (C5.2, C5.8).
 3. As before, Agreed Ranges guide ordering rather than restricting it; permitted products outside them remain reachable.
 4. A buyer with access to the chain grid may designate their own default range (C5.5–C5.6). Changing it affects only that buyer.
+5. *Settled 26 Sep 2026, revised:* company head office creates Ranges, as it already does for the catalogue (H-18, Range Lifecycle). Reps never create a Range. On a Range Review they propose **assigning or removing whole Ranges** for the chain (T12.2); they never change a Range's products, because a Range is shared with every customer and rep assigned it. Rejected: a rep proposing a new range; product-level adds and drops on a chain's range (the original Master & Branch US-002/US-003 model and T12.1).
 
-**Supersedes:** Master & Branch Ordering's assumption that a chain has one Agreed Range across all branches. The catalogue's commercial Ranges remain a separate concept.
+**Supersedes:** Master & Branch Ordering's assumption that a chain has one Agreed Range across all branches, **and its model of an Agreed Range as a chain-specific product list changed product by product.** "Agreed Range" now means a catalogue Range assigned to the chain.
 
-**Open impacts:** how Range Reviews and proposals target a range; how the branch Order Pad (T7.14), master Location view, rep/manager multi-branch grid (M11.1), and tablet snapshot present several ranges and overlapping membership. Dropdown sort order is deferred; the current first option is the initial fallback.
+**Open impacts:** Range Review proposals assign or remove whole Ranges (T12.2), confirmed per Range on H-04; the branch Order Pad is settled as stacked range sections oldest range first, which puts the everyday range first by convention (T7.15–T7.18); the rep/manager multi-branch grid uses a range picker (M11.4); how the master Location view and tablet snapshot present several ranges and overlapping membership. Dropdown sort order is deferred; the current first option is the initial fallback.
 
 ---
 
@@ -1481,6 +1484,52 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ---
 
+### Master & Branch US-001 — the Master Location view leads with the chain order
+
+> **Context:** settled 26 Sep 2026 (T11.1). A rep at a chain's head office is mostly there to take the chain order. The frame's layout was confirmed the same day.
+
+**AC-MB001-A:**
+- **When** I open Hickey's Head Office on the tablet
+- **Then** "Start multi-branch order" is the one primary action
+- **And** "Record call", where Range Review is a Purpose, is secondary
+
+**AC-MB001-B:**
+- **Given** Hickey's Wicklow Town is the chain's master and also a shop
+- **When** I open it on the tablet
+- **Then** "New order for this shop" is offered as well, for the shop's own order
+- **And** for Hickey's Head Office, which holds no stock, that action is absent
+
+---
+
+### Master & Branch US-002 and US-003 — a Range Review assigns or removes whole Ranges
+
+> **Context:** settled 26 Sep 2026, revised the same day (BR-NEW-008 rules 0 and 5, T12.2). A chain's Agreed Ranges are catalogue Ranges assigned to it. A Range Review proposes assigning or removing whole Ranges for the chain; it never changes a Range's products, because a Range is shared with everyone assigned it. Head office confirms or rejects each Range on H-04. **Superseded:** US-002 Scenario 1's product adds and drops, US-002 Scenario 3 (Unavailable product proposed), US-003's per-product confirmation, and the earlier AC-MB002-A/B/D (product-level drops, "Review another range"), which followed T12.1.
+
+**AC-MB002-C:**
+- **When** I look for a way to create a new range on the Range Review
+- **Then** there is none; Ranges are created by head office
+
+**AC-MB002-E:**
+- **Given** Hickey's is assigned "Everyday" and "Sun care 2026"
+- **When** I record a Range Review, add "2026 Christmas gift packs" and remove "Sun care 2026"
+- **Then** the Call saves a Range Proposal: add 1 range, remove 1, state Proposed
+- **And** the Call review reads "Range review: add 1 range, remove 1 — subject to head office confirmation"
+- **And** no Range's products change
+
+**AC-MB002-F:**
+- **Given** that proposal reaches H-04
+- **When** head office confirms the Christmas gift packs and rejects removing Sun care 2026 with a reason
+- **Then** the proposal is Partly Confirmed; Hickey's is assigned Everyday, Sun care 2026 and 2026 Christmas gift packs
+- **And** I see the reason on the Call
+
+**AC-MB002-G:** *(T12.2 details, confirmed 26 Sep 2026)*
+- **When** I choose "Add a range"
+- **Then** only Active catalogue Ranges not already assigned to Hickey's are offered, each with its product count
+- **When** I add "2026 Christmas gift packs"
+- **Then** its row reads "Proposed: add" with Undo, until the Call syncs
+
+---
+
 ### Master & Branch US-006 — grid rows and the `All` cell
 
 > **Context:** a chain may have 140 agreed products, but a session orders about 30. The grid opens near that size, and a bulk fill never destroys deliberate exceptions. The grid layout itself is deferred to usage feedback (M11.2). Settled in `05-manager.md` M11.1 and M11.3.
@@ -1514,6 +1563,23 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **Then** every branch cell on the row takes the `All` value
 
 **Superseded:** US-006 scenario 2's "every branch cell on that row becomes 24", when the row already has hand-edited cells.
+
+> **Context:** settled 26 Sep 2026 (M11.4, BR-NEW-008). When a chain has several Agreed Ranges, a range picker beside the grid replaces `Show full Agreed Range`; its options are the chain's ranges, oldest first (T7.18). AC-MB006-C still describes a chain with one range.
+
+**AC-MB006-F:**
+- **Given** Hickey's has Agreed Ranges "Everyday" and "2026 Christmas gift packs"
+- **When** I open the grid
+- **Then** it shows recently ordered products, as in AC-MB006-A, and a range picker listing Everyday then 2026 Christmas gift packs
+- **When** I pick "2026 Christmas gift packs"
+- **Then** that range's products not already in the grid appear as empty rows
+
+**AC-MB006-G:** *(M11.4 details, confirmed 26 Sep 2026)*
+- **Given** I entered quantities on three Everyday rows
+- **When** I pick "2026 Christmas gift packs"
+- **Then** those three rows stay at the top with their quantities
+- **And** Hand Cream 75ml, already a row and also in the gift packs, is not added a second time
+- **When** I pick "Recently ordered"
+- **Then** the grid returns to its opening rows, with the three entered rows still at the top
 
 **Recommended Acceptance Tests:**
 
@@ -2397,6 +2463,36 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
   → Verifies no duplicate rows between the section and the pad.
 
 **Superseded:** Scenario 5's per-row "In Hickey's agreed range" marker within the pad.
+
+> **Context:** settled 26 Sep 2026 (T7.15, BR-NEW-008). With several Agreed Ranges, each gets its own stacked section at the top of the pad, all expanded and each collapsible like a category header. One product, one place holds across sections. Section order is open.
+
+**AC-A1023-C:**
+- **Given** Hickey's Pharmacy has Agreed Ranges "Everyday" (30) and "2026 Christmas gift packs" (12)
+- **When** I open an Order at Hickey's Arklow
+- **Then** the pad opens with a section for each range above the normal pad, both expanded
+
+**AC-A1023-D:**
+- **Given** Hand Cream 75ml is in both of Hickey's ranges and in my ranges
+- **When** the pad renders
+- **Then** Hand Cream appears once, in only one range section, and not again in its category
+
+**AC-A1023-E:**
+- **When** I collapse "2026 Christmas gift packs"
+- **Then** its products are hidden until I expand it again, and any quantities already entered are kept
+
+> **Context:** settled 26 Sep 2026 (T7.16). The chain's everyday range is the first section; seasonal and other ranges follow. The first section a shared product belongs to is where it appears. *T7.17:* no flag or date identifies the everyday range; this is a convention the rep knows, not a rule the system enforces. *T7.18:* the pad orders sections oldest range first, which puts the everyday range first in practice; a product in several ranges appears in the oldest.
+
+**AC-A1023-G:**
+- **Given** Hickey's "Everyday" range was created in 2024 and "2026 Christmas gift packs" in September 2026
+- **When** I open an Order at Hickey's Arklow
+- **Then** the Everyday section comes first, then the gift-pack section
+- **And** Hand Cream, in both, appears only under Everyday
+
+**AC-A1023-F:**
+- **Given** Hand Cream 75ml is in Hickey's Everyday and in 2026 Christmas gift packs
+- **When** I open an Order at Hickey's Arklow
+- **Then** "Hickey's Everyday (30)" is the first section and Hand Cream appears there
+- **And** the gift-pack section shows "(11)" and does not list Hand Cream
 
 ---
 

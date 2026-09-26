@@ -18,11 +18,11 @@ flowchart LR
     S --> W[H-01 Worklist]
     W --> P[H-04 Range proposal]
     W --> D[H-05 Duplicate review]
-    W --> ACC[H-07 Account approval]
+    %% H-07 Account approval replaced by M-17 on the manager website (26 Sep 2026)
     WHR[(Warehouse report)] --> DS[H-03 Despatch recording]
 ```
 
-Orders no longer pass through a person. The worklist holds only range proposals, duplicate matches and account requests.
+Orders no longer pass through a person. The worklist holds only range proposals and duplicate matches. *26 Sep 2026:* account requests moved to the Sales Manager on M-17, which replaces H-07.
 
 ---
 
@@ -48,15 +48,14 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 ```
 +---------------------------------------------------------------------------------------+
-| Worklist                Tue 22 Sep                                4 need a decision   |
+| Worklist                Tue 22 Sep                                3 need a decision   |
 +---------------------------------------------------------------------------------------+
 | TYPE            | ITEM                        | WHY                         | WAITING  |
 +---------------------------------------------------------------------------------------+
-| Range proposal  | Hickey's Head Office        | 6 adds, 2 drops             | 1d 4h  > |
-| Range proposal  | Symbol Group A              | 12 adds                     | 6h     > |
+| Range proposal  | Hickey's Head Office        | add 1 range, remove 1       | 1d 4h  > |
+| Range proposal  | Symbol Group A              | add 2 ranges                | 6h     > |
 | Duplicate match | Quinn's, Rathdrum (new)     | matches Quinn's Centra,     | 2d 1h  > |
 |                 |                             | last ordered 14 Mar 2026    |          |
-| Account request | Mary Walsh, Hickey's        | head office + 12 branches   | 3h     > |
 +---------------------------------------------------------------------------------------+
 ```
 
@@ -73,7 +72,7 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 ```
 
 > **DECISION H1.1 — Type is a column, not just a section heading.**
-> Labels must survive re-sorting; section headings don't. Still holds with three item types.
+> Labels must survive re-sorting; section headings don't. Still holds with two item types (account requests moved to M-17, 26 Sep 2026).
 
 > **DECISION H1.6 — orders leave the worklist entirely.**
 > Price Override and Free of Charge were the only flags where a person had a real decision; H-02 forbids editing lines, so for every other flag the only choices were accept, hold or reject a whole order, and "this shop is new" argues for none of them. Moving both limits to capture turns head office from a *gatekeeper* into the owner of *guardrails*: out-of-policy requests can't be raised, so nothing in-policy needs reviewing. The failure avoided is **alarm fatigue** — ten flag types feeding a human queue teaches the operator that flags don't mean much.

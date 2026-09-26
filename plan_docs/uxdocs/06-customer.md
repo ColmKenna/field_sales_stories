@@ -204,6 +204,7 @@ After the last Arklow quantity is cleared, Arklow remains selected; the buyer re
 
 > **DECISION C5.4 — a chain can have multiple separate Agreed Ranges. Settled 26 Sep 2026.**
 > The dropdown's options are distinct Agreed Ranges held by the Master Location, not named subsets inside one list. This supersedes Master & Branch Ordering's one-Agreed-Range-per-chain assumption. Each buyer can designate their own default among them (C5.5–C5.6). The effect on rep screens and range-proposal targeting needs its own design pass.
+> *Revised 26 Sep 2026 (BR-NEW-008 rule 0):* the chain's Agreed Ranges are ordinary catalogue Ranges assigned to the Master Location (for example "Everyday" and "2026 Christmas gift packs"), not chain-specific lists. The dropdown lists the Ranges assigned to the chain. The rest of C-05 is unchanged. Rep screens: T7.15–T7.18, M11.4, T12.2.
 
 > **DECISION C5.5 — the customer designates the default Agreed Range. Settled 26 Sep 2026.**
 > The automatically shown range is controlled by the signed-in customer buyer. C5.6 clarifies that this is their personal default.
@@ -465,7 +466,7 @@ The selection controls and replacement line illustrate US-009's existing selecti
 
 The scope line and approval note come from US-001 S1 and S4. The wording and layout are drafting calls.
 
-**Decision C8.2 — the manager approves on a new page, M-17, announced by email. Settled 26 Sep 2026.** A rep-created account goes to **M-17 Online ordering approvals** on the manager website (see `05-manager.md` M17.1). The manager is emailed with a link to that page; Approve sends the invitation, and Decline asks for the reason the rep will see (US-001 S3). Re-invitations for Locations with no assigned rep (C1.2) go to the same page. Rejected: a count in M-01's exceptions column; approving from the email alone.
+**Decision C8.2 — the manager approves on a new page, M-17, announced by email. Settled 26 Sep 2026.** A rep-created account goes to **M-17 Online ordering approvals** on the manager website (see `05-manager.md` M17.1), which replaces the brief's H-07 (confirmed 26 Sep 2026; account requests leave the head office Worklist, H-01). The manager is emailed with a link to that page; Approve sends the invitation, and Decline asks for the reason the rep will see (US-001 S3). Re-invitations for Locations with no assigned rep (C1.2) go to the same page. Rejected: a count in M-01's exceptions column; approving from the email alone.
 
 **Decision C8.3 — a decline reaches the rep in Home's Customer requests section. Settled 26 Sep 2026.** When the manager declines on M-17, the rep who set up the account sees it on T-02 in the CUSTOMER REQUESTS section (C1.4): "Mary Walsh: online ordering declined: Contact has left the business". It arrives over the background channel (C1.5), so the rep sees it the same day and can tell the contact. Rejected: only on the contact's details on T-05, which waits for the rep to open that shop. *Confirmed 26 Sep 2026:* the notice has one action, **OK**, which removes it (it needs no approval, only acknowledgement). The section keeps its name, although it now holds outcomes as well as requests.
 

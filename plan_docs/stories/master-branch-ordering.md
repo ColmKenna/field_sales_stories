@@ -14,10 +14,10 @@
 - **Domain area:** Ordering, extended for the master–branch relationship. The relationship itself is recorded in Customer Directory; this area is what a rep and head office *do* with it.
 - **Ubiquitous language:**
   - **Master Location** / **Branch Location** — from Customer Directory. A master may be a head office holding no stock or a main shop that does.
-  - **Agreed Range** — a confirmed, named list of products a chain has agreed to carry across its branches. A Master Location may hold multiple separate Agreed Ranges, and a product may belong to several of them (26 Sep 2026 amendment). Each range guides ordering but does not limit it: branches may order outside the ranges; Availability and Restriction Permissions remain the only hard limits.
-  - **Range Review** — a third Call Purpose, alongside Pitch and Stock Check, in which the rep and the chain's buyer discuss the Agreed Range. An ordinary Call: any Channel, corrections until Sync, Follow-up Calls, Competitor Notes, and an Order may be attached.
-  - **Range Proposal** — the set of **Proposed Changes** (products to add, products to drop) recorded on a Range Review call. States: **Proposed**, **Confirmed**, **Partly Confirmed**, **Rejected** (with reason). Visible only to the proposing rep and head office until confirmed.
-  - **Proposal Review** — head office deciding a Range Proposal per product, in the order review queue (area 3), marked as a proposal and sorted to the top.
+  - **Agreed Range** — *(revised 26 Sep 2026, BR-NEW-008)* a catalogue Range (Range Lifecycle) **assigned** to the chain's Master Location and agreed with its buyer, for example "Everyday" and "2026 Christmas gift packs". A chain may be assigned several, and a product may be in several. There are no chain-specific product lists in this iteration; chain-owned ranges may come later. Each Range guides ordering but does not limit it: branches may order outside them; Availability and Restriction Permissions remain the only hard limits.
+  - **Range Review** — a third Call Purpose, alongside Pitch and Stock Check, in which the rep and the chain's buyer discuss which Ranges the chain takes. An ordinary Call: any Channel, corrections until Sync, Follow-up Calls, Competitor Notes, and an Order may be attached.
+  - **Range Proposal** — the set of **Proposed Changes** recorded on a Range Review call: *(revised 26 Sep 2026, T12.2)* **Ranges to assign and Ranges to remove** for the chain, not individual products. States: **Proposed**, **Confirmed**, **Partly Confirmed**, **Rejected** (with reason). Visible only to the proposing rep and head office until confirmed.
+  - **Proposal Review** — head office deciding a Range Proposal per Range (revised from per product), marked as a proposal on the head office Worklist.
   - **Multi-Branch Order** — one ordering session at a master, with quantities per branch, split on save into one ordinary Order per branch.
   - **Ordered By / For** — every Order records the Location where it was taken (Ordered By) and the Location it is for (For). For ordinary orders they are the same. Performance counts at For.
   - **Capturing Rep** — the rep who actually took the Order, recorded on it. For a master's order this differs from the rep the sale is attributed to; Targets & Performance shows it to managers as a "captured" figure so a rep who wins central business is visible.
@@ -33,7 +33,7 @@
   - **Rep at a Location** (area 1) — the Agreed Range and markers in the Morning Snapshot; split Orders feed each branch's Suggested List through the existing last-3-Accepted-Orders rule.
   - **Performance** (area 6) — Orders attributed to the For Location.
 - **Terms that mean something different elsewhere:**
-  - **Range** — a catalogue Range (Product Catalogue) is head office's commercial grouping; an Agreed Range is one of a chain's named lists. Both may contain the same products.
+  - **Range** — a catalogue Range (Product Catalogue) is head office's commercial grouping. *(Revised 26 Sep 2026)* an Agreed Range is one of those catalogue Ranges, assigned to the chain; it is not a separate list.
   - **Proposal** — a Range Proposal is not an Order; it changes a default, not stock movement.
   - **Order** — a Multi-Branch Order is a session, not an Order; it produces Orders.
 
@@ -189,7 +189,7 @@ Given an ordinary Location
 Then no branches or Agreed Range section is shown
 ```
 
-**UX amendment (26 Sep 2026)** — the Master Location may hold multiple separate, named Agreed Ranges, with products allowed in several (BR-NEW-008, C5.4/C5.10). Each customer buyer with access to the chain grid may designate a personal default (C5.5–C5.6); one buyer's choice does not affect another. Until they set one, the first dropdown option is shown without saving a preference (C5.7, current design, may be revisited). Scenarios 1–2 remain examples for a chain with one range; they no longer limit cardinality.
+**UX amendment (26 Sep 2026)** — the Master Location may be assigned several catalogue Ranges as its Agreed Ranges, with products allowed in several (BR-NEW-008, C5.4/C5.10). *Revised the same day:* these are ordinary catalogue Ranges assigned to the chain, not chain-specific lists; "its own confirmed products" in Scenario 5 means each Range's catalogue membership. Each customer buyer with access to the chain grid may designate a personal default (C5.5–C5.6); one buyer's choice does not affect another. Until they set one, the first dropdown option is shown without saving a preference (C5.7, current design, may be revisited). Scenarios 1–2 remain examples for a chain with one range; they no longer limit cardinality.
 
 *Scenario 5: Several confirmed Agreed Ranges*
 ```
@@ -203,6 +203,13 @@ Then both ranges are available by name, each with its own confirmed products
 Given Hand Cream 75ml is confirmed in both Hickey's Everyday and “2026 Christmas gift packs” Agreed Ranges
 When I open either range
 Then Hand Cream is a member of that range
+```
+
+*Scenario 7: The chain order leads (T11.1, 26 Sep 2026)*
+```
+When I open Hickey's Head Office on the tablet
+Then "Start multi-branch order" is the one primary action
+And "Record call", where Range Review is a Purpose, is secondary
 ```
 
 ---
@@ -251,6 +258,17 @@ When Aoife opens Hickey's Rathdrum
 Then her Order Pad shows the Agreed Range without my proposed additions
 ```
 
+**UX amendment (26 Sep 2026, revised the same day — BR-NEW-008 rules 0 and 5, T12.2):** a chain's Agreed Ranges are catalogue Ranges assigned to it, and company head office creates Ranges. A Range Review proposes **assigning or removing whole Ranges** for the chain; it never changes a Range's products, because a Range is shared with every customer and rep assigned it. **Superseded:** Scenario 1's product adds and drops, and Scenario 3 (a Range's availability is not proposed product by product). An earlier product-level scenario from T12.1 was withdrawn. See Scenario 6.
+
+*Scenario 6: Assign and remove whole Ranges (T12.2)*
+```
+Given Hickey's is assigned "Everyday" and "Sun care 2026"
+When I record a Range Review, add "2026 Christmas gift packs" and remove "Sun care 2026"
+Then the Call saves a Range Proposal: add 1 range, remove 1, state Proposed
+And the Call review shows "Range review: add 1 range, remove 1 — subject to head office confirmation"
+And no Range's products change
+```
+
 ---
 
 ### US-003: Confirm a Range Proposal per product
@@ -291,6 +309,8 @@ Then the proposal is Rejected and the Agreed Range is unchanged
 ```
 
 **Open questions:** whether area 3 needs a reason per rejected line or one per proposal (assumed per line).
+
+**UX amendment (26 Sep 2026, T12.2):** a proposal's lines are whole Ranges to assign or remove, so head office confirms or rejects **per Range**, not per product. "The Agreed Range gains 2 products" in Scenario 2 reads as "the chain is assigned the confirmed Ranges"; Scenario 3's branch Order Pads show each newly assigned Range as its own section (T7.15) at their next Sync.
 
 ---
 
@@ -434,6 +454,15 @@ Then I can add it as a row
 Given the grid is open
 When I choose "Show full Agreed Range"
 Then the rest of Hickey's agreed products appear as empty rows
+```
+
+*Scenario MB006-F (26 Sep 2026, M11.4): several Agreed Ranges*
+```
+Given Hickey's has Agreed Ranges "Everyday" and "2026 Christmas gift packs"
+When I open the grid
+Then it shows recently ordered products and a range picker listing Everyday then 2026 Christmas gift packs
+When I pick "2026 Christmas gift packs"
+Then that range's products not already in the grid appear as empty rows
 ```
 
 *Scenario MB006-D*

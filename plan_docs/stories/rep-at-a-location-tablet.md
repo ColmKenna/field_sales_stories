@@ -1879,7 +1879,25 @@ Then the pad opens with a section "Hickey's agreed range (30)" above the normal 
 And SPF30 appears only in that section, not again under Sun care
 ```
 
-**Cross-area amendment (26 Sep 2026):** a Master Location may now have multiple separate Agreed Ranges (BR-NEW-008 in `../uxdocs/04-user-stories-amendments.md`). Scenario 6 remains valid for a chain with one range. Presentation when several apply to the branch, and snapshot contents for them, require a further UX decision; no union or default-only behaviour has been agreed.
+**Cross-area amendment (26 Sep 2026):** a Master Location may now have multiple separate Agreed Ranges (BR-NEW-008 in `../uxdocs/04-user-stories-amendments.md`). Scenario 6 remains valid for a chain with one range. Presentation when several apply to the branch, and snapshot contents for them, require a further UX decision; no union or default-only behaviour has been agreed. **Resolved in part 26 Sep 2026 (T7.15–T7.16):** each range is its own stacked section, everyday range first by convention, with no flag identifying it; sections are ordered oldest range first (Scenarios 7–8; T7.17–T7.18).
+
+*Scenario 7: Several agreed ranges as stacked sections (T7.15)*
+```
+Given Hickey's Pharmacy has two Agreed Ranges, "Everyday" (30) and "2026 Christmas gift packs" (12)
+When I open an Order at Hickey's Arklow
+Then the pad opens with a section for each range above the normal pad, both expanded
+And a product in both ranges appears once, in only one of the sections, and not again in its category
+When I collapse "2026 Christmas gift packs"
+Then its products are hidden until I expand it again
+```
+
+*Scenario 8: The everyday range leads (T7.16)*
+```
+Given Hand Cream 75ml is in both "Everyday" and "2026 Christmas gift packs"
+When I open an Order at Hickey's Arklow
+Then "Everyday", the oldest of the chain's ranges, is the first section and Hand Cream appears there
+And the gift-pack section shows 11 products, without Hand Cream
+```
 
 ---
 

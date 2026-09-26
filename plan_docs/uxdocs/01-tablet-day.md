@@ -1,4 +1,4 @@
-# 01 — Tablet app: the rep's day (T-01 … T-08)
+# 01 — Tablet app: the rep's day (T-01 … T-08, T-11, T-12)
 
 **Device assumptions:** tablet, held one-handed while standing, poor light, no signal assumed.
 **Consequences carried through every frame below:** one dominant name per row; no hover; no drag as the only route; touch targets on the row's right edge or full-width; no two-pane layouts.
@@ -825,6 +825,47 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 
 **New cross-area question (26 Sep 2026, BR-NEW-008):** a chain may now have multiple separate Agreed Ranges. T7.14 settles the presentation for one range; how this section presents several ranges is open. Keep the one-product-one-place rule, but do not assume a union or the customer grid's default range is the rep view.
 
+> **DECISION T7.15 — several Agreed Ranges are stacked sections at the top of the pad. Settled 26 Sep 2026.**
+> A rep mainly works through all of a chain's ranges at each branch visit (for example Everyday, then the Christmas gift packs in November), so each range gets its own labelled section above the normal pad: "Hickey's Everyday (30)", "Hickey's 2026 Christmas gift packs (12)". T7.14's one-product-one-place rule holds across sections: a product in more than one range appears once, in only one section, and never again in its category. Because the rep sometimes works only one range, each section header collapses like a category header (T7.3); all sections start expanded. The customer grid's one-range dropdown (C5.3) is not used here.
+> **Rejected:** one section with a range picker; one merged section with per-row range labels.
+> **Open:** the order of the sections, which also decides where a product in two ranges appears. **Resolved — T7.16.**
+
+> **DECISION T7.16 — the chain's everyday range leads; seasonal and other ranges follow. Settled 26 Sep 2026.**
+> The stable range the chain orders all year opens the pad, so shared products sit in the list the rep knows best: Hand Cream, in both Everyday and the Christmas gift packs, appears under Everyday, and the gift-pack section counts 11. Seasonal and other ranges come after it. This applies to the rep pad only; the customer dropdown's sort order (C5.7) stays deferred.
+> **Rejected:** seasonal or time-limited ranges first; an order set by head office or the manager for each chain.
+> **Open:** how the system knows which range is the everyday one, and the order among the ranges after it.
+
+> **DECISION T7.17 — nothing marks a range as "everyday"; T7.16 is a convention. Settled 26 Sep 2026.**
+> Ranges carry no everyday flag, dates or type. The rep recognises the everyday range by its name and knows the chain; "everyday first" describes the intended result, not a rule the system checks. **Rejected:** an everyday flag; end dates deciding seasonal vs everyday; treating the first-created range as everyday by rule.
+> **Open:** the rule the pad uses to order sections, given the system can't tell which range is everyday. **Resolved — T7.18.**
+
+> **DECISION T7.18 — sections are ordered oldest range first. Settled 26 Sep 2026.**
+> The pad lists a chain's Agreed Ranges in the order they were created. A chain's everyday range is almost always set up first, so it leads without anyone marking it (T7.16–T7.17), and seasonal ranges added later sit beneath. A product in several ranges appears in the oldest of them. **Rejected:** alphabetical ("2026 Christmas gift packs" would sort before "Everyday"); a per-chain order the rep sets.
+> *Revised 26 Sep 2026 (BR-NEW-008 rule 0):* a chain's Agreed Ranges are catalogue Ranges assigned to it, so the sections in T7.15–T7.18 are those Ranges, labelled by their catalogue name ("Everyday (30)", "2026 Christmas gift packs (12)"); the frame shows catalogue names; "Hickey's" in the decision text is illustrative. "Oldest first" uses each Range's creation date in the catalogue. The decisions otherwise stand.
+
+```
++----------------------------------------------------------------+
+| < Hickey's Arklow       New order             4 lines  >        |
++----------------------------------------------------------------+
+| [ Order pad ]  [ Low (0) ]  [ Search all ]                      |
++----------------------------------------------------------------+
+| EVERYDAY (30)                                              v    |
+| +------------------------------------------------------------+ |
+| | Hand Cream 75ml                      [ - ]  12   [ + ]      | |
+| | EUR 4.00  Your price                              (i)       | |
+| +------------------------------------------------------------+ |
+| ...                                                             |
+| 2026 CHRISTMAS GIFT PACKS (12)                             v    |
+| +------------------------------------------------------------+ |
+| | Gift Set Deluxe                      [ - ]   0   [ + ]      | |
+| | EUR 14.50  Your price                             (i)       | |
+| +------------------------------------------------------------+ |
+| ...                                                             |
+| HEALTH > SKINCARE > SUNCARE                                v    |
+| ...                                                             |
++----------------------------------------------------------------+
+```
+
 ---
 
 ## T-08 · Sent item view
@@ -865,6 +906,70 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 
 > **DECISION T8.3 — "Told them" sits beside the removed lines.** *(settled 24 Sep 2026)*
 > Same action as the Not supplied list (T2.6), marked per order. Once marked, the removed lines read "Customer told, 14:20" with "Undo". A line removed at a later sync shows its own "Told them" until marked.
+
+---
+
+## T-11 · Master location view
+
+> Started 26 Sep 2026. Opened from T-05's "master location" state when the Location is a chain's Master.
+
+**Job:** work a chain's head office: take the chain order, and know what the chain takes and what is waiting on head office.
+
+**From the source:** show branches (Closed excluded, Temporarily Closed flagged), the chain's Agreed Ranges with availability, and open proposals awaiting head office; actions are start a Range Review call and start a multi-branch order (Master & Branch US-001; brief T-11). Agreed Ranges are catalogue Ranges assigned to the chain (BR-NEW-008 rule 0). A Range Review is a Call Purpose (T-12). A master that is also a shop does its own stock check and order in the same visit (US-008).
+
+> **DECISION T11.1 — "Start multi-branch order" leads; the Range Review is secondary. Settled 26 Sep 2026.**
+> A rep at a chain's head office is mostly there to take the chain order, so that action is the one primary button, as the chain order leads for the customer on C-02 (C2.2). The Range Review is started from **Record call**, where it is a Purpose alongside Pitch and Stock Check (US-008 S1). **Rejected:** Range Review leading; equal weight as on T-05.
+> *Confirmed 26 Sep 2026:* the frame below — identity, the primary action, then Branches, Ranges and Proposals as summary rows that open their detail, then Recent as on T-05; **Record call** as the secondary action; for a master that is also a shop, a third action **New order for this shop** (US-008 S2), absent for a head office that holds no stock.
+
+```
++----------------------------------------------------------------+
+| < Home                                                          |
++----------------------------------------------------------------+
+| Hickey's Head Office                               Chain master |
+| Main St, Wicklow Town, Co. Wicklow                              |
+| Main contact: [buyer name]                                      |
++----------------------------------------------------------------+
+|              [      Start multi-branch order      ]             |
+|                        [ Record call ]                          |
++----------------------------------------------------------------+
+| BRANCHES   12 - 1 closed until 14 Oct                      >    |
+| RANGES     Everyday (30) - 2026 Christmas gift packs (12)  >    |
+| PROPOSALS  1 awaiting head office - add 1 range            >    |
++----------------------------------------------------------------+
+| RECENT                                                          |
+| Chain order 26 Sep   12 branches, 12 orders                >    |
+| Call 3 Sep           Range review                          >    |
++----------------------------------------------------------------+
+```
+
+---
+
+## T-12 · Range Review (section within T-06)
+
+> Started 26 Sep 2026 from BR-NEW-008. Revised the same day: a chain's Agreed Ranges are catalogue Ranges assigned to it, so a review changes which Ranges the chain takes, not their products.
+
+**Job:** capture which Ranges the chain's buyer agreed to take on or give up, stated plainly as subject to head office confirmation.
+
+**From the source:** a Range Review is a Call Purpose; the rep records a Range Proposal, state Proposed; the Call review states it is subject to head office confirmation; head office confirms on H-04 (Master & Branch US-002, US-003). Head office creates Ranges; a review never creates one (BR-NEW-008 rule 5).
+
+> ~~**DECISION T12.1 — adds and drops are recorded against a chosen range; dropping a shared product asks "this range or all ranges".**~~ **Superseded 26 Sep 2026 by T12.2.** It assumed chain-specific product lists. With shared catalogue Ranges, dropping a product from a Range would change it for every customer and rep assigned that Range.
+
+> **DECISION T12.2 — a Range Review proposes assigning or removing whole Ranges for the chain. Settled 26 Sep 2026.**
+> The section lists the Ranges currently assigned to the chain, each with **Remove**, and **Add a range**, which picks from the catalogue's active Ranges not yet assigned. Nothing changes a Range's products. The Call review reads "Range review: add 1 range, remove 1 — subject to head office confirmation", and head office confirms or rejects each Range on H-04. **Rejected:** product-level adds and drops (T12.1, and the original US-002/US-003 model).
+> *Confirmed 26 Sep 2026:* only Active Ranges can be added (Archived ones don't appear, as with Unavailable products in the original story); each assigned Range shows its product count; a proposed change shows on the row ("Proposed: add", "Proposed: remove") with Undo until the Call syncs.
+
+```
++----------------------------------------------------------------+
+| RANGE REVIEW - subject to head office confirmation              |
++----------------------------------------------------------------+
+| Hickey's takes                                                  |
+|   Everyday (30)                                     [ Remove ]  |
+|   Sun care 2026 (18)            Proposed: remove    [ Undo ]    |
+|   2026 Christmas gift packs (12)  Proposed: add     [ Undo ]    |
++----------------------------------------------------------------+
+|                                          [ + Add a range ]      |
++----------------------------------------------------------------+
+```
 
 ---
 

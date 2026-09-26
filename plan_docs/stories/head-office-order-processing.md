@@ -516,6 +516,8 @@ Given the Contact is at a Master Location
 Then the request states "Hickey's Head Office and its 12 branches"
 ```
 
+**UX amendment (26 Sep 2026):** "my queue" is the manager website's **M-17 Online ordering approvals**, which replaces the brief's H-07; the manager is emailed with a link to it. Account requests do not appear on the head office Worklist (H-01). See `../uxdocs/05-manager.md` M17.1 and `../uxdocs/06-customer.md` C8.2.
+
 ---
 
 ### US-007: Mark a Watched Product
