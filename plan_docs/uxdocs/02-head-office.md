@@ -1,4 +1,4 @@
-# 02 — Head office (H-01, H-02, H-03, H-06, H-10, H-16)
+# 02 — Head office (H-01 … H-11 except H-07, H-16, H-31)
 
 **Device assumptions:** laptop, online, trained daily user, high volume, keyboard-driven where possible.
 **Consequence carried through every frame:** density is a feature here, not a risk. These people clear a queue.
@@ -181,6 +181,73 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 ---
 
+## H-04 · Range proposal decision
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** confirm or reject a chain's proposed Range changes, one Range at a time, so chain agreements stay controlled without blocking branches.
+
+**From the source:** reached from the Worklist, labelled "Range proposal — Hickey's Pharmacies"; decided per line with a reason for each rejection; Partly Confirmed when mixed; the rep sees the outcome and reasons on their Call, including a rep who has since lost the master (Head Office US-005; Master & Branch US-003). *Revised 26 Sep 2026 (T12.2):* lines are whole catalogue Ranges to assign or remove, never products.
+
+```
++---------------------------------------------------------------------------------------+
+| < Worklist        Range proposal - Hickey's Pharmacies        from Colm's call 24 Sep |
++---------------------------------------------------------------------------------------+
+| Hickey's is assigned: Everyday (30) · Sun care 2026 (18)                              |
++---------------------------------------------------------------------------------------+
+| CHANGE                             | DECISION                                         |
++---------------------------------------------------------------------------------------+
+| Add 2026 Christmas gift packs (12) | (x) Confirm  ( ) Reject                          |
+| Remove Sun care 2026 (18)          | ( ) Confirm  (x) Reject [ Contracted to Dec ]    |
++---------------------------------------------------------------------------------------+
+| 1 confirmed, 1 rejected - Partly confirmed          [ Cancel ]   [ Save decision ]    |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H4.1–H4.4, awaiting confirmation:**
+> - **H4.1** One screen per proposal, with the chain's current Ranges above the changes, so the decision is read against what the chain takes now.
+> - **H4.2** Each line starts undecided; Save is blocked until every line is decided, and a Reject needs its reason on the same row.
+> - **H4.3** The result (Confirmed, Partly Confirmed, Rejected) is stated before saving, as the rep will read it.
+> - **H4.4** A confirmed Range reaches branch Order Pads at their next Sync as its own section (T7.15).
+
+---
+
+## H-05 · Duplicate review
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** decide what a rep's new prospect actually matched, and tell the rep.
+
+**From the source:** both records side by side; the existing Location's own pattern ("Primary: Colm · Last order 14 Mar 2026 · previously ordered roughly every 5 weeks"), with no stale flag; four outcomes — keep with the current rep, hand to the cold-calling rep, merge with an existing prospect, or dismiss so the prospect stands; the rep sees the outcome and reason at next Sync (Head Office US-005b; Prospecting US-006).
+
+```
++---------------------------------------------------------------------------------------+
+| < Worklist        Duplicate match - Byrne's Chemist, Rathdrum                         |
++---------------------------------------------------------------------------------------+
+| NEW PROSPECT (Aoife, 25 Sep)             | EXISTING LOCATION                          |
+| Byrne's Chemist                          | Byrne's Pharmacy                           |
+| Main St, Rathdrum                        | Main St, Rathdrum                          |
+| Likely to buy: High                      | Primary: Colm                              |
+| "Owner keen on suncare"                  | Last order 14 Mar 2026                     |
+|                                          | previously ordered roughly every 5 weeks   |
++---------------------------------------------------------------------------------------+
+| What is it?                                                                           |
+| ( ) Colm's live customer - keep with Colm; tell Aoife                                 |
+| ( ) Lapsed customer - hand to Aoife                                                   |
+| ( ) Same as another prospect - merge                                                  |
+| ( ) Genuinely new - dismiss the match                                                 |
+| Note to the rep  [                                            ]         [ Decide ]    |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H5.1–H5.4, awaiting confirmation:**
+> - **H5.1** The four outcomes are phrased as what the match *is*, with the consequence after the dash, so the choice reads as a judgement rather than an action list.
+> - **H5.2** "Hand to Aoife" goes through Coverage Management as a reassignment of that one Location, with M-08's impact shown before it is confirmed.
+> - **H5.3** The note to the rep is optional; the outcome sentence the rep sees is generated ("Already a customer, covered by Colm").
+> - **H5.4** Merge is offered only when the match is another prospect; for an existing customer it is absent.
+
+---
+
 ## H-06 · Held orders
 
 > Started 26 Sep 2026 from H2.9. Frame and details are first-iteration defaults from the brief and Head Office US-006, confirmed the same day.
@@ -208,6 +275,69 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 ```
 
 > *Confirmed 26 Sep 2026:* oldest hold first; each row offers **Release** (accepts it now, H2.9) and **Reject…** (reason required); a Location that closes while an order is held shows "(!) Location closed" on the row; H-01's Worklist shows a count "2 orders on hold >" linking here, so held orders are seen daily without returning orders to the Worklist.
+
+---
+
+## H-08 · Short products
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** show only the products that need allocating, most pressing first.
+
+**From the source:** a product appears when outstanding orders exceed what is available: "340 outstanding · 200 on hand · 7 orders waiting · 2 held"; ordered by how many orders are waiting, with the oldest wait shown; "On hand not entered" with an entry action; a drafted-but-unreleased allocation shows "Allocation drafted, not released" with its age, and over-allocation is flagged; empty state "No products are short" (Stock Allocation US-001, US-005). *26 Sep 2026:* orders are accepted at the cut-off with short quantities outstanding (BR-NEW-001, BR-NEW-009), so "waiting" means an order with a quantity outstanding, and "held" now means held by hand (H2.9).
+
+```
++---------------------------------------------------------------------------------------+
+| Short products (3)                                                                    |
++---------------------------------------------------------------------------------------+
+| PRODUCT                  OUTSTANDING    ON HAND       WAITING       OLDEST WAIT       |
++---------------------------------------------------------------------------------------+
+| SPF30 Sun Lotion 200ml        340         200         7 (2 held)    11 days       >   |
+|   Allocation drafted, not released - 1 day                                            |
+| Aftersun Gel 200ml            120     not entered     3             4 days        >   |
+|                                       [ Enter on hand ]                               |
+| Nappy Wipes 64pk               96          40         2             2 days        >   |
+|   (!) Over-allocated - on hand reduced since the draft                                |
++---------------------------------------------------------------------------------------+
+
+  Empty
+  | No products are short.                                                              |
+```
+
+> **Drafting calls H8.1–H8.3, awaiting confirmation:**
+> - **H8.1** A row opens H-10 for that product; "Enter on hand" opens H-09 in place.
+> - **H8.2** Draft and over-allocation notices sit under their product's row, not in a separate list.
+> - **H8.3** A product leaves the list as soon as everything outstanding can be filled (US-001 S5).
+
+---
+
+## H-09 · Stock entry
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** record what is on hand and what is coming, so allocation works from real figures.
+
+**From the source:** On Hand with who entered it and when; Incoming deliveries with quantity and expected date, several in date order, all allocatable; a delivery that arrives is moved to On Hand and closes; changing an Incoming quantity or date flags allocations "Delivery changed — review allocation"; measure-based products in their unit (Stock Allocation US-002). A change never rewrites a draft; the manager reviews or re-proposes (H10.6–H10.7).
+
+```
++---------------------------------------------------------------------------------------+
+| < SPF30 Sun Lotion 200ml        Stock                                                 |
++---------------------------------------------------------------------------------------+
+| On hand     [  200  ]   entered by [name], 26 Sep 09:14                               |
++---------------------------------------------------------------------------------------+
+| INCOMING                                                                              |
+| 400   expected 22 Oct 2026                        [ Arrived ]   [ Edit ]              |
+| 250   expected  5 Nov 2026                        [ Arrived ]   [ Edit ]              |
+| [ + Add delivery ]                                                                    |
++---------------------------------------------------------------------------------------+
+| (!) Delivery changed - review allocation  >                                           |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H9.1–H9.3, awaiting confirmation:**
+> - **H9.1** Stock is entered per product, reached from H-08, H-10 or the product record (H-13); there is no bulk stock sheet in this iteration.
+> - **H9.2** **Arrived** moves the delivery's quantity into On Hand and closes it, with a chance to correct the quantity that actually came.
+> - **H9.3** Editing a delivery's quantity or date shows the "Delivery changed — review allocation" link to H-10 when a draft uses it.
 
 ---
 
@@ -277,6 +407,36 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 ---
 
+## H-11 · Release confirmation
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** send allocated stock to the warehouse, per order or all together; nothing leaves until then.
+
+**From the source:** release one order's allocation or the whole split; released orders become "Accepted — partly sent" or, when filled, leave the waiting list; orders allocated nothing stay waiting; On Hand reduces by the released total; an over-allocated draft can't be released; a closed Location's order is excluded for a deliberate decision; Run-out products can't exceed Remaining (Stock Allocation US-004, US-005).
+
+```
++---------------------------------------------------------------------------------------+
+| < Allocation      Release - SPF30 Sun Lotion 200ml                                    |
++---------------------------------------------------------------------------------------+
+| Release 180 units to the warehouse                                                    |
+| O-10388   Kelly's, Avoca        24   completes the order                              |
+| O-10401   Quinn's, Rathdrum     48   completes the order                              |
+| O-10412   Carey's, Arklow       48   completes this line; 2 other lines still short   |
+| O-10418   Byrne's, Aughrim      60   60 still outstanding                             |
+| On hand after release: 0                                                              |
++---------------------------------------------------------------------------------------+
+|                                            [ Back ]   [ Release 4 orders ]            |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H11.1–H11.3, awaiting confirmation:**
+> - **H11.1** "Go to release" on H-10 opens this confirmation listing every order in the split; releasing one order is done from its row on H-10 without this screen.
+> - **H11.2** Each row states the consequence for that order ("completes the order", "still outstanding"), so the release is read as outcomes, not numbers.
+> - **H11.3** The button names the count ("Release 4 orders"); orders allocated nothing aren't listed.
+
+---
+
 ## H-16 · Category archive decision
 
 **Job:** the one screen in the system with real ceremony. Far-reaching and gradually-visible consequences.
@@ -328,6 +488,35 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 > **DECISION H16.4 — type-to-confirm is last, after the path is chosen.**
 > A confirm field that's live before the decision is made invites typing it early and then deciding under time pressure.
+
+---
+
+## H-31 · Order list
+
+> Added in session (26 Sep 2026) from H1.8; not in the brief. Drafted as a first-iteration default. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** let head office look at orders when it wants to, without orders sitting on the Worklist.
+
+**From the source:** reached from a secondary "View orders >" link on H-01 (H1.8); each row opens H-02. Orders are Pending until the cut-off, may be Held or Rejected by hand before it, then Accepted (BR-NEW-009, H2.9).
+
+```
++---------------------------------------------------------------------------------------+
+| < Worklist      Orders                                                                |
+| Status [ Pending v ]   Date [ Today v ]   Location [ All v ]   Rep [ All v ]   Search |
++---------------------------------------------------------------------------------------+
+| O-10433   Byrne's, Aughrim        Colm        Pending - 4pm        EUR  412.60     >  |
+| O-10412   Carey's, Arklow         Colm        Held                 EUR 2,924.16    >  |
+| O-10431   Hickey's Rathdrum       Online      Pending - 4pm        EUR   84.40     >  |
+| ...                                                                                   |
++---------------------------------------------------------------------------------------+
+| 58 orders today · 41 Pending until 4pm · 2 Held                                       |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H31.1–H31.3, awaiting confirmation:**
+> - **H31.1** Opens filtered to today's Pending orders, the ones head office can still act on before the cut-off.
+> - **H31.2** Filters: status, date, Location, rep (with "Online" for customer-placed orders), and a search box for order number or Location.
+> - **H31.3** A footer counts the filtered set; the list itself has no actions, since Hold and Reject happen on H-02.
 
 ---
 
