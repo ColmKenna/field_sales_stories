@@ -1,4 +1,4 @@
-# 02 — Head office (H-01 … H-11 except H-07, H-16, H-31)
+# 02 — Head office (H-01 … H-19 except H-07, H-22, H-31)
 
 **Device assumptions:** laptop, online, trained daily user, high volume, keyboard-driven where possible.
 **Consequence carried through every frame:** density is a feature here, not a risk. These people clear a queue.
@@ -437,6 +437,129 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 ---
 
+## H-12 · Product list & search
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** find the right product among near-duplicates.
+
+**From the source:** search shows code, full breadcrumb, Primary Brand, availability state and current price; filtering by a category lists everything beneath it, each with its own breadcrumb; "Include unavailable and archived-category products" adds them, labelled (Product Management US-010).
+
+```
++---------------------------------------------------------------------------------------+
+| Products                  [ SPF30                               ]   [ + Product ]     |
+| Category [ All v ]   Brand [ All v ]   [ ] Include unavailable and archived-category  |
++---------------------------------------------------------------------------------------+
+| SUN-0341  SPF30 Sun Lotion 200ml      Health > Skincare > Suncare > Lotions           |
+|           SunCo · Discontinuing, replaced by SPF30 v2                  EUR 11.20  >   |
+| SUN-0342  SPF30 Sun Lotion v2 200ml   Health > Skincare > Suncare > Lotions           |
+|           SunCo · Active                                              EUR 12.50  >    |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H12.1–H12.3, awaiting confirmation:**
+> - **H12.1** Two lines per product: code, name and breadcrumb, then brand, availability and price, so near-duplicates are told apart by path and state.
+> - **H12.2** The price shown is today's Base Price; a future-dated change shows "rising to €13.20 on 1 Nov" on the record, not the list.
+> - **H12.3** **+ Product** opens the minimum create form on H-13.
+
+---
+
+## H-13 · Product record
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** the full product, designed so the minimum can be entered quickly and everything else added later.
+
+**From the source:** minimum create — code (unique), name, Category (required), Unit, Base Price from a date, Ranges (none means "Unranged — orderable by all reps"); later sections for Profile, Attributes, Brands (Primary required if any), supplier, Restriction Group; Unit of Measure with step and minimum ("Minimum must be a multiple of the step"); Base Price history with future and past-dated changes ("A price already starts on 1 Nov 2026 — edit it instead"); Ranges, with inline Create range; Replacements both ways; availability panel (H-14); quantity breaks (H-22) (Product Management US-001 to US-004; Range Lifecycle US-003, US-010).
+
+```
++---------------------------------------------------------------------------------------+
+| < Products     SUN-0342  SPF30 Sun Lotion v2 200ml                   Active  [ v ]    |
+|                Health > Skincare > Suncare > Lotions                                  |
++---------------------------------------------------------------------------------------+
+| PRICE          EUR 12.50 · rising to EUR 13.20 on 1 Nov     [ History ]  [ + Change ] |
+| UNIT           Each                                                                   |
+| RANGES         Summer 2027 · Core Stock                          [ Edit ]             |
+| REPLACEMENTS   Replaces SPF30 Sun Lotion 200ml                   [ Edit ]             |
+| QUANTITY BREAKS  none                                            [ + Add ]            |
++---------------------------------------------------------------------------------------+
+| CLASSIFICATION   Profile: -   Primary brand: SunCo   Supplier: -   Restriction: none  |
+| ATTRIBUTES       Weight 200 g · Shelf life 24 months · Barcode 539123...  [ Edit ]    |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H13.1–H13.4, awaiting confirmation:**
+> - **H13.1** Create is one short form with only the minimum fields; on save it opens this record with the other sections empty and ready to fill (US-001 S5).
+> - **H13.2** The record is one page of sections, most-used first (price, unit, ranges, replacements, breaks), then classification and attributes; each section edits in place.
+> - **H13.3** The availability state sits top right and opens the H-14 panel.
+> - **H13.4** Changing Unit on a product with orders states "12 orders reference this product as Each — they are unchanged" before saving (US-003 S5).
+
+---
+
+## H-14 · Product availability panel
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** move a product through its lifecycle with the consequences visible first.
+
+**From the source:** states Active, Discontinuing (with its Replacement named), Run-out (quantity and live Remaining, counting Accepted and Pending orders, which can go negative when oversold offline), Temporarily Unavailable (optional Expected Back date; "Back in stock around 25 October"), Unavailable (direct retirement with impact "Stocked in 87 locations · 14 orders in 30 days · 2 open orders will still be processed" and Replacements settable then); reinstating returns it to Active via its Ranges (Range Lifecycle US-007 to US-009).
+
+```
++---------------------------------------------------------------------------------------+
+| Availability - SPF30 Sun Lotion 200ml                                                 |
++---------------------------------------------------------------------------------------+
+| ( ) Active                                                                            |
+| ( ) Discontinuing            replaced by [ SPF30 Sun Lotion v2 200ml   v ]            |
+| ( ) Run-out                  quantity [ 340 ]      Remaining 160                      |
+| ( ) Temporarily unavailable  expected back [ 25 Oct 2026 ]  (optional)                |
+| (x) Unavailable                                                                       |
+|     Stocked in 87 locations · 14 orders in 30 days · 2 open orders still processed    |
+|     Replaced by [ SPF30 Sun Lotion v2 200ml   v ]                                     |
++---------------------------------------------------------------------------------------+
+|                                                     [ Cancel ]   [ Make unavailable ] |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H14.1–H14.3, awaiting confirmation:**
+> - **H14.1** A panel over the product record, one choice per state, with each state's extra fields shown only when chosen.
+> - **H14.2** Impact is shown only for Unavailable, the one change that takes a product off sale; the button names the change ("Make unavailable").
+> - **H14.3** Run-out's Remaining is live and shows "(oversold by 20)" in place of a negative number.
+
+---
+
+## H-15 · Category tree
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** keep a 5–6 level tree findable and changeable without losing products.
+
+**From the source:** counts both ways ("180 products beneath · 12 here"); subcategories first, then products directly in the category under "In Suncare"; full breadcrumbs everywhere; create, rename (breadcrumbs update, no order changes), move with impact ("Moving Suncare will move 4 subcategories and 180 products to Health > Skincare"; own subtree not offered; top level allowed), bulk recategorise by filter with unticked exceptions; adding a subcategory to a category with products offers "Recategorise products?"; archive goes to H-16 (Product Management US-005 to US-007, US-009).
+
+```
++---------------------------------------------------------------------------------------+
+| Categories      Health > Skincare > Suncare                  [ Search categories ]    |
++---------------------------------------------------------------------------------------+
+| Suncare   180 products beneath · 12 here   [ + Subcategory ]  [ Rename ]  [ Move ]    |
+|                                                                           [ Archive ] |
++---------------------------------------------------------------------------------------+
+| Lotions        64 beneath                                                         >   |
+| Sprays         48 beneath                                                         >   |
+| After Sun      56 beneath                                                         >   |
+| Kids           0 beneath                                                          >   |
++---------------------------------------------------------------------------------------+
+| IN SUNCARE (12)                                          [ Recategorise by filter ]   |
+| SUN-0301  Suncare Starter Pack                                                    >   |
+| ...                                                                                   |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H15.1–H15.3, awaiting confirmation:**
+> - **H15.1** One category at a time with its breadcrumb as navigation, not an expanding tree, so deep paths stay readable.
+> - **H15.2** Move and Recategorise use the impact-preview pattern (00 conventions) before anything changes; Rename applies at once.
+> - **H15.3** Archive opens H-16's decision screen, unchanged.
+
+---
+
 ## H-16 · Category archive decision
 
 **Job:** the one screen in the system with real ceremony. Far-reaching and gradually-visible consequences.
@@ -488,6 +611,120 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 > **DECISION H16.4 — type-to-confirm is last, after the path is chosen.**
 > A confirm field that's live before the decision is made invites typing it early and then deciding under time pressure.
+
+---
+
+## H-17 · Reference data lists
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** maintain the small lists everything else refers to — profiles, attribute names, brands, suppliers, restriction groups, location types, contact types — without breaking what uses them.
+
+**From the source:** Delete only when unused; otherwise Archive, with what uses it ("Used by 24 products and 1 specialist assignment"); archived items stay on existing records labelled "(archived)" and aren't offered for new ones; archived hidden behind "Show archived (3)"; un-archive restores; archiving a Restriction Group warns "3 permissions will be kept but have no effect while archived" (Product Management US-008; Customer Directory US-009).
+
+```
++---------------------------------------------------------------------------------------+
+| Reference data   [ Brands v ]                                          [ + Brand ]    |
++---------------------------------------------------------------------------------------+
+| SunCo            24 products                                                      >   |
+| GlowCo            6 products                                                      >   |
+| TestCo            not used                                                        >   |
+| Show archived (3)                                                                     |
++---------------------------------------------------------------------------------------+
+| SunCo    Used by 24 products and 1 specialist assignment      [ Rename ]  [ Archive ] |
+| TestCo   Not used                                              [ Rename ]  [ Delete ] |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H17.1–H17.2, awaiting confirmation:**
+> - **H17.1** One screen with a list switcher for the seven lists, since they share one pattern.
+> - **H17.2** Only Delete or Archive is offered, never both, decided by whether the item is used.
+
+---
+
+## H-18 · Range list & detail
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** see the live catalogue without last year's clutter; build and fill a Range.
+
+**From the source:** Active by default with "58 products · 6 unavailable" per row; an Archived filter with archive date and products still Unavailable because of it; "0 products — not visible to reps"; create with a unique name; fill by filter-and-select (all ticked, "Already in range" not double-added, Unavailable shown unticked, "No products match"), by copying a Range (archived or active), or from the product record; removal is routine, with an inline note if it leaves a product in no active Range ("…is now in no active range and is Unavailable"); a recently archived Range offers Un-archive, an old one Copy (Range Lifecycle US-001 to US-004, US-006, US-011). Ranges are also what chains are assigned (BR-NEW-008).
+
+```
++---------------------------------------------------------------------------------------+
+| Ranges     [ Active v ]                                    [ + Range ]  [ Copy... ]   |
++---------------------------------------------------------------------------------------+
+| Core Stock          212 products · 3 unavailable                                  >   |
+| Everyday             30 products                                                  >   |
+| Summer 2027          60 products                                                  >   |
+| Autumn 2027           0 products - not visible to reps                            >   |
++---------------------------------------------------------------------------------------+
+| Summer 2027   60 products                        [ + Add products ]  [ Archive... ]   |
+| SUN-0342  SPF30 Sun Lotion v2 200ml   Active                              [ Remove ]  |
+| Kids SPF50 Spray 150ml is now in no active range and is Unavailable.       [ Undo ]   |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H18.1–H18.3, awaiting confirmation:**
+> - **H18.1** **+ Add products** opens filter-and-select over the catalogue (category, brand, name), with every match ticked and exceptions unticked before adding.
+> - **H18.2** Removal is immediate with an inline **Undo** beside the note, rather than a confirmation (US-004 S3).
+> - **H18.3** The detail also shows who is assigned the Range (reps, customers, chains) as a count, since archiving or emptying it affects them.
+
+---
+
+## H-19 · Range archive confirmation
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** show what an archive actually takes off sale before it happens.
+
+**From the source:** "38 products become Unavailable · 20 stay on sale via other ranges · 3 open orders contain these products and will still be processed"; the 38 listed highest impact first; Replacements settable inline and saved whether or not the archive completes; products already retired directly listed apart; "No products become Unavailable" gives a plain Confirm; no type-to-confirm; reps see it at next Sync (Range Lifecycle US-005).
+
+```
++---------------------------------------------------------------------------------------+
+| Archive Summer 2026?                                                                  |
+| 38 products become Unavailable · 20 stay on sale via other ranges                     |
+| 3 open orders contain these products and will still be processed                      |
++---------------------------------------------------------------------------------------+
+| BECOMING UNAVAILABLE (38), highest impact first                                       |
+| SPF30 Sun Lotion 200ml    stocked in 87 locations    replaced by [ SPF30 v2 200ml v ] |
+| Kids SPF50 Spray 150ml    stocked in 41 locations    replaced by [ choose...      v ] |
+| ...                                                                                   |
+| ALREADY UNAVAILABLE (1)   retired directly                                            |
++---------------------------------------------------------------------------------------+
+|                                                       [ Cancel ]   [ Archive range ]  |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H19.1–H19.2, awaiting confirmation:**
+> - **H19.1** "Highest impact" means most Locations stocking it, with that figure on each row.
+> - **H19.2** Archiving also removes the Range from chains assigned it (BR-NEW-008), stated as an extra line when any are ("Assigned to 2 chains").
+
+---
+
+## H-22 · Quantity breaks (on the product record)
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** set from-quantity prices for counted and measured products, and catch breaks that could never apply.
+
+**From the source:** breaks "from 10: €2.00", "from 30: €1.75"; measure-based in the unit ("from 10 kg: €4.00"); a break higher than the one below it warns "This break is higher than the one below it and will never apply"; a customer's tier price still wins when lower (Pricing US-004). A break is part of the base price, not an offer (handover §6, pricing rule 2).
+
+```
++---------------------------------------------------------------------------------------+
+| Quantity breaks - Throat Lozenges 36s        Base price EUR 2.20 each                 |
++---------------------------------------------------------------------------------------+
+| From  [  10 ]   EUR [ 2.00 ]                                               [ Remove ] |
+| From  [  30 ]   EUR [ 2.30 ]   (!) Higher than the break below - will never apply     |
+| [ + Add break ]                                                                       |
++---------------------------------------------------------------------------------------+
+|                                                                [ Cancel ]   [ Save ]  |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H22.1–H22.2, awaiting confirmation:**
+> - **H22.1** Breaks edit in place as a section of H-13, sorted by quantity, with the base price shown above for comparison.
+> - **H22.2** A never-applies break warns but can still be saved, since it may be set ahead of a price change.
 
 ---
 
