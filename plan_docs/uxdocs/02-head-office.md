@@ -1,4 +1,4 @@
-# 02 — Head office (H-01 … H-19 except H-07, H-22, H-31)
+# 02 — Head office (H-01 … H-31 except H-07)
 
 **Device assumptions:** laptop, online, trained daily user, high volume, keyboard-driven where possible.
 **Consequence carried through every frame:** density is a feature here, not a risk. These people clear a queue.
@@ -702,6 +702,61 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 ---
 
+## H-20 · Price tier list & detail
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** hold agreed commercial terms without maintaining a thousand prices.
+
+**From the source:** a tier is either a percentage off base ("Tier B, 8% off") with per-product or per-category overrides (percentage or fixed), or a price list with individually priced products and everything else at base; a fixed override above base warns "This is above list price and will never apply" but can be saved; changing a tier's shape warns what stops applying; fixed prices show drift ("€10.50 — now 20% off (was 16% when set)"), sortable by drift; percentage rows show none (Pricing US-001, US-002).
+
+```
++---------------------------------------------------------------------------------------+
+| < Tiers      Tier B      8% off base                         [ Change shape... ]      |
++---------------------------------------------------------------------------------------+
+| OVERRIDES                                         Sort [ Drift, most first v ]        |
+| SPF30 Sun Lotion 200ml    fixed EUR 10.50    now 20% off (was 16% when set)           |
+| Suncare (category)        15% off                                                     |
+| Hand Cream 75ml           fixed EUR 4.10     (!) above list price - will never apply  |
+| [ + Override ]                                                                        |
++---------------------------------------------------------------------------------------+
+| Held by 14 customers                                                              >   |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H20.1–H20.3, awaiting confirmation:**
+> - **H20.1** The tier list shows each tier's shape and how many customers hold it; the detail leads with overrides, since the default percentage is one line.
+> - **H20.2** Drift is shown only on fixed prices, as a sentence, with sort by drift most-first available.
+> - **H20.3** "Held by 14 customers" links to those customers (H-25), so the reach of a change is visible before making it.
+
+---
+
+## H-21 · Tier assignment on the customer
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** give a customer one or more tiers and see what that does to their prices.
+
+**From the source:** a Customer may hold several tiers, all its Locations price against them with the best price winning per line; the Customer shows "Tiers: B, Suncare Deal 2027" and a sample of products with the price each would get; removing a tier affects new orders only; no tier means Base Price plus any break or promotion (Pricing US-003).
+
+```
++---------------------------------------------------------------------------------------+
+| Pricing - Hickey's Pharmacies (13 locations)                                          |
+| Tiers:  B  [x]    Suncare Deal 2027  [x]                          [ + Add tier ]      |
++---------------------------------------------------------------------------------------+
+| SAMPLE PRICES                          BASE       THIS CUSTOMER    FROM               |
+| SPF30 Sun Lotion 200ml                 EUR 12.50  EUR 10.00        Suncare Deal 2027  |
+| Hand Cream 75ml                        EUR  4.00  EUR  3.68        Tier B             |
+| Sudocrem 125g                          EUR  4.85  EUR  4.46        Tier B             |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H21.1–H21.2, awaiting confirmation:**
+> - **H21.1** A section on the Customer record (H-25), not a separate page; the sample recalculates as tiers are ticked, before saving.
+> - **H21.2** The sample uses the customer's most-ordered products, with a search to check any other product.
+
+---
+
 ## H-22 · Quantity breaks (on the product record)
 
 > Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
@@ -725,6 +780,230 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 > **Drafting calls H22.1–H22.2, awaiting confirmation:**
 > - **H22.1** Breaks edit in place as a section of H-13, sorted by quantity, with the base price shown above for comparison.
 > - **H22.2** A never-applies break warns but can still be saved, since it may be set ahead of a price change.
+
+---
+
+## H-23 · Promotion list
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** the trading calendar in one place, with problems flagged.
+
+**From the source:** Live by default, with Scheduled and Ended filters; each row shows shape, audience, period and product count; "Cannot apply" when a required product is Unavailable; "May never apply" when every product is beaten by another live offer; a live promotion can be ended early, stopping from tomorrow (Promotions US-005 S5, US-008).
+
+```
++---------------------------------------------------------------------------------------+
+| Promotions     [ Live v ]                                           [ + Promotion ]   |
++---------------------------------------------------------------------------------------+
+| Autumn offer       Buy X get Y    All customers    1-31 Oct 2026    2 products     >  |
+| Summer bundle      Bundle         All customers    1 Sep-15 Oct     3 products     >  |
+|                    (!) Cannot apply - Kids Spray unavailable                          |
+| Suncare 6 for 15   Mix & match    Tier A, Tier B   1-31 Oct 2026    Suncare        >  |
+|                    (!) May never apply - beaten by Autumn Deal                        |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H23.1–H23.2, awaiting confirmation:**
+> - **H23.1** Flags sit under their promotion's row as sentences naming the cause.
+> - **H23.2** **End early** is on the promotion's detail, not the list; editing a live promotion is otherwise not offered (source assumption, brief §11 Q5).
+
+---
+
+## H-24 · Promotion setup
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** create one of four promotion shapes, choosing the shape first because each needs different fields.
+
+**From the source:** Buy X get Y (trigger product or set, reward free or at a price, repeats, optional maximum); Bundle (named products and a bundle price); Mix and Match (eligible set by Range, Category or list, N items, a price; best for the customer); Spend Threshold (value, then percentage or fixed off, measured after line offers and before rep discounts); audience all customers or named tiers; whole-day period; Scheduled until it starts; the overlap warning ("SPF30 is in 2 other live promotions. Autumn Deal gives €9.99; this offer gives €10.50, so it won't apply.") with proceed allowed (Promotions US-001 to US-006; BR-NEW-002).
+
+```
++---------------------------------------------------------------------------------------+
+| New promotion                                                                         |
+| What kind?  ( ) Buy X get Y   ( ) Bundle   (x) Mix and match   ( ) Spend threshold    |
++---------------------------------------------------------------------------------------+
+| Name        [ Suncare 6 for 15                     ]                                  |
+| Any         [  6 ]  from  [ Category: Suncare                               v ]       |
+| For         EUR [ 15.00 ]                                                             |
+| Audience    ( ) All customers   (x) Tiers  [ A ] [ B ]                                |
+| Period      [ 1 Oct 2026 ] to [ 31 Oct 2026 ]   whole days                            |
+| Maximum repeats  [    ]  (optional)                                                   |
++---------------------------------------------------------------------------------------+
+| (!) SPF30 is in 2 other live promotions. Autumn Deal gives EUR 9.99; this offer       |
+|     gives EUR 10.50, so it won't apply.                                               |
++---------------------------------------------------------------------------------------+
+|                                                    [ Cancel ]   [ Save promotion ]    |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H24.1–H24.3, awaiting confirmation:**
+> - **H24.1** Shape is the first question and switches the fields below it; changing shape later clears the shape-specific fields after a warning.
+> - **H24.2** The overlap warning appears under the form as soon as a product or set is chosen, and never blocks saving.
+> - **H24.3** Spend threshold carries the source's open assumption that its discount applies to the order's final total (RC-NEW-006); it is noted beside the field until confirmed.
+
+---
+
+## H-25 · Customer record
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** the buying organisation and its shops in one place.
+
+**From the source:** create a Customer with its first Location; Town required; coordinates from Eircode or Town with their Precision; duplicate Location names within a Customer warned but allowed (Customer Directory US-001). Tiers are assigned here (Pricing US-003); Ranges are assigned to customers for their curated catalogue (Self-service; Range Lifecycle).
+
+```
++---------------------------------------------------------------------------------------+
+| < Customers     Hickey's Pharmacies                                  [ + Location ]   |
++---------------------------------------------------------------------------------------+
+| LOCATIONS (13)                                                                        |
+| Hickey's Head Office       Wicklow Town    master of 12      Head office          >   |
+| Hickey's Rathdrum          Rathdrum        reports to HO     Pharmacy             >   |
+| Hickey's Arklow            Arklow          Closed until 14 Oct                    >   |
+| ...                                                                                   |
++---------------------------------------------------------------------------------------+
+| PRICING      Tiers: B, Suncare Deal 2027                                  [ Edit ]    |
+| RANGES       Everyday · Core Stock                                        [ Edit ]    |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H25.1–H25.2, awaiting confirmation:**
+> - **H25.1** Locations are listed with Town, master relationship, type and any closure, each opening H-26.
+> - **H25.2** Pricing (H-21) and assigned Ranges are sections on this record, so everything that shapes what this customer sees and pays is together.
+
+---
+
+## H-26 · Location record
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** one shop, with the few things that drive visits, coverage and ordering.
+
+**From the source:** Type and several Profiles (optional, gaps flagged; most demanding default wins, per-Location overrides beat profiles, each value shows where it comes from); Town, Eircode, coordinates with Precision, and revert of a field-captured position; Master Location (same Customer only, no circular masters); contacts; temporary closure with a reopen date, open-ended allowed; permanent close cancels open Visit Dues, keeps orders, and for a master asks to reassign its branches; reopen (Customer Directory US-002, US-005, US-010, US-011). A master's Agreed Ranges are catalogue Ranges assigned to it (BR-NEW-008).
+
+```
++---------------------------------------------------------------------------------------+
+| < Hickey's Pharmacies    Hickey's Rathdrum                                    Active  |
+| Main St, Rathdrum · A67 X123 · position Confirmed on site  [ Revert position ]        |
++---------------------------------------------------------------------------------------+
+| TYPE        Pharmacy                                                                  |
+| PROFILES    Large pharmacy · Customer campaign X                       [ Edit ]       |
+| VISITS      Every 4 weeks (from Large pharmacy) · 45 min                [ Override ]  |
+| MASTER      Reports to Hickey's Head Office                            [ Change ]     |
+| CONTACTS    Main contact: Mary Walsh · 2 others                         >             |
++---------------------------------------------------------------------------------------+
+| [ Temporarily close... ]   [ Close location... ]                                      |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H26.1–H26.3, awaiting confirmation:**
+> - **H26.1** Each resolved default shows its source in brackets ("from Large pharmacy", "override"), per Customer Directory US-002 S7.
+> - **H26.2** Temporary and permanent closure are two separate actions in the footer; permanent close uses the impact-preview pattern (open visits cancelled, orders unaffected, branches to reassign).
+> - **H26.3** On a master, an **Agreed ranges** section lists the Ranges assigned to the chain; head office can assign or remove them here directly, as well as through confirmed Range Review proposals (H-04).
+
+---
+
+## H-27 · Contact record & main contact replacement
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** keep contacts current without leaving a shop with nobody to ask for.
+
+**From the source:** a Contact can link to several Locations; one Main Contact per Location, the first linked becoming Main automatically; setting a second Main asks "Replace Mary Walsh as main contact?"; unlinking a Main requires a replacement or "No replacement yet", which marks the contact Inactive everywhere and flags "Main contact inactive — replacement needed"; reactivating doesn't restore Main; Inactive hidden behind "Show inactive (3)" (Customer Directory US-003, US-004). An online-ordering login is suspended while its Contact is Inactive (Self-service US-001 S6).
+
+```
++---------------------------------------------------------------------------------------+
+| < Hickey's Rathdrum     Mary Walsh     Pharmacist · mary@hickeys.ie · 0404 12345      |
++---------------------------------------------------------------------------------------+
+| LOCATIONS    Rathdrum (main) · Arklow (main) · Wicklow Town         [ + Link ]        |
+| ONLINE ORDERING   Active                                                              |
++---------------------------------------------------------------------------------------+
+
+  Unlinking Mary from Rathdrum, where she is Main
+  | Who is Rathdrum's main contact now?                                                 |
+  | ( ) Sean Byrne  ( ) Add a new contact   ( ) No replacement yet - mark Mary inactive |
+```
+
+> **Drafting calls H27.1–H27.2, awaiting confirmation:**
+> - **H27.1** The replacement question appears inline at the moment of unlinking, with the three choices, rather than as a separate step.
+> - **H27.2** The contact shows their online-ordering status, so head office sees the effect of marking them Inactive.
+
+---
+
+## H-28 · Location profiles
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** the servicing defaults a handful of profiles spread across hundreds of shops.
+
+**From the source:** a profile carries Visit Frequency, Visit Duration and per-product low-stock thresholds, or no defaults at all (grouping only); changing a default shows "40 locations without an override will change to every 3 weeks"; archive-not-delete ("Used by 40 locations — they keep their current defaults until reassigned") (Customer Directory US-006; BR-NEW-005).
+
+```
++---------------------------------------------------------------------------------------+
+| < Profiles     Large pharmacy                    Used by 40 locations                 |
++---------------------------------------------------------------------------------------+
+| Visit frequency   every [ 3 ] weeks     was 4 - 40 locations without an override      |
+|                                          will change to every 3 weeks                 |
+| Visit duration    [ 45 ] min                                                          |
+| LOW STOCK THRESHOLDS                                                                  |
+| Cold & Flu Relief 16s        warn at [ 6 ]                                            |
+| Vitamin D 1000IU 90s         warn at [ 3 ]                         [ + Product ]      |
++---------------------------------------------------------------------------------------+
+|                                                             [ Cancel ]   [ Save ]     |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H28.1–H28.2, awaiting confirmation:**
+> - **H28.1** The impact sentence appears beside the changed field as soon as it differs, before Save.
+> - **H28.2** A grouping-only profile shows "No defaults — used for grouping" in place of the fields.
+
+---
+
+## H-29 · Geography
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** maintain Region → County → Town, and show what moving a Town does to coverage.
+
+**From the source:** a Town needs a County ("Choose a county"); moving a Town states "23 locations move to Wexford; Primary Rep changes from Colm to Brian for 23 locations" and raises Handover Pending for their open visits; archive-not-delete, archived Towns not offered on new Locations (Customer Directory US-007).
+
+```
++---------------------------------------------------------------------------------------+
+| Geography     Leinster > Wicklow                                     [ + Town ]       |
++---------------------------------------------------------------------------------------+
+| Rathdrum      23 locations                                  [ Move... ]        >      |
+| Arklow        31 locations                                  [ Move... ]        >      |
+| Laragh         4 locations                                  [ Move... ]        >      |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H29.1–H29.2, awaiting confirmation:**
+> - **H29.1** One level at a time with the path as navigation, as in the category tree (H-15).
+> - **H29.2** **Move…** shows the coverage impact and continues to M-08's handover preview when reps change, rather than repeating it here.
+
+---
+
+## H-30 · Gap lists
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** one place for Locations missing something, fixable without leaving the list.
+
+**From the source:** each Location listed once with its gaps as tags (No profile, Unassigned, Replacement needed, Unconfirmed position, Master location closed), filterable by gap; No Profile fixed inline; Unassigned links to Coverage (M-07 / M-15); position gaps are informational only, since reps confirm on site (Customer Directory US-008).
+
+```
++---------------------------------------------------------------------------------------+
+| Gaps     [ All gaps v ]                                            12 locations       |
++---------------------------------------------------------------------------------------+
+| Byrne's, Aughrim      No profile  Unassigned         [ Set profile v ]  [ Assign > ]  |
+| Hickey's Rathdrum       Replacement needed                [ Set main contact > ]      |
+| Walsh's Shop, Laragh    Unassigned                        [ Assign > ]                |
+| Quinn's Centra        Unconfirmed position (Town)    no action - rep confirms on site |
++---------------------------------------------------------------------------------------+
+```
+
+> **Drafting calls H30.1–H30.2, awaiting confirmation:**
+> - **H30.1** A fixed tag disappears in place, and the row leaves the list only when its last gap clears.
+> - **H30.2** Unconfirmed position rows are shown only when that filter is chosen, since they are numerous and need no action.
 
 ---
 
