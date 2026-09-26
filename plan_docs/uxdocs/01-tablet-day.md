@@ -130,6 +130,21 @@ flowchart TD
 > - **A declaration covers what was known.** If a later sync removes another line from an order already marked told (e.g. a part-despatched order), the order comes back into the count with only the new line flagged; earlier lines keep their "Told" record. A new removal is a new issue.
 > - **Rejected:** clearing on opening the order; clearing on the next call only; delivery as the backstop; no backstop; per-line or per-Location marking; order staying cleared after a later removal.
 
+> **Addition from C1.3 (26 Sep 2026) — customer invitation requests appear on Home.** When a customer's invitation has expired and they ask for a new one, the rep responsible for their Location approves it here with **Send new invitation** (see `06-customer.md` C1.1–C1.3). **C1.4:** it is its own collapsed section, shown only when a request is waiting, so the exception strip stays at four counters (T2.5). **C1.5:** requests arrive in the background whenever the tablet has signal — a narrow exception to T1.3. **C1.6:** the rep is also emailed. **C1.7:** "Send new invitation" also leaves in the background as soon as there is signal; offline it shows "Will send when in range". **C8.3:** the same section tells the rep when a manager declines an account they set up, with the reason and an **OK** that removes it.
+
+```
++----------------------------------------------------------------+
+| CUSTOMER REQUESTS (1)                                      v    |
+|   Mary Walsh - Hickey's Rathdrum                                |
+|   New invitation, the last one expired - 26 Sep                 |
+|                                    [ Send new invitation ]      |
++----------------------------------------------------------------+
+| UNPLANNED TODAY (2)                                        v    |
++----------------------------------------------------------------+
+```
+
+Shown expanded. Its position as the first collapsed section was confirmed 26 Sep 2026.
+
 > **DECISION T2.7 — reordering happens only in Reorder mode, with ^/v buttons.** *(settled 24 Sep 2026)*
 > Cards are tapped about ten times a day to open a Location, and reordered at most once a day. A mode keeps the rare, disruptive action away from the frequent, harmless one: in normal mode a tap always opens the card. ^/v buttons are more reliable than dragging when used one-handed.
 > **Rejected:** an always-visible drag handle (a mis-tap target, and a slipped drag silently reorders the route); long-press to drag (can't be discovered, and triggers by accident).
@@ -210,6 +225,7 @@ flowchart TD
 > **DECISION T1.3 — no automatic sync on regaining signal.** *(confirmed 24 Sep 2026)*
 > The brief describes sync as deliberate. An automatic background sync would make the counts on Home change while the rep isn't looking, which undermines the entire "you can see what hasn't gone" contract. Notifications nudge; the rep presses the button.
 > *Confirmed 24 Sep 2026:* manual only, in both directions. When signal returns and there is unsent work, a gentle reminder with Sync now appears, at most once an hour (Area 1 US-002 Scenario 2). **Rejected:** automatic upload with manual download; automatic both ways.
+> *Exception, 26 Sep 2026 (C1.5):* customer requests (a new invitation, see `06-customer.md` C1.1–C1.6) are delivered in the background whenever the tablet has signal, and the rep's "Send new invitation" goes back out the same way (C1.7). They appear only in their own Home section, so the exception strip and unsent-work counts still change only on a manual sync.
 
 ---
 
@@ -355,6 +371,8 @@ flowchart TD
 > **DECISION T5.3 — "Set from GPS" shows only while the position is unconfirmed; quiet, highlighted exactly once.** *(confirmed and amended 24 Sep 2026)*
 > The brief's "quiet control, highlighted once if unconfirmed" is drawn as a plain secondary button with the precision statement above it. The one-time highlight is a first-visit-only treatment, not a standing badge — a standing badge would be ignored within a week.
 > *Amended 24 Sep 2026:* the action appears **only while the position is not set** — Precision is Eircode or Town (defaulted), not "Confirmed on site". Once confirmed, the row and the action are absent. A wrong confirmed position is corrected by head office reverting the capture (Customer Directory US-005 Scenario 5), which brings the action back. **Superseded:** the action staying available, unhighlighted, with "Replace the confirmed position?".
+
+> **Addition from C8.1 (26 Sep 2026) — online ordering is set up from the contact.** Tapping the contact in the identity block opens their details, where the rep chooses **Set up online ordering**, or sees the login status if one exists. The request goes out in the background when in range, like customer requests (C1.5, C1.7). Frame and rules in `06-customer.md` C-08.
 
 ---
 
@@ -804,6 +822,8 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 > **DECISION T7.14 — on a branch order, the chain's agreed range is a labelled section at the top; each product appears once.** *(settled 24 Sep 2026)*
 > A branch order is worked through the agreed range as a set, so the set sits together (*proximity*): "Hickey's agreed range (30)" above the normal pad, including products outside the rep's ranges. A product in both lists appears **only in the section**, never again in its category below (*one item, one place*). Search all still finds it.
 > **Rejected:** merged into the pad with a per-row marker; merged with an "Agreed range only" filter; a shared line in both places; a pointer row in the category.
+
+**New cross-area question (26 Sep 2026, BR-NEW-008):** a chain may now have multiple separate Agreed Ranges. T7.14 settles the presentation for one range; how this section presents several ranges is open. Keep the one-product-one-place rule, but do not assume a union or the customer grid's default range is the rep view.
 
 ---
 

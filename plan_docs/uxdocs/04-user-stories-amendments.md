@@ -17,6 +17,7 @@
 | BR-NEW-003 | Business rule | Free of charge on discontinuing stock only | Tablet |
 | BR-NEW-004 | Business rule | Structured Visit Due Reason Type | Rep website, manager website, tablet |
 | BR-NEW-005 | Business rule | Many Location Profiles, defaults resolved field by field | Manager website, rep website, tablet |
+| BR-NEW-008 | Business rule | Multiple Agreed Ranges per chain | Customer, rep, head office |
 | US-NEW-001 | New story | Quantity popover when adding a Low item | Tablet (T-06, T-07) |
 | US-NEW-002 | New story | Low tab as a catch-up list | Tablet (T-07) |
 | US-NEW-003 | New story | Rep prompted when a line couldn't be supplied | Tablet (T-02, T-08) |
@@ -24,6 +25,13 @@
 | US-NEW-005 | New story | Orders processed without head office acceptance | Head office (H-01, H-02) |
 | US-NEW-006 | New story | Manage Visit Due Reason Types | Manager/admin website |
 | US-NEW-007 | New story | Usual products landing page, marked when others have ordered | Customer (C-09, C-02) |
+| Self-service US-004 | Amendment | Same-page catalogue scope control; one search with curated results first | Customer (C-03) |
+| Self-service US-005, US-007, US-008 | Amendment | Placing confirms the order; no customer changes after submission | Customer (C-04, C-06, C-07) |
+| Self-service US-008 | Amendment | Chain submissions expand in history; a branch filter shows normal rows | Customer (C-06) |
+| Self-service US-001 | Amendment | Rep sets up online ordering on the tablet from the contact on T-05; sent in the background; manager approves on M-17, prompted by email; a manager sets one up directly from M-07 | Customer (C-08), Tablet (T-05), Manager website (M-07, M-17) |
+| Self-service US-002 | Amendment | Expired invitation: request a new one, approved by the rep or manager before it is sent | Customer (C-01) |
+| Self-service US-009 | Clarification | Repeat is for one branch order, not a whole chain submission; any visible order can be repeated, whoever placed it; it adds to the current order, and the repeated quantity wins after one warning | Customer (C-07) |
+| Self-service US-006 | Clarification | Predefined chain ranges and default dropdown in grid | Customer (C-05) |
 | Pricing US-008 *(confirm)* | Amendment | Price override applied within allowance | Tablet |
 | Pricing US-009 *(confirm)* | Amendment | Free of charge restricted and applied | Tablet |
 | Promotions US-007 *(confirm)* | Amendment | Spend threshold qualifies before rep discounts | Tablet, customer |
@@ -148,6 +156,22 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 4. **Supply facts are not business rules.** Stock and availability are still handled after capture by the existing dispositions (BR-NEW-001: Route to allocation, Auto-resolve an unavailable line with the rep prompted). The order is accepted; what can be supplied is a separate question.
 
 **Superseded:** US-017's example rejections "Location no longer exists" and T-01's "Rejected: this location is no longer assigned to you".
+
+---
+
+### BR-NEW-008 — Multiple Agreed Ranges per chain
+
+*Settled 26 Sep 2026 (C5.4).*
+
+1. A Master Location may hold multiple separate, named Agreed Ranges, for example a default range and “2026 Christmas gift packs”. Each has its own confirmed product membership.
+   A product may belong to more than one of that chain's Agreed Ranges (C5.10).
+2. The customer multi-branch grid offers the chain's Agreed Ranges in a dropdown; the signed-in buyer's personal default appears automatically on opening when they have set one (C5.3, C5.6). Until then, the first dropdown option is shown as a provisional fallback (C5.7), without saving a personal default. Entered product rows and quantities remain visible at the top of the grid when the buyer changes ranges (C5.2, C5.8).
+3. As before, Agreed Ranges guide ordering rather than restricting it; permitted products outside them remain reachable.
+4. A buyer with access to the chain grid may designate their own default range (C5.5–C5.6). Changing it affects only that buyer.
+
+**Supersedes:** Master & Branch Ordering's assumption that a chain has one Agreed Range across all branches. The catalogue's commercial Ranges remain a separate concept.
+
+**Open impacts:** how Range Reviews and proposals target a range; how the branch Order Pad (T7.14), master Location view, rep/manager multi-branch grid (M11.1), and tablet snapshot present several ranges and overlapping membership. Dropdown sort order is deferred; the current first option is the initial fallback.
 
 ---
 
@@ -554,7 +578,7 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ### US-NEW-007: As a Customer User, I want to land on the products I usually order for this shop, marked when someone else has already ordered them, so that I can build an order without hunting and without ordering twice.
 
-> **Context:** settled 24 Sep 2026 (C-09, C2.1, `06-customer.md`). Customers buy the same products but rarely the same order, so the landing page is built around frequent products, not past orders. Folded into Self-service US-003, US-004 and US-005 as "UX amendments (24 Sep 2026)" scenarios.
+> **Context:** settled 24–25 Sep 2026 (C-09, C2.1–C2.2, `06-customer.md`). Customers buy the same products but rarely the same order, so the landing page is built around frequent products, not past orders. Folded into Self-service US-003, US-004 and US-005 as UX amendment scenarios.
 
 **Acceptance Criteria:**
 
@@ -612,6 +636,12 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **When** I find it through search or the catalogue
 - **Then** its row carries no mark (C9.9)
 
+**AC-NEW-007-12:**
+- **Given** I am a buyer at Hickey's Head Office and can order for its head office location and 12 branches
+- **When** I open the location choice on any visit
+- **Then** "Order for several branches" is the primary action and opens C-05 directly
+- **And** the head office location and eligible branches remain below for single-location orders, with none preselected
+
 **Recommended Acceptance Tests:**
 
 - `Should_AskForShop_When_UserHasSeveralLocations_EveryVisit`
@@ -628,12 +658,347 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
   → Verifies the second stage ends on the company setting.
 - `Should_OpenEmptyPopoverAndStay_When_AddTapped`
   → Verifies no prefill and no navigation.
+- `Should_LeadWithChainOrder_When_HeadOfficeBuyerChoosesOrderingPath`
+  → Verifies the chain buyer can reach C-05 without first selecting one location.
 
-> **Note:** the expected-delivery period is a company setting. Mark wording (C9.8) is a drafting call awaiting confirmation.
+> **Note:** the expected-delivery period is a company setting. Mark wording (C9.8) was confirmed 26 Sep 2026: "your rep", a colleague's name, or the chain's head office by name.
 
 ---
 
 ## Amendments to existing stories
+
+### Self-service US-001 — creating the account from the tablet
+
+> **Context:** settled 26 Sep 2026 (C8.1). The rep sets up online ordering on the tablet, from the contact reached through T-05, usually with the contact present. The request uses the background channel settled for customer requests (C1.5, C1.7), so it reaches the manager's approval queue as soon as the tablet has signal. Orders and calls still sync manually (T1.3).
+
+**AC-SS001-A:**
+- **Given** I am at Hickey's Rathdrum with the tablet
+- **When** I open Mary Walsh from the Location screen and choose "Set up online ordering"
+- **Then** I can confirm the invitation email and see "Mary will be able to order for: Hickey's Rathdrum"
+- **When** I confirm
+- **Then** the account is Pending approval and reaches my manager's queue as soon as the tablet has signal, without a manual sync
+
+**AC-SS001-B:**
+- **Given** Mary Walsh already has a login
+- **When** I open Mary from the Location screen
+- **Then** I see "Online ordering: Active" instead of "Set up online ordering"
+
+> **Context:** settled 26 Sep 2026 (C8.2, M17.1). "My manager's queue" in US-001 S1 is a new manager page, **M-17 Online ordering approvals**. The manager is emailed with a link to it whenever a rep sets up an account, or a re-invitation arrives for a Location with no assigned rep.
+
+**AC-SS001-C:**
+- **Given** Colm has set up online ordering for Mary Walsh
+- **Then** Colm's manager is emailed with a link to Online ordering approvals
+- **And** the page lists Mary's account with who set it up, when, the email and "Will be able to order for: Hickey's Rathdrum"
+- **When** the manager chooses Approve
+- **Then** the invitation is sent to Mary and the item leaves the list
+- **When** the manager chooses Decline instead
+- **Then** a reason is required before the decline is saved, and Colm sees it
+
+**AC-SS001-D:**
+- **Given** Tom Kelly at Byrne's Londis, which has no assigned rep, has requested a new invitation
+- **Then** the manager who sees Byrne's Londis as Unassigned is emailed, and the request appears on Online ordering approvals with "Send new invitation"
+
+**AC-SS001-E:** *(C8.3, settled 26 Sep 2026)*
+- **Given** the manager declined Mary Walsh's account with "Contact has left the business"
+- **When** Colm's tablet has signal
+- **Then** T-02 Home's Customer requests section shows "Mary Walsh: online ordering declined: Contact has left the business" without Colm syncing
+- **When** Colm chooses OK
+- **Then** the notice is removed
+
+**AC-SS001-F:** *(C8.4, settled 26 Sep 2026)*
+- **Given** I am a manager on M-07 for Hickey's Rathdrum
+- **When** I choose "Set up online ordering…" and pick Mary Walsh
+- **Then** I see "Mary Walsh will be able to order for: Hickey's Rathdrum" and confirm the email
+- **When** I save
+- **Then** the invitation is sent immediately, with no approval step
+
+---
+
+### Self-service US-002 — requesting a new invitation
+
+> **Context:** settled 26 Sep 2026 (C1.1). An expired invitation page offers "Request a new invitation". The request is not self-approving: it goes to the rep or manager, and a new invitation is sent only when one of them approves it. This replaces US-002 S2's "can request a new one" with an approved request, and removes any ambiguity with the "contact your sales representative" wording.
+
+**AC-SS002-A:**
+- **Given** Mary Walsh's invitation has expired
+- **When** Mary follows the link
+- **Then** Mary sees that the invitation has expired and a "Request a new invitation" action
+- **When** Mary requests one
+- **Then** Mary is told the request has been sent and that a new invitation will follow once it is approved
+- **And** no new invitation is sent until the rep or manager approves the request
+
+**AC-SS002-B:**
+- **Given** Mary has already requested a new invitation that is awaiting approval
+- **When** Mary follows the expired link again
+- **Then** Mary sees that the request is awaiting approval, and no duplicate request is created
+
+> **Context:** settled 26 Sep 2026 (C1.2). The account was approved when it was created (US-001 S1), so a re-invitation needs only the rep responsible for the contact's Location. With no assigned rep, the request goes to the manager who sees that Location as Unassigned (M15.2); confirmed 26 Sep 2026.
+
+**AC-SS002-C:**
+- **Given** Mary Walsh at Hickey's Rathdrum has requested a new invitation
+- **Then** the rep responsible for Hickey's Rathdrum receives the request
+- **When** the rep approves it
+- **Then** a new invitation is sent to Mary, with no manager approval step
+
+> **Context:** settled 26 Sep 2026 (C1.3). The rep acts on the request from T-02 Home on the tablet. Because the tablet syncs when the rep chooses, the request arrives at sync and the invitation leaves at the following sync. How it sits on Home (a fifth exception counter or its own section) is open.
+
+> **Context:** settled 26 Sep 2026 (C1.4–C1.6). Requests sit in their own collapsed "Customer requests" section on Home, shown only when one is waiting; the exception strip is unchanged. They are delivered in the background whenever the tablet has signal — a narrow exception to T1.3 and Area 1 US-002's manual sync, which still governs all other work. The rep (or the manager, for an unassigned Location) is also emailed.
+
+**AC-SS002-D:**
+- **Given** Mary requested a new invitation this morning
+- **Then** the Location's rep is emailed about the request
+- **And** when the rep's tablet has signal, T-02 Home shows a "Customer requests (1)" section without the rep syncing
+- **And** the request shows Mary's name, Hickey's Rathdrum, the request date and "Send new invitation"
+- **When** the rep chooses "Send new invitation"
+- **Then** a new invitation is sent to Mary as soon as the tablet has signal, without the rep syncing (C1.7)
+- **And** if there is no signal, the request shows "Will send when in range" until it goes
+
+**AC-SS002-E:**
+- **Given** the rep has 3 orders waiting to send and no customer requests
+- **When** the tablet regains signal
+- **Then** no "Customer requests" section appears, and the 3 orders stay unsent until the rep syncs
+
+---
+
+### Self-service US-009 — repeat scope
+
+> **Context:** settled 26 Sep 2026 (C7.1). A chain submission appears as one expandable group in history, but Repeat is offered only on an individual branch order. It starts a new, unsubmitted single-location order for that branch, using the existing full or selected-line repeat rules. Repeating a whole chain submission may be considered later.
+
+**Additional Acceptance Criteria:**
+
+**AC-SS009-A:**
+- **Given** one chain submission created orders for Arklow and Bray
+- **When** I view its expandable entry in history
+- **Then** the group header has no Repeat action
+- **When** I open the Arklow order and choose Repeat all or Repeat selected
+- **Then** a new, unsubmitted single-location order for Arklow is prefilled from that branch order only
+- **And** the Arklow and Bray originals remain unchanged
+
+> **Context:** settled 26 Sep 2026 (C7.2). Repeat is offered on every order visible in history for the customer's Locations, whoever placed it. Prices resolve fresh, so a rep's discount on the original is not copied.
+
+**AC-SS009-B:**
+- **Given** my rep placed an order for Arklow with a rep discount on Hand Cream
+- **When** I open that order from history
+- **Then** Repeat all and Repeat selected are available, as on my own orders
+- **When** I repeat it
+- **Then** a new, unsubmitted Arklow order is prefilled at today's prices, without the rep discount
+- **And** the rep's original order is unchanged
+
+> **Context:** settled 26 Sep 2026 (C7.3). Each Location has one unplaced order. Repeat adds to it rather than replacing it; a new order is started only when none is in progress. This refines "a new order" in US-009 S1 and AC-SS009-A/B.
+
+**AC-SS009-C:**
+- **Given** Arklow's current unplaced order has 12 Hand Cream
+- **And** a past Arklow order has 8 Sudocrem
+- **When** I repeat that past order
+- **Then** 8 Sudocrem is added to Arklow's current order
+- **And** the 12 Hand Cream already there is kept
+- **And** no second order for Arklow is started
+
+> **Context:** settled 26 Sep 2026 (C7.4). A repeated product already in the current order stays on one line and takes the repeated order's quantity. One warning, before anything is applied, lists every quantity that will change; it never appears once per product.
+
+**AC-SS009-D:**
+- **Given** Arklow's current order has 6 Hand Cream and 4 Sudocrem
+- **And** the order I repeat has 12 Hand Cream, 8 Sudocrem and 5 other lines
+- **When** I choose Repeat all
+- **Then** one warning lists Hand Cream 6 → 12 and Sudocrem 4 → 8
+- **When** I choose Continue
+- **Then** Hand Cream is 12 and Sudocrem is 8, each on one line, and the 5 other lines are added
+- **When** I choose Cancel instead
+- **Then** Arklow's current order is unchanged
+
+**AC-SS009-E:**
+- **Given** none of the repeated products is in Arklow's current order
+- **When** I repeat an order
+- **Then** no warning appears and the lines are added
+
+---
+
+### Self-service US-005, US-007 and US-008 — customer confirmation and post-submit access
+
+> **Context:** settled 26 Sep 2026 (C4.1–C4.2). The customer reviews and corrects the order before choosing “Place order”. That action confirms the order. Automatic acceptance on receipt means there is no useful customer Pending edit window. After submission, the customer can view the order and status but cannot edit, cancel a line, or cancel the whole order in self-service. The placed-order detail shows the company phone number and email address beside the order reference so they can request a change; company-side amendment and cancellation mechanics require a separate operational decision. This supersedes the customer Pending edit/cancel scenarios in Self-service US-007. The read-only/contact rule also applies to orders placed through C-05.
+
+**Additional Acceptance Criteria:**
+
+**AC-SS005-A:**
+- **Given** I have an in-progress order for one Location
+- **When** I review and correct its lines and quantities, then choose “Place order”
+- **Then** that action confirms and submits the order
+- **And** the placed order is shown with its current status
+
+**AC-SS007-A:**
+- **Given** I have placed an order
+- **When** I view it in history or detail, even if its status briefly reads Pending
+- **Then** I see no customer edit, line-cancel, or whole-order cancel action
+- **And** I am directed to contact the company if I need to request a change
+
+**AC-SS007-B:**
+- **Given** I view a placed order that I need to change, including an individual branch order placed through C-05
+- **Then** its order reference, the company's phone number, and the company's email address appear together
+- **And** I am told to quote the reference when contacting the company
+
+**AC-SS008-A:**
+- **Given** I can view orders placed by me, colleagues, or my rep for my Locations
+- **When** I open any of their details
+- **Then** the order and its fulfilment status are read-only to me
+
+**AC-SS008-B:**
+- **Given** one chain placement created orders for Arklow and Bray
+- **When** I open order history
+- **Then** I see one expandable entry for that chain submission
+- **And** expanding it shows the distinct Arklow and Bray orders, each with its own reference, status and value
+- **And** each branch row opens that branch's read-only order detail
+
+**AC-SS008-C:**
+- **Given** an Arklow order came from a chain submission with other branch orders
+- **When** I filter order history to Arklow
+- **Then** that Arklow order appears as an ordinary chronological row with its own reference, status and value
+- **And** it is not wrapped in the expandable chain entry
+
+---
+
+### Self-service US-004 — curated browsing and grouped search
+
+> **Context:** settled 26 Sep 2026 (C3.1–C3.3). One search returns the Customer's curated matches first and other products they may buy underneath. The buyer does not make a separate wider-search choice. Browsing starts with the curated catalogue; a “Your catalogue” / “All products” control switches scope on the same page and provides the way back. Restricted products remain hidden, and existing availability rules still apply. Exact control styling remains a drafting call.
+
+**Additional Acceptance Criteria:**
+
+**AC-SS004-A:**
+- **Given** “Honey & Lemon Lozenges” belongs to my curated catalogue and “Sugar Free Lozenges” is outside it but permitted for me to buy
+- **When** I search for “lozenge”
+- **Then** the curated match appears under “From your catalogue”
+- **And** the outside match appears below under “Other products you can buy” in the same results, without another search action
+
+**AC-SS004-B:**
+- **Given** my curated catalogue has no match but another permitted product does
+- **When** I search for that product
+- **Then** I see the other permitted match without widening or repeating the search
+- **And** Restricted products never appear, and a product matching multiple assigned Ranges appears only once
+
+**AC-SS004-C:**
+- **Given** I have not entered a search query
+- **When** I browse by category
+- **Then** I initially see products from my Customer's assigned Ranges and unranged products
+- **And** a “Your catalogue” / “All products” control lets me widen browsing to other products I am permitted to buy on the same page
+- **And** Restricted products never appear in either browse view
+
+**AC-SS004-D:**
+- **Given** I am browsing my curated catalogue in a selected category
+- **When** I choose “All products”
+- **Then** the catalogue widens on C-03 without navigating away
+- **When** I choose “Your catalogue”
+- **Then** I return to the curated view in that category, where the category exists in both views
+- **And** a product search continues to show both result groups regardless of the browsing control's selection
+
+---
+
+### Self-service US-006 — predefined products in the customer multi-branch grid
+
+> **Context:** settled 25–26 Sep 2026 (C5.1–C5.16, BR-NEW-008). The chain buyer expects predefined products in distinct Agreed Ranges, such as “2026 Christmas gift packs”. A product may belong to several ranges. Each buyer may set their own default; until then, the first dropdown option is shown. Entered rows stay visible at the top as the buyer changes the dropdown, with no second row in the selected range. All eligible branches start selected; a branch with quantities in the current chain order cannot be removed until those quantities are cleared, and the blocked removal opens that branch's entries with an explanation. Clearing the last quantity does not remove the branch automatically. The desktop hierarchy is accepted for the first design round; implementation may refine the layout.
+
+**Additional Acceptance Criteria:**
+
+**AC-SS006-A:**
+- **Given** Hickey's Head Office has a confirmed Agreed Range
+- **When** I start a multi-branch order
+- **Then** the grid's predefined products come from that Agreed Range, with no quantities prefilled
+- **And** I can still find and order a permitted product outside it
+
+**AC-SS006-B:**
+- **Given** I have entered quantities for products in “2026 Christmas gift packs”
+- **When** I switch to everyday products
+- **Then** the entered Christmas product rows remain visible in the same grid with their quantities
+
+**AC-SS006-C:**
+- **Given** the chain has several named Agreed Ranges and I have set one as my default
+- **When** I open a new multi-branch grid
+- **Then** the range dropdown selects my default automatically and offers the other ranges
+- **And** my default range's products are shown for entry with empty quantities
+
+**AC-SS006-D:**
+- **Given** Hickey's Head Office holds a default Agreed Range and a separate “2026 Christmas gift packs” Agreed Range
+- **When** I choose the Christmas range from the dropdown
+- **Then** its confirmed products appear for entry in the same chain order
+- **And** entered rows from the default range remain visible with their quantities
+
+**AC-SS006-E:**
+- **Given** Hickey's has several Agreed Ranges
+- **When** I designate “Everyday” as my default
+- **Then** my next customer multi-branch grid opens with “Everyday” selected and its products available for entry
+
+**AC-SS006-F:**
+- **Given** I and another Hickey's buyer can both start a chain order
+- **When** I set “2026 Christmas gift packs” as my default
+- **Then** only my grid starts on that range; the other buyer's starting range is unchanged
+
+**AC-SS006-G:**
+- **Given** I have not set a personal default Agreed Range
+- **When** I open a new multi-branch grid
+- **Then** the first range in the dropdown is selected and its products are shown for entry
+- **And** that automatic selection does not save a personal default for me
+
+**AC-SS006-H:**
+- **Given** I have entered quantities for products in “2026 Christmas gift packs”
+- **When** I change the range dropdown to “Everyday”
+- **Then** the entered product rows and their quantities remain at the top of the grid
+- **And** the Everyday products available for entry appear below them
+
+**AC-SS006-I:**
+- **Given** I am placing a multi-branch order on a phone
+- **When** I choose a product from the selected Agreed Range
+- **Then** I can enter one quantity for the selected branches and adjust individual branches
+- **And** a running summary shows the products and branch quantities already entered before review
+- **And** the order reaches the same branch-order review as the laptop or larger-tablet grid
+
+**AC-SS006-J:**
+- **Given** Hand Cream 75ml is a confirmed member of both Everyday and “2026 Christmas gift packs” for Hickey's, and it is not yet in my chain order
+- **When** I select either range
+- **Then** Hand Cream is available from that range for entry into the chain order
+
+**AC-SS006-K:**
+- **Given** I have already entered branch quantities for Hand Cream 75ml and it belongs to the selected Agreed Range
+- **When** I view the multi-branch order
+- **Then** Hand Cream appears once in “Entered in this order” at the top
+- **And** it does not appear again among the selected range's products below
+- **And** I can edit its existing branch quantities from the top row
+
+**AC-SS006-L:**
+- **Given** Hickey's has 12 eligible branches, one Closed branch, and one Temporarily Closed branch
+- **When** I start a customer multi-branch order
+- **Then** all 12 eligible branches are selected, including the Temporarily Closed branch with its closure date shown
+- **And** the Closed branch is excluded
+- **And** I can deselect eligible branches before entering products
+
+**AC-SS006-M:**
+- **Given** Arklow has 24 Hand Cream in my current in-progress chain order
+- **When** I try to deselect Arklow from the branch selection
+- **Then** Arklow stays selected and its quantities are unchanged
+- **And** I see a message that an active order exists for Arklow and its quantities must be cleared before removing the branch
+- **And** once all Arklow quantities in this chain order are cleared, I can deselect it
+
+**AC-SS006-N:**
+- **Given** I tried to remove Arklow but it has quantities on several products in this chain order
+- **When** the removal is blocked
+- **Then** the view opens directly on the products and quantities entered for Arklow in this chain order, with the reason shown
+- **And** I can edit or clear those quantities there
+- **And** Arklow remains selected while any quantity remains
+
+**AC-SS006-O:**
+- **Given** I reached Arklow's quantities after a blocked removal
+- **When** I clear Arklow's last quantity in this chain order
+- **Then** Arklow remains selected
+- **And** I can return to branch selection and deliberately deselect it
+
+**Recommended Acceptance Tests:**
+
+- `Should_OfferAgreedProducts_When_ChainBuyerStartsGrid`
+  → Verifies the chain's confirmed list is available without searching or copying quantities from a previous order.
+- `Should_KeepEnteredRowsVisible_When_ChainBuyerChangesRange`
+  → Verifies changing the products offered for entry does not hide work already entered.
+- `Should_ShowDefaultRange_When_ChainBuyerOpensGrid`
+  → Verifies the buyer can start from the designated range without choosing it each time.
+
+**Open:** phone composition details are deferred to implementation feedback. The first-option fallback (C5.7) and the dropdown's sort order may be revisited later. Cross-surface impacts of multiple Agreed Ranges are listed in BR-NEW-008.
+
+---
 
 ### Visit Planning US-012 — campaign detail view hierarchy
 

@@ -11,15 +11,16 @@
 
 ### Bounded context
 
-- **Domain area:** Self-service. A Customer User places Orders that join the same Pending queue as reps' orders and are processed identically. Nothing here changes how orders are priced, reviewed or fulfilled.
+- **Domain area:** Self-service. A Customer User places Orders that enter the same automatic processing as reps' orders. Nothing here changes how orders are priced, reviewed or fulfilled.
 - **Ubiquitous language:**
   - **Customer User** — a **Contact** with a login. Never self-registered: created by a rep or manager, and **approved by a manager when a rep creates it**. States: **Pending approval**, **Invited**, **Active**, **Suspended**.
   - **Invitation** — the message that lets an approved Customer User set a password and sign in. There is no signup form.
   - **Ordering Scope** — the Locations a Customer User may order for: the Locations their Contact is linked to, plus, where any of those is a **Master Location**, that master's **branches**.
   - **Curated catalogue** — the default view: the Customer's assigned **Ranges** plus unranged products. Assigned Ranges control what is *presented*, not what is *permitted*.
-  - **Search all products** — a deliberate step that searches beyond the curated catalogue. Everything not Unavailable or Restricted can be found and ordered; Restricted products are never visible.
-  - **Own order** — an Order this Customer User created. Only their own orders can be edited or cancelled; orders placed by a rep or by a colleague are visible but read-only.
-  - **Repeat** — prefilling a **new** order from a past one, in full or from selected lines. It never submits; the customer amends and submits as normal. Prices resolve fresh; changed products are marked.
+  - **Product search** — one search shows matches from the curated catalogue first, with other products the Customer may buy underneath. The separate “Search all products” step is superseded by C3.1; Restricted products are never visible.
+  - **Browse scope control** — “Your catalogue” / “All products” switches the category browse view in place; “Your catalogue” is the starting selection. Search always shows both result groups (C3.2–C3.3).
+  - **Own order** — an Order this Customer User created. After placement, it is read-only in self-service, as are orders placed by a rep or colleague (C4.1).
+  - **Repeat** — adding lines from any past order the Customer User can see, whoever placed it (C7.2), in full or from selected lines, to the Location's current unplaced order; a **new** order is started only if none is in progress (C7.3). It never submits; the customer amends and submits as normal. Prices resolve fresh; changed products are marked.
   - **Temporarily Unavailable** — a new availability state (owned by Range Lifecycle): not orderable now, with an optional **Expected Back** date, set by head office by hand as run-out quantities are. Distinct from Unavailable, which means gone.
   - **Live figures** — because the Customer User is online, prices, availability, offers and Run-out Remaining are current. The tablet's "as of sync" hedging has no place in this channel.
 - **Upstream contexts:**
@@ -28,7 +29,7 @@
   - **Range Lifecycle** / **Product Management** — availability states including Temporarily Unavailable, Replacements, the catalogue.
   - **Coverage Management** — Restriction Groups (Restricted products are hidden from customers entirely).
 - **Downstream contexts:**
-  - **Head Office Order Processing** — self-service Orders arrive Pending and are processed identically, with no Capturing Rep.
+  - **Head Office Order Processing** — self-service Orders are accepted automatically on receipt under the same disposition rules as reps' orders, with no Capturing Rep.
   - **Targets & Performance** — attributed to the For Location's Primary Rep, as any order.
 - **Terms that mean something different elsewhere:**
   - **Account** — a login for a Contact; not a customer account in the financial sense.
@@ -41,9 +42,9 @@
   - Rep or manager creating a Customer User; manager approval of rep-created accounts
   - Invitation, first sign-in, password set; suspending an account
   - Ordering Scope from Contact links plus a master's branches
-  - Curated catalogue, deliberate wider search, Restricted products hidden
+  - Curated category browsing with a same-page “Your catalogue” / “All products” control; one search with curated matches first and other permitted matches below; Restricted products hidden
   - Order entry for one Location; multi-branch grid for a master's user
-  - Editing and cancelling own Pending orders; read-only for others' orders
+  - Reviewing and correcting an in-progress order before placement; read-only order history after placement
   - Order history for all their Locations, with despatch status and outstanding quantities
   - Repeat, whole or selective, as a prefill
   - Availability messaging, including Expected Back dates and Replacements
@@ -53,6 +54,7 @@
   - Pricing and promotion rules themselves (Pricing, Promotions)
   - Head office processing (its own area)
   - Payment, credit, invoicing, delivery tracking beyond despatch status
+  - Customer self-service changes or cancellations after placement; these requests go to the company
   - Customer-initiated returns or claims
 - **Assumptions:**
   - One login per Contact; a person with two Contact records would have two logins.
@@ -71,7 +73,7 @@
 - **Responsibilities:** orders stock for the Locations they are responsible for, between or instead of rep visits.
 - **Context on arrival:** at a desk or on a phone, usually ordering the products they always order — the same products, but rarely the same order (24 Sep 2026); untrained, infrequent, and not interested in how the system works.
 - **Goal:** "Order what I usually order, for the shops I'm responsible for, without waiting for a visit."
-- **Pain points:** hunting for a product they buy every month; not knowing whether something is coming back or gone for good; not being able to fix a quantity they got wrong five minutes ago.
+- **Pain points:** hunting for a product they buy every month; not knowing whether something is coming back or gone for good; needing to contact the company if they discover a mistake after placing an order.
 
 ### Sales Manager
 
@@ -103,20 +105,18 @@ flowchart TD
         Pick -->|Master with branches| Grid[Multi-branch grid, simplified]
         Single --> Cat[Curated catalogue: assigned Ranges + unranged]
         Grid --> Cat
-        Cat --> Wider[Search all products: deliberate step]
+        Cat --> Search[Search: curated matches first, other permitted matches below]
         Cat --> Avail{Product state}
         Avail -->|Temporarily Unavailable| Back[Back in stock around DATE]
         Avail -->|Discontinuing / Run-out| Repl[Flag + replacements shown]
         Avail -->|Unavailable| NoOrd[Not orderable; replacements offered]
-        Single --> Submit[Submit] --> Pending[(Pending order)]
+        Single --> Submit[Review and place: customer confirms] --> Pending[(Placed order; accepted on receipt)]
         Grid --> Split[One order per branch] --> Pending
     end
 
-    Pending --> HO[Head office processing, same queue]
-    Pending --> Mine{Created by me?}
-    Mine -->|Yes| Edit[Edit or cancel while Pending]
-    Mine -->|No| RO[View only]
-    Edit -->|Head office accepted meanwhile| Told[Told immediately: already accepted]
+    Pending --> HO[Automatic order processing]
+    Pending --> RO[Customer view only after placement]
+    RO -->|Change requested| Contact[Contact company; staff handle request]
 
     HO --> Hist[Order History: all my Locations]
     Hist --> Det[Order detail: despatch status, outstanding per line]
@@ -143,18 +143,17 @@ flowchart TD
 
 ### Assigned Ranges curate; they do not restrict
 
-- **Chose:** the default catalogue is the Customer's assigned Ranges plus unranged products; a deliberate "search all products" reaches everything else; only Unavailable and Restricted products are truly out of reach.
-- **Over:** assigned Ranges as a hard limit (the elaboration's reading); search reaching everything by default.
-- **Because:** the same guide-not-limit rule as the rep's Order Pad keeps one model across channels; a manager curates what a customer sees for a reason, and unprompted exposure of other Ranges undercuts that.
-- **Trade-off accepted:** a customer may not realise other products exist; the wider search is plainly labelled but not promoted.
+- **Chose (updated by C3.1–C3.3 on 26 Sep 2026):** category browsing starts with the Customer's assigned Ranges plus unranged products. A same-page “Your catalogue” / “All products” control widens browsing and provides the way back. One search shows curated matches first and other products the Customer may buy below. Restricted products remain hidden; availability rules determine whether a visible product can be added.
+- **Over:** assigned Ranges as a hard limit (the elaboration's reading); the earlier separate “Search all products” step.
+- **Because:** Ranges still guide browsing and result order, while customers can find other permitted products with a single query.
+- **Trade-off accepted:** a search may expose products outside the curated catalogue, clearly separated below its matches.
 
-### A customer acts only on their own orders, and may edit freely while Pending
+### A customer confirms on placement; placed orders are read-only in self-service
 
-- **Chose:** all orders for their Locations are visible; edit and cancel appear only on orders they created; on those, full editing while Pending; read-only once Accepted; if head office accepts mid-edit, they are told at once.
-- **Over:** cancel-only; read-only after submission; editing anyone's order for the Location.
-- **Because:** a buyer should not alter a colleague's order or one the rep took at a visit; being online means state is always current, so the offline caution that shaped the rep's rules does not apply; a customer who typed 12 instead of 2 should not need a phone call.
-- **Trade-off accepted:** a small race with head office, handled by telling the customer plainly rather than by restricting them.
-- **Affected 23 Sep 2026:** orders are now accepted automatically on receipt (Head Office Order Processing US-008), so the Pending window this decision relies on may be very short or none. See Requires Clarification 7.
+- **Chose (C4.1, 26 Sep 2026):** all orders for the Customer User's Locations are visible. The customer reviews and corrects an in-progress order before placing it. “Place order” confirms it; no customer edit or cancel action is available afterward, including during any transient Pending state. A change request goes to the company.
+- **Over:** the earlier own-order edit/cancel while Pending rule, which depended on a window that automatic acceptance may eliminate.
+- **Because:** the customer explicitly confirms the order at placement, and company staff handle any later amendment or cancellation request.
+- **Operational boundary:** how staff amend or cancel an accepted order is not specified by this self-service decision.
 
 ### Nothing is hedged; the customer is online
 
@@ -236,6 +235,42 @@ Given the Contact is marked Inactive
 Then their login is suspended and they cannot sign in
 ```
 
+*Scenario 7: Rep sets it up at the shop (C8.1)*
+```
+Given I am at Hickey's Rathdrum with the tablet
+When I open Mary Walsh from the Location screen and choose "Set up online ordering"
+Then I confirm the invitation email with Mary and see what Mary will be able to order for
+And the request reaches my manager's approval queue as soon as the tablet has signal, without a manual sync
+```
+
+*Scenario 8: Manager approves on the approvals page (C8.2)*
+```
+Given Colm has set up online ordering for Mary Walsh
+Then Colm's manager is emailed with a link to "Online ordering approvals"
+When the manager approves Mary's account there
+Then the invitation is sent to Mary
+When the manager declines instead
+Then a reason is required, and Colm sees it
+```
+
+*Scenario 9: Rep sees the decline on Home (C8.3)*
+```
+Given the manager declined Mary Walsh's account with "Contact has left the business"
+When Colm's tablet has signal
+Then Home's Customer requests section shows "Mary Walsh: online ordering declined: Contact has left the business" without Colm syncing
+When Colm chooses OK
+Then the notice is removed
+```
+
+*Scenario 10: Manager sets it up from the Location page (C8.4)*
+```
+Given I am a manager on the Location page for Hickey's Rathdrum
+When I choose "Set up online ordering…" and pick Mary Walsh
+Then I see "Mary Walsh will be able to order for: Hickey's Rathdrum" and confirm the email
+When I save
+Then the invitation is sent immediately, with no approval step
+```
+
 ---
 
 ### US-002: Accept an invitation and sign in
@@ -258,7 +293,36 @@ Then my account becomes Active and I land on my Locations
 *Scenario 2: Expired invitation*
 ```
 Given the invitation has expired
-Then I see "This invitation has expired — contact your sales representative" and can request a new one
+Then I see that the invitation has expired and a "Request a new invitation" action (C1.1)
+When I request one
+Then the request goes to my rep or manager for approval, and I am told a new invitation will follow once it is approved
+And no new invitation is sent until they approve it
+```
+
+*Scenario 5: My rep approves the request (C1.2)*
+```
+Given I am a Contact at Hickey's Rathdrum and have requested a new invitation
+Then the rep responsible for Hickey's Rathdrum receives the request
+When the rep approves it
+Then a new invitation is sent to me, with no manager approval step
+And if Hickey's Rathdrum has no assigned rep, the request goes to the manager who sees it as Unassigned
+```
+
+*Scenario 6: The rep approves from the tablet Home screen (C1.3–C1.6)*
+```
+Given I requested a new invitation this morning
+Then my rep is emailed about the request
+And when the rep's tablet has signal, the request appears on Home under "Customer requests" without the rep syncing
+And it shows my name, Location, the request date and "Send new invitation"
+When the rep chooses "Send new invitation"
+Then a new invitation is sent to me as soon as the tablet has signal, without the rep syncing (C1.7)
+```
+
+*Scenario 4: Request already awaiting approval (C1.1)*
+```
+Given I have already requested a new invitation
+When I follow the expired link again
+Then I see that my request is awaiting approval, and no duplicate request is created
 ```
 
 *Scenario 3: Forgotten password*
@@ -322,6 +386,16 @@ When I sign in, on any visit
 Then I am asked which shop the order is for, and my previous choice is not preselected
 ```
 
+**UX amendment (25 Sep 2026)** — the head office buyer's primary job is chain ordering (C2.2 in `../uxdocs/06-customer.md`; AC-NEW-007-12 in `../uxdocs/04-user-stories-amendments.md`).
+
+*Scenario 7: Head office buyer chooses a chain order*
+```
+Given my Contact is at Hickey's Head Office, with 12 branches in scope
+When I open the location choice on any visit
+Then "Order for several branches" is the primary action and opens the multi-branch grid directly
+And the head office location and eligible branches are listed below for single-location orders, with none preselected
+```
+
 ---
 
 ### US-004: Find products
@@ -335,23 +409,29 @@ Then I am asked which shop the order is for, and my previous choice is not prese
 
 **Acceptance criteria:**
 
-*Scenario 1: Curated default*
+*Scenario 1: Curated browse and first search group*
 ```
 Given my Customer has Ranges "Core Stock" and "Summer 2027"
-When I browse or search
-Then I see those Ranges' products plus unranged products, by category
+When I browse by category
+Then I see those Ranges' products plus unranged products
+And I can choose "All products" to browse other products I am permitted to buy on the same page
+And choose "Your catalogue" to return to curated browsing
+When I search
+Then matching products from that curated catalogue appear first
 ```
 
-*Scenario 2: Search wider*
+*Scenario 2: Other permitted search matches*
 ```
-When I choose Search all products and search "lozenge"
-Then products outside my ranges are found and can be ordered
+When I search "lozenge"
+Then matching products from my curated catalogue appear first
+And other products I am permitted to buy appear underneath in the same results
+And I do not need to choose a wider search or repeat my query
 ```
 
 *Scenario 3: Restricted never shown*
 ```
 Given a product in a Restriction Group
-Then it never appears, in either search
+Then it never appears in browsing or search
 ```
 
 *Scenario 4: Temporarily Unavailable*
@@ -374,6 +454,8 @@ Then it is shown as unavailable with its replacements offered
 ```
 
 **UX amendments (24 Sep 2026)** — the landing page is the person's usual products (C-09); full record in `../uxdocs/04-user-stories-amendments.md` (US-NEW-007) and `../uxdocs/06-customer.md` (C9.1–C9.4, C9.7). Customers buy the same products but rarely the same order, so the page is built around frequent products; the curated catalogue is reached by search. Scenario 1 now describes browsing and search, not the landing page.
+
+**UX amendment (26 Sep 2026)** — C3.1 replaces the deliberate “Search all products” step with a single search that groups curated matches first and other permitted matches below. C3.2–C3.3 keep category browsing curated by default with a same-page “Your catalogue” / “All products” control and a way back. See AC-SS004-A–D in `../uxdocs/04-user-stories-amendments.md`.
 
 *Scenario 7: Usual products*
 ```
@@ -418,8 +500,10 @@ Then the page carries no summary of open orders; order history is reached by a l
 
 *Scenario 1: Submit*
 ```
-When I add 6 lines and submit
-Then the order is Pending and enters head office's queue with no Capturing Rep
+When I review an order with 6 lines and choose "Place order"
+Then I have confirmed and submitted it
+And it is accepted automatically on receipt with no Capturing Rep
+And I can view its current status but cannot edit or cancel it in self-service
 ```
 
 *Scenario 2: My price*
@@ -489,8 +573,9 @@ Then the grid shows no Capturing Rep, Ordered By, tier names or price breakdowns
 
 *Scenario 4: Review and submit*
 ```
-When I review
-Then I see lines and units per branch, and on submit one Pending order per branch is created
+When I review and place the chain order
+Then I see lines and units per branch, and on submit one order per branch is created and accepted automatically on receipt
+And each placed branch order is read-only to me, with the company phone and email beside its reference if I need to request a change
 ```
 
 *Scenario 5: Branch with nothing*
@@ -499,30 +584,156 @@ Given a branch has no quantities
 Then no order is created for it
 ```
 
+**UX amendment (25–26 Sep 2026)** — a chain may hold multiple separate confirmed Agreed Ranges (C5.1–C5.16 in `../uxdocs/06-customer.md`; BR-NEW-008 and AC-SS006-A–O in `../uxdocs/04-user-stories-amendments.md`). A product may belong to several of them. A dropdown offers these ranges, such as “2026 Christmas gift packs”. Each buyer with access to the chain grid may designate a personal default, shown automatically on their next visit; changing it does not affect another buyer. Until then, the first dropdown option is shown without saving a personal preference (current design, may be revisited). Entered rows stay at the top of the grid when switching ranges, with no duplicate row in the selected range. Dropdown ordering remains deferred. Buyers mainly use a laptop or larger tablet; phone entry is product-at-a-time with the same branch-order review. All eligible branches start selected, with Closed excluded and Temporarily Closed flagged; the buyer may remove a branch while it has no quantities in the current chain order. A blocked removal opens that branch's entered quantities for correction. Clearing the last quantity leaves the branch selected until the buyer removes it deliberately. The desktop hierarchy in C-05 is accepted for the initial design round; finer layout details may change during implementation.
+
+*Scenario 6: Predefined grid products*
+```
+Given Hickey's Head Office has a confirmed Agreed Range
+When I start a multi-branch order
+Then the predefined products offered in the grid come from that Agreed Range, with no quantities prefilled
+And the Agreed Range does not prevent me from finding and ordering a permitted product outside it
+```
+
+*Scenario 7: Entered rows stay visible across ranges*
+```
+Given I have entered quantities for Christmas gift packs in a multi-branch order
+When I switch to everyday products
+Then the entered Christmas product rows remain visible in the grid with their quantities
+```
+
+*Scenario 8: Default range on opening the grid*
+```
+Given Hickey's has several named ranges and I have designated one as my default
+When I open a new multi-branch grid
+Then the dropdown shows my default range selected and its products are ready for entry with empty quantities
+And I can choose another range from the dropdown without losing entered rows
+```
+
+*Scenario 9: Separate Agreed Ranges*
+```
+Given Hickey's Head Office has a default Agreed Range and a separate “2026 Christmas gift packs” Agreed Range
+When I choose “2026 Christmas gift packs” from the grid dropdown
+Then I see that range's confirmed products available for entry in the same chain order
+And any entered rows from the default range remain visible with their quantities
+```
+
+*Scenario 10: Customer designates the default*
+```
+Given Hickey's has several confirmed Agreed Ranges
+When I designate “Everyday” as my default
+Then my next multi-branch grid opens with “Everyday” selected and its products ready for entry
+```
+
+*Scenario 11: Personal default*
+```
+Given another Hickey's buyer and I can both open the multi-branch grid
+When I designate “2026 Christmas gift packs” as my default
+Then only my grid starts on that range; the other buyer's starting range is unchanged
+```
+
+*Scenario 12: No personal default yet*
+```
+Given I have not set a personal default Agreed Range
+When I open a new multi-branch grid
+Then the first range in the dropdown is selected and its products are available for entry
+And that automatic selection does not save a personal default for me
+```
+
+*Scenario 13: Entered rows above the selected range*
+```
+Given I have entered quantities for Christmas gift packs in a multi-branch order
+When I select the “Everyday” range
+Then the entered Christmas product rows and their quantities remain at the top of the grid
+And the Everyday products available for entry appear below them
+```
+
+*Scenario 14: Phone entry for a chain order*
+```
+Given I open a multi-branch order on a phone
+When I choose a product from the selected Agreed Range
+Then I can enter one quantity for the selected branches and adjust individual branches
+And I can see a running summary of products and branch quantities already entered
+And I reach the same branch-order review used from the laptop or larger-tablet grid
+```
+
+*Scenario 15: Product in two Agreed Ranges*
+```
+Given Hand Cream 75ml is a confirmed member of both Hickey's Everyday and “2026 Christmas gift packs” Agreed Ranges and is not yet in my chain order
+When I select either range in the chain order
+Then Hand Cream is available from that range for entry
+```
+
+*Scenario 16: Entered product has one row*
+```
+Given I have entered branch quantities for Hand Cream 75ml and it belongs to the selected Agreed Range
+When I view the multi-branch order
+Then Hand Cream appears once in “Entered in this order” at the top
+And it is absent from the selected range's available-product rows below
+And I can edit its existing branch quantities from the top row
+```
+
+*Scenario 17: Eligible branches start selected*
+```
+Given Hickey's has 12 eligible branches, one Closed branch, and one Temporarily Closed branch
+When I start a customer multi-branch order
+Then all 12 eligible branches are selected, including the Temporarily Closed branch with its closure date shown
+And the Closed branch is excluded
+And I can deselect eligible branches before entering products
+```
+
+*Scenario 18: Branch with quantities cannot be removed*
+```
+Given Arklow has 24 Hand Cream in my current in-progress chain order
+When I try to deselect Arklow from the branch selection
+Then Arklow remains selected and its quantities are unchanged
+And I see that an active order exists for Arklow and I must clear its quantities before removing the branch
+And once all its quantities in this chain order are cleared, I can deselect it
+```
+
+*Scenario 19: Open the blocked branch's quantities*
+```
+Given I tried to remove Arklow but it has quantities on several products in this chain order
+When the removal is blocked
+Then the view opens directly on the products and quantities entered for Arklow in this chain order, with the reason shown
+And I can edit or clear those quantities there
+And Arklow remains selected while any quantity remains
+```
+
+*Scenario 20: Deliberate branch removal after clearing*
+```
+Given I reached Arklow's quantities after a blocked removal
+When I clear Arklow's last quantity in this chain order
+Then Arklow remains selected
+And I can return to branch selection and deliberately deselect it
+```
+
 ---
 
-### US-007: Change or cancel my own order
+### US-007: Request a change after placing an order
 
 | Field | Value |
 |---|---|
-| **Story** | As a Customer User, I want to fix an order I placed while it is still pending so that a mistake doesn't need a phone call |
+| **Story** | As a Customer User, I want to know how to request a correction after placing an order so that I can contact the company with the order details |
 | **Priority** | Must Have |
-| **Status** | Ready |
+| **Status** | Amended 26 Sep 2026 (C4.1); customer edit/cancel scenarios superseded |
 | **Dependencies** | US-005 |
 
 **Acceptance criteria:**
 
-*Scenario 1: Edit*
+*Scenario 1: Placed order is read-only*
 ```
-Given my Pending order
-When I change a quantity, add a line and remove a line
-Then the order is updated and stays Pending
+Given I have placed an order
+When I open it, including during any transient Pending state
+Then I can view its lines and status, but cannot edit or cancel lines or the order in self-service
 ```
 
-*Scenario 2: Cancel*
+*Scenario 2: Contact the company for a change*
 ```
-When I cancel it
-Then it is Cancelled and will not be processed
+Given I need to change or cancel part or all of a placed order
+When I view the order
+Then its reference, the company's phone number and the company's email address are shown together
+And I am told to quote the reference when contacting the company
+And no customer self-service amendment or cancellation is offered
 ```
 
 *Scenario 3: Someone else's order*
@@ -531,17 +742,7 @@ Given an order placed by my rep or by a colleague at the same Location
 Then I can view it but no edit or cancel controls are shown
 ```
 
-*Scenario 4: Accepted meanwhile*
-```
-Given head office accepts the order while I am editing
-When I save
-Then I see "This order has already been accepted and can't be changed" and my changes are not applied
-```
-
-*Scenario 5: After acceptance*
-```
-Then the order is read-only, with its despatch status shown
-```
+**Superseded 26 Sep 2026:** the earlier scenarios allowing own-order edits and cancellation while Pending, and the accepted-mid-edit race. Company-side amendment or cancellation handling remains a separate operational decision; this story only covers the customer's read-only view and contact route.
 
 ---
 
@@ -560,6 +761,7 @@ Then the order is read-only, with its despatch status shown
 ```
 When I open order history
 Then I see all orders for my Locations — mine, my colleagues' and my rep's — with date, Location, status and value
+And none offers customer edit or cancel actions after placement
 ```
 
 *Scenario 2: Partly sent*
@@ -580,6 +782,23 @@ When I filter by Location and by date range
 Then only matching orders are listed
 ```
 
+*Scenario 5: Chain submission in history (C6.1)*
+```
+Given one chain placement created a separate order for each of 12 branches
+When I open order history
+Then the submission appears as one expandable entry
+And expanding it shows each branch's order with its own reference, status and value
+And I can open each branch order's read-only detail
+```
+
+*Scenario 6: History filtered to one branch (C6.2)*
+```
+Given Arklow's order was created as part of a chain submission
+When I filter history to Arklow
+Then its order appears as an ordinary chronological row with its own reference, status and value
+And the chain submission's expandable wrapper is not shown
+```
+
 ---
 
 ### US-009: Repeat a past order
@@ -597,6 +816,7 @@ Then only matching orders are listed
 ```
 When I choose Repeat on a past order
 Then a new order is prefilled with its lines and quantities, not submitted
+And if it is a branch order from a chain submission, the new order is for that branch only
 ```
 
 *Scenario 2: Selective repeat*
@@ -620,8 +840,50 @@ Then the prefilled lines show today's prices, and the order total differs from t
 
 *Scenario 5: Amend and submit*
 ```
-When I change quantities and submit
-Then a new Pending order is created; the original is unchanged
+When I change quantities and choose "Place order"
+Then a new order is confirmed and accepted automatically on receipt; the original is unchanged
+```
+
+*Scenario 6: Repeat a chain-created branch order (C7.1)*
+```
+Given a chain submission created separate orders for Arklow and Bray
+When I view the chain submission in history
+Then its group header has no Repeat action
+When I open the Arklow order and repeat all or selected lines
+Then I start a new, unsubmitted single-location order for Arklow only
+And the original Arklow and Bray orders are unchanged
+```
+
+*Scenario 7: Repeat an order placed by my rep or a colleague (C7.2)*
+```
+Given my rep placed an order for Arklow last Tuesday with a rep discount on Hand Cream
+When I open that order from history
+Then Repeat all and Repeat selected are available, as on my own orders
+When I repeat it
+Then a new, unsubmitted order for Arklow is prefilled at today's prices without the rep discount
+And the rep's original order is unchanged
+```
+
+*Scenario 8: Repeat into an order already in progress (C7.3)*
+```
+Given Arklow's current unplaced order has 12 Hand Cream
+And a past Arklow order has 8 Sudocrem
+When I repeat that past order
+Then 8 Sudocrem is added to Arklow's current order
+And the 12 Hand Cream already there is kept
+And no second order for Arklow is started
+```
+
+*Scenario 9: Repeated product already in the order (C7.4)*
+```
+Given Arklow's current order has 6 Hand Cream and 4 Sudocrem
+And the order I repeat has 12 Hand Cream, 8 Sudocrem and 5 other lines
+When I choose Repeat all
+Then one warning lists Hand Cream 6 → 12 and Sudocrem 4 → 8
+When I choose Continue
+Then Hand Cream is 12 and Sudocrem is 8, each on one line, and the 5 other lines are added
+When I choose Cancel instead
+Then Arklow's current order is unchanged
 ```
 
 ---
@@ -634,7 +896,8 @@ Then a new Pending order is created; the original is unchanged
 4. **Head Office Order Processing (applied):** self-service orders have no Capturing Rep, and account approval is a queue item (US-006b).
 5. **App vs website:** assumed identical and online-only; confirm no offline mode is expected.
 6. **Customer-side contact changes:** whether a Customer User can update their own contact details, or only head office.
-7. **Editing while Pending (23 Sep 2026):** with orders accepted automatically on receipt, how long does a self-service order stay Pending and editable? For example, until a processing cut-off, or not at all.
+7. ~~**Editing while Pending (23 Sep 2026):** with orders accepted automatically on receipt, how long does a self-service order stay Pending and editable?~~ **Resolved 26 Sep 2026 (C4.1):** placement is confirmation; the customer cannot edit or cancel afterward. Company-side amendment/cancellation mechanics remain a separate operational question.
+8. ~~**Contact route after placement (26 Sep 2026):** choose the contact channel and exact wording shown on a placed order when the customer needs to request an amendment or cancellation.~~ **Resolved 26 Sep 2026 (C4.2):** show both company phone number and email address beside the order reference. Exact display wording can be refined during implementation.
 
 ---
 

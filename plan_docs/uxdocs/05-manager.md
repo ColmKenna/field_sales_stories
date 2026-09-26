@@ -1,6 +1,6 @@
-# 05 — Manager website (M-01 … M-16)
+# 05 — Manager website (M-01 … M-17)
 
-> M-01–M-15 follow the brief. **M-16 Add a one-off Visit Due** isn't in the brief and was added in session (Visit Planning US-015).
+> M-01–M-15 follow the brief. **M-16 Add a one-off Visit Due** isn't in the brief and was added in session (Visit Planning US-015). **M-17 Online ordering approvals** isn't in the brief either; it was added in session (26 Sep 2026) from C-08 (Self-service US-001).
 
 **Device assumptions:** laptop, online, used by a Sales Manager planning and reviewing a team.
 **Consequence:** exception-first overview screens may be dense, but every summary must drill into the visits, Locations or assignments behind it.
@@ -322,6 +322,12 @@ Unassigned (Walsh's Shop, Laragh):
 > **DECISION M7.4 — changing an already-covered Location leads with "just this shop". Settled.**
 > From Murphy's Pharmacy (`Aoife (via Rathdrum)`), `Change just this shop to...` comes first and creates a direct Location assignment. `Transfer Rathdrum (Town, 23 Locations) to...` sits beside it and continues to the M6.5 pull transfer. Unlike M7.2, a working assignment already exists, so a single exception is the likely intent.
 
+> **Addition from C8.4 (26 Sep 2026) — Set up online ordering… joins the footer row.** It sits beside `Add one-off visit`, and extends M7.6's footer rather than replacing it. The manager picks one of the Location's contacts, confirms the invitation email and sees "Mary Walsh will be able to order for: Hickey's Rathdrum" (Self-service US-001 S4). A manager's account needs no approval (US-001 S2), so the invitation is sent on save. Rules in `06-customer.md` C-08.
+>
+> ```
+> | [ Add one-off visit ]  [ Set up online ordering... ]                     History >      |
+> ```
+
 **Input for M-10 (from Colm, 22 Sep 2026):** the more common change from a shop is not its Primary Rep but a **secondary (specialist) assignment**: every Location matching a profile (for example "customer campaign X") **within an area** should get a given rep as specialist. Coverage US-006 scopes are Customer, Location Profile or Brand with no geographic limit, so this needs a scope combined with an area. To be settled on M-10. A Location can hold **many** profiles (BR-NEW-005), so a profile scope matches any Location holding that profile.
 
 **Open:**
@@ -427,7 +433,7 @@ Impact preview when the previous rep is leaving:
 *Follows from the source:* branch columns use the same selection as the tablet: every branch is selected by default, Closed branches are excluded, and Temporarily Closed branches are flagged but stay selected (US-005). The grid ends in the same Split Review (US-007).
 
 **Open:**
-- *(none for M-11 beyond the deferred M11.2)*
+- **BR-NEW-008 follow-up (26 Sep 2026):** a chain may now hold multiple separate Agreed Ranges. M11.1's recent-order opening remains settled, but `Show full Agreed Range` needs a choice of which range to show. Do not infer the customer grid's default-range behaviour for reps. M11.2's layout remains deferred.
 
 ---
 
@@ -548,3 +554,45 @@ The form must capture the Location, due window, structured Due Reason Type, opti
 - ~~From which manager contexts should this flow be available?~~ **Resolved — Location first (M16.1).**
 - ~~**Does the one-off's Call complete the other rep's open recurring visit?**~~ **Resolved — no (M16.7).**
 - ~~Rep choice and override scope.~~ **Resolved — Primary Rep default, visit-only override (M16.2).** Amends US-015's "effective rep follows the Location assignment rules".
+
+---
+
+## M-17 · Online ordering approvals
+
+> Not in the brief. Added in session (26 Sep 2026) from C-08, and numbered after M-16 so it doesn't clash with the brief's IDs.
+
+**Job:** approve or decline customer online-ordering accounts that reps have set up, and re-invitation requests from Locations with no assigned rep, without them waiting for the manager to go looking.
+
+**From the source:** a rep-created account is Pending approval in "my manager's queue"; on approval the invitation is sent; a decline needs a reason, which the rep sees (Self-service US-001 S1, S3). Re-invitations normally go to the rep (C1.2), except for a Location with no assigned rep, which goes to the manager who sees it as Unassigned (M15.2).
+
+```
++------------------------------------------------------------------------------------------------+
+| Online ordering approvals (2)                                                                   |
++------------------------------------------------------------------------------------------------+
+| NEW ACCOUNTS                                                                                    |
+| Mary Walsh · Hickey's Rathdrum          Set up by Colm · 26 Sep                                 |
+|   mary@hickeys.ie · Will be able to order for: Hickey's Rathdrum                                |
+|                                                            [ Decline... ]   [ Approve ]         |
++------------------------------------------------------------------------------------------------+
+| NEW INVITATIONS (UNASSIGNED LOCATIONS)                                                          |
+| Tom Kelly · Byrne's Londis              Asked 26 Sep · last invitation expired                  |
+|                                                                   [ Send new invitation ]       |
++------------------------------------------------------------------------------------------------+
+```
+
+```
+  Decline, inline
+  | Reason for Colm (required)  [ Contact has left the business          ]  |
+  |                                          [ Cancel ]   [ Decline ]       |
+
+  Empty
+  | Nothing waiting for approval.                                           |
+```
+
+> **DECISION M17.1 — a dedicated approvals page, announced by email. Settled 26 Sep 2026.**
+> Customer-account approvals get their own manager page instead of a count in M-01's exceptions column, which stays about visit planning. When a rep sets up an account (C8.1), or a re-invitation arrives for an unassigned Location (C1.2), the manager is emailed with a link that opens this page. The email informs and links; the approval itself happens on the page, where a decline can carry its required reason.
+> **Rejected:** a count in M-01's Other exceptions column; approving from links in the email alone.
+> *Confirmed 26 Sep 2026:* two groups (new accounts, then re-invitations); Approve acts at once; Decline opens an inline required reason addressed to the rep by name; approved and declined items leave the list.
+
+**Open:**
+- ~~Where does a manager create an account directly (US-001 S2, no approval)?~~ **Resolved 26 Sep 2026 — from M-07's footer row (C8.4), not from this page.**

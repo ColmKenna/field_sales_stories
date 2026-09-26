@@ -1879,6 +1879,8 @@ Then the pad opens with a section "Hickey's agreed range (30)" above the normal 
 And SPF30 appears only in that section, not again under Sun care
 ```
 
+**Cross-area amendment (26 Sep 2026):** a Master Location may now have multiple separate Agreed Ranges (BR-NEW-008 in `../uxdocs/04-user-stories-amendments.md`). Scenario 6 remains valid for a chain with one range. Presentation when several apply to the branch, and snapshot contents for them, require a further UX decision; no union or default-only behaviour has been agreed.
+
 ---
 
 ## 6. Requires Clarification

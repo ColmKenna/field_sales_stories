@@ -145,7 +145,8 @@ The tablet is used standing in a shop, one-handed, sometimes with no signal, som
 - **Must show:** today's scheduled visits grouped by Town (rep can reorder), marked Done once a call is saved, with any order beneath; unplanned calls and orders taken today; Overdue visits; visits due within 14 days with no day set; deadline markers ("Deadline: Autumn range order deadline"); counts for unsent items, cycle decisions waiting, and schedule conflicts.
 - **Actions:** open a visit; reorder today (drag **and** Move up/down); search; open sync.
 - **States:** nothing scheduled today (still show Overdue, due-soon and search); covering another rep's location ("Covering for Aoife"); a handover visit ("Handover — finish visit").
-- **Stories:** Area 1 US-003, US-020; Visit Planning US-014.
+- **Customer invitation requests (C1.3):** a customer whose invitation expired can ask for a new one; the Location's rep approves it here with "Send new invitation", in a collapsed "Customer requests" section shown only when one is waiting (C1.4). Requests arrive in the background when in range, an exception to manual sync (C1.5). The same section tells the rep when a manager declines an account they set up (C8.3).
+- **Stories:** Area 1 US-003, US-020; Visit Planning US-014; Self-service US-002.
 
 ### T-03 · Week agenda
 - **Purpose:** move a single visit to another day without a planning screen.
@@ -166,7 +167,8 @@ The tablet is used standing in a shop, one-handed, sometimes with no signal, som
 - **Must show:** address, main contact **with status** ("Mary Walsh (inactive) — replacement needed"), any visit due with its reason, recent calls and orders, map position precision, temporary closure ("Closed until 14 Oct").
 - **Actions:** Record Call; New Order; Set location from GPS (quiet control, highlighted once if unconfirmed); extend/shorten a temporary closure; open a sent item.
 - **States:** no longer assigned ("your existing order will still be sent", actions withdrawn); closed permanently (read-only); master location (see T-10).
-- **Stories:** Area 1 US-004; Customer Directory US-005, US-010, US-011.
+- **Online ordering (C8.1):** tapping a contact opens their details, with "Set up online ordering" or their login status.
+- **Stories:** Area 1 US-004; Customer Directory US-005, US-010, US-011; Self-service US-001.
 
 ### T-06 · Call & Stock Check
 - **Purpose:** record what happened at the visit.
@@ -295,7 +297,8 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 ### M-07 · Location coverage
 - **Purpose:** answer "who covers this shop, and why?"
 - **Must show:** effective owner **with its source** ("Aoife (via Rathdrum)"); specialists; the append-only assignment history.
-- **Stories:** Coverage US-002.
+- **Online ordering (C8.4):** "Set up online ordering…" in the footer row; the manager picks a contact, sees the scope line and the invitation goes out on save, with no approval.
+- **Stories:** Coverage US-002; Self-service US-001.
 
 ### M-08 · Impact preview & handover
 - **Purpose:** decide what happens to open visits when a location changes rep.
@@ -334,6 +337,12 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 ### M-15 · Unassigned locations
 - **Purpose:** make sure no shop is silently uncovered.
 - **Stories:** Coverage US-007.
+
+### M-17 · Online ordering approvals *(added in session, 26 Sep 2026)*
+- **Purpose:** approve or decline rep-created customer accounts, and send re-invitations for Locations with no assigned rep (C8.2, M17.1).
+- **Must show:** who set up each account and when, the invitation email, and what the contact will be able to order for.
+- **Actions:** Approve; Decline with a required reason the rep sees; Send new invitation. The manager is emailed with a link to this page when an item arrives.
+- **Stories:** Self-service US-001, US-002.
 
 ---
 
@@ -493,7 +502,8 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 Untrained, infrequent users. **There is no registration** — accounts are created by a rep or manager. Strip all internal vocabulary: no tier names, no price breakdowns, no rep provenance.
 
 ### C-01 · Invitation & first sign-in
-- Set a password from an invitation. Handle expired invitations ("contact your sales representative") and forgotten passwords.
+- Set a password from an invitation. Handle expired invitations and forgotten passwords.
+- An expired invitation offers "Request a new invitation"; the rep or manager approves it before a new one is sent (C1.1). The Location's rep approves, with no manager step (C1.2), from T-02 Home on the tablet (C1.3), in its own collapsed section (C1.4); requests arrive and approvals leave in the background when in range (C1.5, C1.7), and the rep is also emailed (C1.6).
 - **Stories:** Self-service US-002.
 
 ### C-02 · My locations
@@ -501,7 +511,7 @@ Untrained, infrequent users. **There is no registration** — accounts are creat
 - **Stories:** Self-service US-003.
 
 ### C-03 · Catalogue & search
-- **Opens on** the customer's assigned ranges plus unranged products. A deliberate, neutrally-worded **"Search all products"** reaches everything else. Restricted products never appear.
+- **Opens on** the customer's assigned ranges plus unranged products. A same-page “Your catalogue” / “All products” control widens category browsing and gives a way back; search always shows curated matches first and other permitted matches below in one result list. Restricted products never appear. This supersedes the earlier separate “Search all products” step (C3.1–C3.3).
 - Availability messages must stand alone without a rep to explain them — especially "Back in stock around 25 October" versus "no longer available", and the run-out wording.
 - **Stories:** Self-service US-004.
 
@@ -515,15 +525,22 @@ Untrained, infrequent users. **There is no registration** — accounts are creat
 
 ### C-06 · Order history
 - Every order for their locations — theirs, colleagues', and their rep's — with despatch status and outstanding quantities.
-- **Edit and cancel controls appear only on orders they created themselves.**
+- A chain submission is one expandable history entry containing its separate branch orders, each with its own status and reference (C6.1).
+- Filtering to one branch shows its chain-created orders as ordinary chronological rows, without the expandable chain wrapper (C6.2).
+- **All placed orders are read-only to the customer.** A change request goes to the company; no self-service edit or cancel controls appear (C4.1).
 - **Stories:** Self-service US-007, US-008.
 
 ### C-07 · Order detail & repeat
 - Repeat whole or selected lines; **prefills a new order, never submits**; changed products marked; prices resolve fresh, so the total may differ from the original.
+- A chain submission has no group-level Repeat. Open a branch order to repeat only that branch into a new single-location order (C7.1); whole-chain Repeat is deferred.
+- Repeat is offered on every visible order, whether the customer, a colleague or the rep placed it (C7.2).
+- Repeat adds to the Location's current unplaced order; it starts a new order only when none is in progress (C7.3).
+- A repeated product already in the order takes the repeated quantity; one warning lists every quantity that will change before anything is applied (C7.4).
 - **Stories:** Self-service US-009.
 
 ### C-08 · Create customer user (rep/manager side)
 - Create the account and state the resulting scope plainly before saving.
+- A rep creates it on the tablet, from the contact reached through T-05; the request is sent in the background when in range (C8.1). The manager approves on M-17 (C8.2); a decline reaches the rep in Home's Customer requests section (C8.3). A manager sets one up directly from M-07's footer row, with no approval (C8.4).
 - **Stories:** Self-service US-001.
 
 ---

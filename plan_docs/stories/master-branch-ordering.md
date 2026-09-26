@@ -14,7 +14,7 @@
 - **Domain area:** Ordering, extended for the master–branch relationship. The relationship itself is recorded in Customer Directory; this area is what a rep and head office *do* with it.
 - **Ubiquitous language:**
   - **Master Location** / **Branch Location** — from Customer Directory. A master may be a head office holding no stock or a main shop that does.
-  - **Agreed Range** — the confirmed list of products a chain has agreed to carry across its branches. Held on the Master Location. A **default, not a limit**: branches may order outside it; Availability and Restriction Permissions remain the only hard limits.
+  - **Agreed Range** — a confirmed, named list of products a chain has agreed to carry across its branches. A Master Location may hold multiple separate Agreed Ranges, and a product may belong to several of them (26 Sep 2026 amendment). Each range guides ordering but does not limit it: branches may order outside the ranges; Availability and Restriction Permissions remain the only hard limits.
   - **Range Review** — a third Call Purpose, alongside Pitch and Stock Check, in which the rep and the chain's buyer discuss the Agreed Range. An ordinary Call: any Channel, corrections until Sync, Follow-up Calls, Competitor Notes, and an Order may be attached.
   - **Range Proposal** — the set of **Proposed Changes** (products to add, products to drop) recorded on a Range Review call. States: **Proposed**, **Confirmed**, **Partly Confirmed**, **Rejected** (with reason). Visible only to the proposing rep and head office until confirmed.
   - **Proposal Review** — head office deciding a Range Proposal per product, in the order review queue (area 3), marked as a proposal and sorted to the top.
@@ -33,7 +33,7 @@
   - **Rep at a Location** (area 1) — the Agreed Range and markers in the Morning Snapshot; split Orders feed each branch's Suggested List through the existing last-3-Accepted-Orders rule.
   - **Performance** (area 6) — Orders attributed to the For Location.
 - **Terms that mean something different elsewhere:**
-  - **Range** — a catalogue Range (Product Catalogue) is head office's commercial grouping; an Agreed Range is a chain's list. Both may contain the same products.
+  - **Range** — a catalogue Range (Product Catalogue) is head office's commercial grouping; an Agreed Range is one of a chain's named lists. Both may contain the same products.
   - **Proposal** — a Range Proposal is not an Order; it changes a default, not stock movement.
   - **Order** — a Multi-Branch Order is a session, not an Order; it produces Orders.
 
@@ -56,7 +56,7 @@
   - Delivery, invoicing, or consolidated invoicing for chains
   - Self-service ordering by a chain's head office (area 7)
 - **Assumptions:**
-  - A chain has one Agreed Range across all branches in this phase; per-branch variations are handled by the branch ordering outside it.
+  - ~~A chain has one Agreed Range across all branches in this phase.~~ **Superseded 26 Sep 2026:** a Master Location may hold multiple separate Agreed Ranges (BR-NEW-008 in `../uxdocs/04-user-stories-amendments.md`). Per-branch variations remain an open question.
   - An Agreed Range may contain products outside every rep's Ranges.
   - A master that is also a shop takes its own orders exactly as a branch would (Ordered By = For = itself).
   - A branch's Primary Rep sees a master-placed Order in that branch's history like any other; no notification.
@@ -187,6 +187,22 @@ Then they are listed with "Primary: Aoife" and I can still include them in a Mul
 ```
 Given an ordinary Location
 Then no branches or Agreed Range section is shown
+```
+
+**UX amendment (26 Sep 2026)** — the Master Location may hold multiple separate, named Agreed Ranges, with products allowed in several (BR-NEW-008, C5.4/C5.10). Each customer buyer with access to the chain grid may designate a personal default (C5.5–C5.6); one buyer's choice does not affect another. Until they set one, the first dropdown option is shown without saving a preference (C5.7, current design, may be revisited). Scenarios 1–2 remain examples for a chain with one range; they no longer limit cardinality.
+
+*Scenario 5: Several confirmed Agreed Ranges*
+```
+Given Hickey's Head Office has separate confirmed Agreed Ranges “Everyday” and “2026 Christmas gift packs”
+When I open the Master Location
+Then both ranges are available by name, each with its own confirmed products
+```
+
+*Scenario 6: Shared product membership*
+```
+Given Hand Cream 75ml is confirmed in both Hickey's Everyday and “2026 Christmas gift packs” Agreed Ranges
+When I open either range
+Then Hand Cream is a member of that range
 ```
 
 ---
@@ -518,12 +534,13 @@ Then Stock Check is still offered but its Suggested List is empty with "No stock
 ## 6. Requires Clarification
 
 1. **Area 3:** queue design for two item types; reason per line or per proposal; whether proposals can be delegated to a different reviewer.
-2. **Per-branch variations of the Agreed Range:** out of scope now; confirm before build if some chains agree different lists for different store formats.
+2. **Per-branch variations of Agreed Ranges:** still open; having multiple ranges at the Master Location does not itself establish different lists per branch or store format.
 3. **Chain pricing:** whether a chain agreement carries prices (Pricing & Promotions).
 4. **Session recovery:** a Multi-Branch session left unfinished on the tablet — assumed it stays open until saved or discarded, with a count on Home.
 5. **Area 1 amendments (applied):** Range Review purpose on the Call; agreed-range markers and union on the Order Pad; Ordered By / For and Capturing Rep on Orders; Multi-Branch session entry from a Master Location; branches and Agreed Range in the snapshot.
 6. **Customer Directory amendment:** the Agreed Range lives on the Master Location record.
 7. **Laptop grid layout (23 Sep 2026):** version 1 is the flat products × branches grid; nested alternatives (product rows with branch sub-rows, or branch groups with product sub-rows) are deliberately deferred until there is usage feedback.
+8. **Multiple Agreed Ranges (26 Sep 2026):** the one-range assumption is superseded, and products may belong to several ranges. Resolve how a Range Review and proposal identifies its target range, and how the branch pad, rep/manager grid, master view and snapshot expose several ranges with overlapping membership. The customer dropdown's sort order is deferred; its current first option is the fallback before a personal default is set. Do not silently reinterpret the earlier single-range examples as union or default-only rules.
 
 ---
 
@@ -532,4 +549,4 @@ Then Stock Check is still offered but its Suggested List is empty with "No stock
 1. Design Head Office Order Review (area 3) next; it now has Orders, Range Proposals, oversold run-out lines and post-capture Unavailable lines waiting for it.
 2. Apply the area 1 and Customer Directory amendments (items 5 and 6) in the next batch.
 3. Prototype the tablet product-at-a-time entry with a real buyer conversation before committing to the running-summary layout.
-4. Confirm item 2 with the sales team before the Agreed Range is built as one list per chain.
+4. Confirm item 2 with the sales team before defining per-branch variations; the one-list-per-chain assumption has been superseded by BR-NEW-008.

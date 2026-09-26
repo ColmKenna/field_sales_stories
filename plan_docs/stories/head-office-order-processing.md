@@ -27,7 +27,7 @@
   - **Release** — the quantities sent to the warehouse for an Accepted Order. Full by default; **Partial Release** sends what is available and leaves the rest **Outstanding** on the line. An Order is never split.
   - **Outstanding** — per line, quantity Accepted but not yet **Sent**.
   - **Despatch** — head office recording, from the warehouse's report, what was actually sent against an Order's lines and when. May be recorded several times for one Order.
-  - **Order states** — Pending → **Accepted** (all lines Sent) / **Accepted — partly sent** (some Outstanding) / **Held** / **Rejected** (with reason) / Cancelled (by the rep or customer while Pending). A Held Order returns to Pending when released.
+  - **Order states** — Pending → **Accepted** (all lines Sent) / **Accepted — partly sent** (some Outstanding) / **Held** / **Rejected** (with reason) / Cancelled. A Held Order returns to Pending when released. *Amended 26 Sep 2026 (Self-service C4.1): customer cancellation while Pending is superseded; after placement the customer contacts the company to request changes. The staff-side amendment/cancellation method for accepted orders remains to be defined separately.*
   - **Hold** — parking an Order, usually for a Stock Shortfall, for the Stock Allocation area to work with. Held Orders are not editable by the rep. *Open 23 Sep 2026:* whether Hold survives with no flag driving it (Requires Clarification 9).
   - **Reject** — with a reason, visible to the rep or customer. Whole Order only; there is no line-level reject (use Partial Release and Outstanding instead). *Open 23 Sep 2026:* whether Reject survives (Requires Clarification 9).
   - **Range Proposal** — from Master & Branch Ordering; decided per product: confirm or reject each, with a reason per rejected line.
@@ -68,7 +68,7 @@
   - Allocating short stock across competing orders and the live stock feed (Stock Allocation area)
   - Fulfilment, delivery, invoicing (external)
   - Editing an Order's lines or quantities at head office (not allowed; use Partial Release)
-  - Rep or customer editing (areas 1 and 7)
+  - Rep editing (area 1); customer self-service editing after placement was removed by C4.1 (area 7)
   - Purchasing from suppliers
 - **Assumptions:**
   - "New Location" means until 3 Orders have been Accepted (system setting).
@@ -616,6 +616,7 @@ Then there are no Accept, Partial Release or per-line override and free-goods de
 8. **Free goods reporting:** whether head office needs a view of free goods by rep or period (Pricing item 8).
 9. **Hold and Reject (23 Sep 2026):** do they survive on Order Detail with no flag driving them? Affects US-003 and US-006.
 10. **Orders on the Worklist (23 Sep 2026):** do orders appear at all, e.g. as a read-only feed, or only via search and the customer record?
+11. **Company-handled customer change requests (26 Sep 2026):** after the customer confirms and places an order, they contact the company to request a whole or partial cancellation or amendment. Specify what staff may do to an automatically accepted order, and how this fits the current rule that Order Detail cannot edit lines or quantities. Customer self-service has no edit/cancel action (C4.1).
 
 ---
 
