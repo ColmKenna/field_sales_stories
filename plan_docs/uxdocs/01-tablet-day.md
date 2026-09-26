@@ -1,4 +1,4 @@
-# 01 — Tablet app: the rep's day (T-01 … T-08, T-11, T-12)
+# 01 — Tablet app: the rep's day (T-01 … T-14)
 
 **Device assumptions:** tablet, held one-handed while standing, poor light, no signal assumed.
 **Consequences carried through every frame below:** one dominant name per row; no hover; no drag as the only route; touch targets on the row's right edge or full-width; no two-pane layouts.
@@ -909,6 +909,81 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 
 ---
 
+## T-09 · My Leads & lead capture
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** note somewhere worth calling on in seconds, offline, and keep a working list worth reading.
+
+**From the source:** a Lead is a note about an unvisited opportunity, not a Location; a name is enough, source optional; assigned to the creator, reassignable; Actionable From makes it Scheduled (out of the list, never Stale); Active leads untouched beyond the Stale Period are flagged "No activity for 9 weeks — follow up or archive"; Scheduled and Dead sit behind filters; Visit creates a Prospect pre-filled from the lead; Close as dead needs a reason; everything saves offline as unsent work (Prospecting US-001 to US-003; Area 1 US-021).
+
+```
++----------------------------------------------------------------+
+| < Home                 My leads (12)             [ + Lead ]     |
++----------------------------------------------------------------+
+| [ Active (12) ]  [ Scheduled (3) ]  [ Dead (4) ]                |
++----------------------------------------------------------------+
+| (!) Unit 4, Arklow retail park                                  |
+|     No activity for 9 weeks - follow up or archive              |
+|     Source: mentioned by Carey's       [ Close... ]  [ Visit ]  |
++----------------------------------------------------------------+
+| New chemist, Main Street Arklow                                 |
+|     Source: mentioned by Murphy's Rathdrum   added 3 days ago   |
+|                                        [ Close... ]  [ Visit ]  |
++----------------------------------------------------------------+
+
+  + Lead (quick capture)
+  | Name       [ New chemist, Main Street Arklow          ]       |
+  | Source     [ Mentioned by Murphy's Rathdrum           ]       |
+  | Note       [                                          ]       |
+  | Actionable from  [ none v ]      Assigned to [ Me v ]         |
+  |                                    [ Cancel ]   [ Save ]      |
+```
+
+> **Drafting calls T9.1–T9.5, awaiting confirmation:**
+> - **T9.1** My Leads is reached from Home's header beside Search, not as a Home section, so T-02's settled layout is unchanged; **+ Lead** is always in reach from there.
+> - **T9.2** Capture is one short form: only Name is required; Source, Note, Actionable From and Assigned to are optional, Assigned to defaulting to me. It saves as unsent work, like any offline capture.
+> - **T9.3** Active leads list Stale ones first, then newest; Scheduled shows each lead's Actionable From date; Dead shows the reason.
+> - **T9.4** **Visit** opens T-10 pre-filled from the lead; **Close…** asks for a reason (free text) and moves the lead to Dead.
+> - **T9.5** The Stale Period override (Prospecting US-002 S5) sits on the rep website with the rep's other settings, not on the tablet.
+
+---
+
+## T-10 · Create / complete prospect
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** record a place that isn't yet a customer with whatever the rep has at the counter, and make finishing it later easy.
+
+**From the source:** saves as a draft with only what was captured; Town is required ("Choose a town"); a "To complete" list names what is still missing; what they sell uses the Competitor Note shape; Susceptibility High / Medium / Low with notes, earlier notes kept; GPS capture as for any Location; Calls and Orders at a prospect work as at a customer; the duplicate outcome arrives after sync (Prospecting US-004 to US-006; Area 1 US-022). An order at a prospect waits for the cut-off like any other (BR-NEW-009).
+
+```
++----------------------------------------------------------------+
+| < My leads             New prospect                  Draft      |
++----------------------------------------------------------------+
+| From lead: mentioned by Murphy's Rathdrum                       |
+| Name     [ New chemist, Main Street            ]                |
+| Town     [ Arklow                          v ]  (required)      |
+| Likely to buy   ( ) High  ( ) Medium  ( ) Low                   |
+| Notes    [ Owner keen on suncare, stocks own-brand ]            |
+| What they sell  [ + Add ]                                       |
+|                                          [ Set from GPS ]       |
++----------------------------------------------------------------+
+| To complete: address, contact details, location type            |
++----------------------------------------------------------------+
+|              [ Save draft ]          [ Save and record call ]   |
++----------------------------------------------------------------+
+```
+
+> **Drafting calls T10.1–T10.5, awaiting confirmation:**
+> - **T10.1** In-shop fields come first (name, Town, rating, notes, what they sell); address, contact and location type are left to the "To complete" list, which updates as fields are filled.
+> - **T10.2** "Susceptibility" is labelled **Likely to buy** on screen, with the domain term kept in the data.
+> - **T10.3** **Save and record call** goes straight to T-06 at the new prospect, since the rep is usually mid-visit.
+> - **T10.4** Incomplete prospects appear in a "To finish" filter on My Leads (Prospecting US-005 S2), each with its missing items.
+> - **T10.5** The duplicate outcome after sync appears on the prospect in plain words ("Already a customer — now assigned to you, last ordered 14 Mar 2026") and as a Home prompt, like other sync outcomes.
+
+---
+
 ## T-11 · Master location view
 
 > Started 26 Sep 2026. Opened from T-05's "master location" state when the Location is a chain's Master.
@@ -970,6 +1045,77 @@ Line in a multi-buy, bundle or mix-and-match — never stackable:
 |                                          [ + Add a range ]      |
 +----------------------------------------------------------------+
 ```
+
+---
+
+## T-13 · Multi-branch order (tablet)
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** order for many branches in one conversation with the chain's buyer, on a tablet, offline.
+
+**From the source:** branches first, all ticked, Closed excluded, Temporarily Closed flagged but ticked; pick a product, enter one quantity for all, adjust the exceptions; a line summary ("24 × 9 branches, 1 adjusted (Wicklow Town 36)"), 0 excludes a branch from that product only; a session header ("6 products · 10 branches · 1,380 units"); saved on the tablet as it goes; **no grid** (Master & Branch US-005; brief T-13). Started from T-11's primary action (T11.1). The customer's phone flow (C-05) follows the same pattern.
+
+```
++----------------------------------------------------------------+
+| < Hickey's Head Office   Chain order    6 products - 10 branches|
+|                                          1,380 units            |
++----------------------------------------------------------------+
+| Branches (10 of 12)  [ Change ]                                 |
++----------------------------------------------------------------+
+| SPF30 Sun Lotion v2 200ml          24 x 9 branches, 1 adjusted  |
+|   Wicklow Town 36                                          v    |
+| Hand Cream 75ml                    12 x 10 branches        v    |
+| ...                                                             |
++----------------------------------------------------------------+
+|        [ + Add product ]                 [ Review split ]       |
++----------------------------------------------------------------+
+
+  Entering a product
+  | SPF30 Sun Lotion v2 200ml                                     |
+  | Same for all branches   [ - ]  24  [ + ]                      |
+  | Rathdrum        24   [ - ] [ + ]                              |
+  | Wicklow Town    36   [ - ] [ + ]   adjusted                   |
+  | Arklow          24   Closed until 14 Oct                      |
+  | ...                                          [ Done ]         |
+```
+
+> **Drafting calls T13.1–T13.5, awaiting confirmation:**
+> - **T13.1** Branch selection is the first screen of the session (all eligible ticked), then collapses to "Branches (10 of 12) [ Change ]".
+> - **T13.2** **+ Add product** opens a picker laid out like the branch Order Pad: the chain's assigned Ranges as sections, oldest first (T7.15–T7.18), then categories and search. A product already in the session opens its existing line (one product, one place).
+> - **T13.3** Changing "Same for all" fills only branches not adjusted by hand, which stay marked, as on the laptop grid (M11.3).
+> - **T13.4** Unticking a branch that has quantities is blocked with "Arklow has an active order here. Clear its quantities before removing this branch." and opens that branch's quantities; after clearing, it stays ticked until removed deliberately — the same rules as the customer (C5.13–C5.15).
+> - **T13.5** Quantities are never prefilled (T7.7); the popover pattern is not used here, because the per-branch list is the entry surface.
+
+---
+
+## T-14 · Split review
+
+> Drafted 26 Sep 2026 as a first-iteration default from the stories. Every decision below is a drafting call awaiting confirmation.
+
+**Job:** check what each branch will get before the session becomes separate orders.
+
+**From the source:** one row per branch with lines and units, expandable; a branch with nothing shows "No order" and gets none; saving creates one In Progress Order per branch, Ordered By the master, For the branch, the rep as Capturing Rep, linked to an open Call; each is then an ordinary order (Master & Branch US-007). Each branch order then waits for the cut-off like any other (BR-NEW-009).
+
+```
++----------------------------------------------------------------+
+| < Chain order          Split review             10 branches     |
++----------------------------------------------------------------+
+| Rathdrum          6 lines   138 units                      v    |
+| Wicklow Town      6 lines   150 units                      v    |
+| Arklow            No order                                      |
+| ...                                                             |
++----------------------------------------------------------------+
+| Creates 9 orders, one per branch                                |
+|        [ Back to products ]          [ Save 9 orders ]          |
++----------------------------------------------------------------+
+```
+
+> **Drafting calls T14.1–T14.4, awaiting confirmation:**
+> - **T14.1** Branch rows expand in place to show their lines; no separate per-branch screen.
+> - **T14.2** The save button names the result ("Save 9 orders"), so "No order" branches are visibly excluded.
+> - **T14.3** After saving, the rep returns to T-11 with "9 orders saved — In Progress" and each order is marked Ready to Send as usual (T7.4), or all at once with **Mark all ready to send**.
+> - **T14.4** Branches whose Primary Rep is someone else show "Primary: Aoife" on their row, as on the master view (Master & Branch US-001 S3).
 
 ---
 

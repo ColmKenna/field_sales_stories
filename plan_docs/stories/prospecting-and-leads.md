@@ -475,7 +475,7 @@ Then the Location stays a Prospect and I see the reason
 Then the Location needs a Location Profile before visits are scheduled, and appears on head office's No Visit Schedule gap list
 ```
 
-*Amended 23 Sep 2026:* orders are now accepted automatically (Head Office Order Processing US-008). Prospect Conversion is an annotation, so a prospect's first order is accepted on receipt and converts the Location without a head office step. Scenario 3 depends on whether Reject survives (Head Office Requires Clarification 9).
+*Amended 23 Sep 2026:* orders are now accepted automatically (Head Office Order Processing US-008). Prospect Conversion is an annotation, so a prospect's first order converts the Location without a head office step. *Amended 26 Sep 2026 (BR-NEW-009, H2.9):* the order is accepted at the next order cut-off, not on receipt; before then head office may Hold or Reject it by hand, so Scenario 3 stands for a manual rejection.
 
 ---
 
