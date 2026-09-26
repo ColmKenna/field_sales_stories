@@ -29,7 +29,7 @@
   - **Range Lifecycle** / **Product Management** — availability states including Temporarily Unavailable, Replacements, the catalogue.
   - **Coverage Management** — Restriction Groups (Restricted products are hidden from customers entirely).
 - **Downstream contexts:**
-  - **Head Office Order Processing** — self-service Orders are accepted automatically on receipt under the same disposition rules as reps' orders, with no Capturing Rep.
+  - **Head Office Order Processing** — self-service Orders are accepted automatically under the same disposition rules as reps' orders, with no Capturing Rep. *Amended 26 Sep 2026 (BR-NEW-009):* not on receipt — a placed order is Pending until the next order cut-off and is accepted then; wherever this story says "accepted automatically on receipt", read "accepted automatically at the cut-off". Whether the customer can edit while Pending is open (C4.1 made placement final).
   - **Targets & Performance** — attributed to the For Location's Primary Rep, as any order.
 - **Terms that mean something different elsewhere:**
   - **Account** — a login for a Contact; not a customer account in the financial sense.
@@ -110,7 +110,7 @@ flowchart TD
         Avail -->|Temporarily Unavailable| Back[Back in stock around DATE]
         Avail -->|Discontinuing / Run-out| Repl[Flag + replacements shown]
         Avail -->|Unavailable| NoOrd[Not orderable; replacements offered]
-        Single --> Submit[Review and place: customer confirms] --> Pending[(Placed order; accepted on receipt)]
+        Single --> Submit[Review and place: customer confirms] --> Pending[(Placed order; Pending until cut-off, then accepted)]
         Grid --> Split[One order per branch] --> Pending
     end
 
@@ -715,15 +715,15 @@ And I can return to branch selection and deliberately deselect it
 |---|---|
 | **Story** | As a Customer User, I want to know how to request a correction after placing an order so that I can contact the company with the order details |
 | **Priority** | Must Have |
-| **Status** | Amended 26 Sep 2026 (C4.1); customer edit/cancel scenarios superseded |
+| **Status** | Amended 26 Sep 2026 (C4.1); amended again the same day (C4.3, BR-NEW-009): own orders editable until the cut-off |
 | **Dependencies** | US-005 |
 
 **Acceptance criteria:**
 
-*Scenario 1: Placed order is read-only*
+*Scenario 1: Accepted order is read-only*
 ```
-Given I have placed an order
-When I open it, including during any transient Pending state
+Given I have placed an order and the order cut-off has passed
+When I open it
 Then I can view its lines and status, but cannot edit or cancel lines or the order in self-service
 ```
 
@@ -742,7 +742,39 @@ Given an order placed by my rep or by a colleague at the same Location
 Then I can view it but no edit or cancel controls are shown
 ```
 
-**Superseded 26 Sep 2026:** the earlier scenarios allowing own-order edits and cancellation while Pending, and the accepted-mid-edit race. Company-side amendment or cancellation handling remains a separate operational decision; this story only covers the customer's read-only view and contact route.
+*Scenario 4: Edit my own order before the cut-off (C4.3)*
+```
+Given I placed an order at 10:12 and the cut-off is 4pm
+When I open it before 4pm
+Then it shows "Pending" and "You can change this until 4pm today", with Edit and Cancel order
+When I choose Edit, change Hand Cream from 12 to 6 and choose Save changes
+Then the order stays Pending with the new quantity, without placing it again
+```
+
+*Scenario 5: Cancel my own order before the cut-off (C4.3)*
+```
+When I choose Cancel order and confirm
+Then the order is Cancelled and shows as Cancelled in history
+```
+
+*Scenario 6: Close to the cut-off (C4.4)*
+```
+Given the cut-off is 4pm and I am editing my order at 3:55pm
+Then I see "This order locks at 4pm — 5 minutes left to save"
+When I save at 4:01pm
+Then my changes are not saved and the order stands as accepted at 4pm
+And I am told to contact the company, quoting the order reference, with its phone and email
+And if I only view the Pending order at 3:55pm without choosing Edit, no warning appears
+```
+
+*Scenario 7: Cut-off by weekday (BR-NEW-009 rule 4)*
+```
+Given the cut-off is 4pm Monday to Thursday, 1pm Friday and none at weekends
+When I place an order at 2pm on Friday
+Then it reads "You can change this until 4pm Monday"
+```
+
+**Superseded 26 Sep 2026:** the earlier scenarios allowing own-order edits and cancellation while Pending, and the accepted-mid-edit race. **Reinstated the same day in a new form (C4.3):** own orders can be edited or cancelled until the order cut-off (Scenarios 4–5). A save after the cut-off is refused and the accepted order stands, with a warning as the cut-off nears (C4.4, Scenario 6). Company-side amendment or cancellation handling remains a separate operational decision; this story only covers the customer's read-only view and contact route.
 
 ---
 

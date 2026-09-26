@@ -317,8 +317,35 @@ These examples apply in both browse scopes and in search. Product state determin
 **From the source:** C-09 and C-03 add products while keeping the customer on the list; “View order” opens this page. Show the customer's price without tier or list-price breakdown, quantity-break prompts, applied and nearly reached offers, and a clear empty-order message (Self-service US-005).
 
 **Decision C4.1 — placing the order is the customer's confirmation. Settled 26 Sep 2026.** The customer can review and correct the in-progress order before choosing “Place order”. Once placed, the order is read-only to the customer, including its quantities and lines: there are no customer edit, part-cancel, or cancel actions, even if a transient Pending status appears. To request a change afterward, the customer contacts the company; company staff handle any amendment or cancellation outside the customer self-service flow. The company's operational method for changing an accepted order is a separate decision and is not implied by this customer screen. This supersedes the customer Pending edit/cancel promise in Self-service US-007.
+> *26 Sep 2026 — premise changed (BR-NEW-009):* orders are no longer accepted on receipt; they wait as Pending until the order cut-off. C4.1 stands as settled (placing is the customer's confirmation). **Resolved by C4.3:** the customer may edit or cancel their own order until the cut-off.
 
 **Decision C4.2 — show both contact channels. Settled 26 Sep 2026.** On the placed-order detail, show the company's phone number and email address together with the order reference, so the customer has the details needed to request a change. This is contact information, not a self-service change action. The same read-only and contact rule applies to each branch order created from C-05.
+
+**Decision C4.3 — the customer can edit or cancel their own order until the cut-off. Settled 26 Sep 2026.** Orders now wait as Pending until the order cut-off (BR-NEW-009). Until then, the placed order says when the window closes ("You can change this until 4pm") and offers **Edit** and **Cancel order**. After the cut-off the order is accepted, and C4.1's read-only rule and C4.2's contact route apply. C4.1's "no customer edit or cancel even if a transient Pending status appears" is superseded; placing is still the customer's confirmation. Rejected: placing stays final, with changes only through the rep or company.
+> *Confirmed 26 Sep 2026:* **Edit** reopens the order's lines on this page, as before placement, and **Save changes** keeps it Pending without a second "Place order"; **Cancel order** asks once ("Cancel order #12345? This can't be undone.") and the order then shows Cancelled in history; each branch order from a chain submission (C-05) is edited or cancelled on its own; Repeat still adds only to an unplaced order (C7.3), never to a Pending one.
+
+```text
++--------------------------------------------------------+
+|  Order #12345                            Pending       |
+|  Hickey's Rathdrum · placed 26 Sep 2026 10:12          |
+|  You can change this until 4pm today.                  |
+|                         [ Cancel order ]   [ Edit ]    |
++--------------------------------------------------------+
+|  Order lines (read-only until you choose Edit)         |
++--------------------------------------------------------+
+```
+
+**Decision C4.4 — warn as the cut-off nears; after it, a save is refused and the accepted order stands. Settled 26 Sep 2026.** The cut-off is a fixed time. **Only once the customer has chosen Edit** and is editing close to it does the page warn them ("This order locks at 4pm — 5 minutes left to save"); viewing a Pending order never shows the warning (Colm, 26 Sep 2026). If they save after the cut-off, nothing changes: the order was accepted as it stood, and the page says so with the contact route (C4.2). Rejected: holding the cut-off for an edit in progress. *Confirmed 26 Sep 2026:* the warning appears when the customer opens Edit, or is already editing, within 15 minutes of the cut-off, and updates as the minutes run down. The cut-off can differ by weekday (BR-NEW-009 rule 4), so the wording names the day when it isn't today ("You can change this until 4pm Monday").
+
+```text
+  Editing, 3:55pm
+  | (!) This order locks at 4pm - 5 minutes left to save.  |
+
+  Save at 4:01pm
+  | This order was accepted at 4pm, so your changes        |
+  | weren't saved. To change it, contact us and quote      |
+  | order #12345: [company phone] · [company email]        |
+```
 
 **Structure sketch — first pass:**
 
@@ -343,7 +370,7 @@ These examples apply in both browse scopes and in search. Product state determin
 
 The order rows are editable before placement. An empty order cannot be placed and shows “Add at least one product”. Exact row controls and offer placement are drafting calls for implementation feedback.
 
-**First-pass post-submit state:** show the placed order and its status, with no customer edit or cancel controls. The pre-submit order remains the place to correct mistakes.
+**First-pass post-submit state (after the cut-off, C4.3):** show the accepted order and its status, with no customer edit or cancel controls. Before the cut-off, the Pending frame above applies.
 
 ```text
 +--------------------------------------------------------+

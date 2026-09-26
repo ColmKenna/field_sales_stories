@@ -1465,6 +1465,16 @@ Then they are shown as facts of the order ("SPF30 at your price €9.25"), not a
 
 **Superseded:** "outcomes of any override or free-goods request".
 
+**UX amendment (26 Sep 2026, BR-NEW-009, R4.1):** orders are Pending until the order cut-off, so "Open on website" (R-04) lets the rep edit or cancel a Pending order **they took themselves** until then; customer-placed and other reps' orders open read-only. Synced Calls are corrected there under the existing corrections-versus-follow-up rule.
+
+*Scenario A1014-C*
+```
+Given I took an Order at Carey's Pharmacy at 10:40 and the cut-off is 4pm
+When I open it on the website at 2pm
+Then I can change its lines, or cancel it, until 4pm
+And an order Mary placed online for Hickey's Rathdrum opens read-only, even while Pending
+```
+
 ---
 
 ### US-015: Correct a saved Call before Sync

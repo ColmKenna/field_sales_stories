@@ -462,7 +462,7 @@ And the rep sees the outcome and its reason at next Sync
 |---|---|
 | **Story** | As a Head Office User, I want a list of Held Orders with why each is held and a link to allocation so that nothing parked is forgotten |
 | **Priority** | Should Have |
-| **Status** | **Affected 23 Sep 2026** — depends on whether Hold survives (Requires Clarification 9); if it is removed, this story's trigger needs redefining or the story retires |
+| **Status** | **Amended 26 Sep 2026 (H2.9)** — Hold survives as a manual action on a Pending order, before the order cut-off; this story lists those holds (H-06) |
 | **Dependencies** | US-003; Stock Allocation area |
 
 **Acceptance criteria:**
@@ -482,6 +482,18 @@ Then the Order becomes Accepted — partly sent and leaves Held
 ```
 Given the Location is marked Closed
 Then the Held Order is flagged "Location closed" for a Reject or Release decision
+```
+
+**UX amendment (26 Sep 2026, H2.9, BR-NEW-009):** orders wait as Pending until the order cut-off. Before then, head office may **Hold** (note required, internal) or **Reject** (reason required, shown to rep and customer) an order on H-02; nothing flags orders for this. A held order is not accepted at the cut-off until released or rejected, and can't be edited by the rep or customer. **Release** accepts it at once. **Superseded:** Scenario 2 — short stock no longer holds an order (BR-NEW-001); it is released only by a person.
+
+*Scenario 4: Hold before the cut-off (H2.9)*
+```
+Given order O-10412 is Pending and the cut-off is 4pm
+When I choose Hold at 2pm with the note "Credit stop - check with accounts"
+Then it is not accepted at 4pm and appears on Held orders with its note and time held
+And Colm and the customer see "On hold — we'll be in touch", not the note
+When I choose Release
+Then it is accepted at once
 ```
 
 ---
@@ -553,6 +565,8 @@ Then new Orders are no longer flagged; already-flagged ones keep the flag
 | **Priority** | Must Have |
 | **Status** | Ready (added 23 Sep 2026 from the UX design sessions; replaces the order-decision parts of US-001 to US-003) |
 | **Dependencies** | Pricing (discount and FOC allowances enforced at capture); Stock Allocation; area 1 "not supplied" prompt |
+
+**UX amendment (26 Sep 2026, BR-NEW-009):** orders are not accepted on receipt. A synced or placed order is **Pending until the next order cut-off**, and is accepted automatically then, with the dispositions below applied at that point. "When it is received" in these scenarios reads "At the next order cut-off". Until then the rep can edit it on the rep website (R-04). No person accepts orders.
 
 **Acceptance criteria:**
 

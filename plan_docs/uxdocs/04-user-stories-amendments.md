@@ -17,7 +17,8 @@
 | BR-NEW-003 | Business rule | Free of charge on discontinuing stock only | Tablet |
 | BR-NEW-004 | Business rule | Structured Visit Due Reason Type | Rep website, manager website, tablet |
 | BR-NEW-005 | Business rule | Many Location Profiles, defaults resolved field by field | Manager website, rep website, tablet |
-| BR-NEW-008 | Business rule | Multiple Agreed Ranges per chain | Customer, rep, head office |
+| BR-NEW-008 | Business rule | A chain's Agreed Ranges are catalogue Ranges assigned to it | Customer, rep, head office |
+| BR-NEW-009 | Business rule | Orders wait as Pending until a cut-off, then are accepted automatically | Rep website, customer, head office |
 | US-NEW-001 | New story | Quantity popover when adding a Low item | Tablet (T-06, T-07) |
 | US-NEW-002 | New story | Low tab as a catch-up list | Tablet (T-07) |
 | US-NEW-003 | New story | Rep prompted when a line couldn't be supplied | Tablet (T-02, T-08) |
@@ -26,7 +27,7 @@
 | US-NEW-006 | New story | Manage Visit Due Reason Types | Manager/admin website |
 | US-NEW-007 | New story | Usual products landing page, marked when others have ordered | Customer (C-09, C-02) |
 | Self-service US-004 | Amendment | Same-page catalogue scope control; one search with curated results first | Customer (C-03) |
-| Self-service US-005, US-007, US-008 | Amendment | Placing confirms the order; no customer changes after submission | Customer (C-04, C-06, C-07) |
+| Self-service US-005, US-007, US-008 | Amendment | Placing confirms the order; own orders editable or cancellable until the cut-off, read-only after | Customer (C-04, C-06, C-07) |
 | Self-service US-008 | Amendment | Chain submissions expand in history; a branch filter shows normal rows | Customer (C-06) |
 | Self-service US-001 | Amendment | Rep sets up online ordering on the tablet from the contact on T-05; sent in the background; manager approves on M-17, prompted by email; a manager sets one up directly from M-07 | Customer (C-08), Tablet (T-05), Manager website (M-07, M-17) |
 | Self-service US-002 | Amendment | Expired invitation: request a new one, approved by the rep or manager before it is sent | Customer (C-01) |
@@ -59,9 +60,10 @@
 | Targets & Performance US-005 | Clarification | "Furthest behind" by points behind pace, re-sortable by money; value decides for dual targets | Manager website (M-13) |
 | Targets & Performance US-004 | Amendment | Targeted Locations ordered by greatest target shortfall | Rep website (R-03) |
 | Stock Allocation US-003, US-005 | Clarification | Manager-selected stock pools when re-proposing | Head office (H-10) |
-| Area 1 US-014 | Amendment | Sent item shows removed lines and applied prices | Tablet (T-08) |
+| Area 1 US-014 | Amendment | Sent item shows removed lines and applied prices; rep edits own Pending orders on R-04 until the cut-off | Tablet (T-08), rep website (R-04) |
 | Head Office US-001, US-002 | Superseded in part | Worklist no longer holds orders | Head office |
 | Head Office US-003 | Superseded | Order detail becomes a record | Head office |
+| Head Office US-006 | Amendment | Manual Hold and Reject before the cut-off; held orders listed on H-06 | Head office (H-02, H-06) |
 
 ---
 
@@ -175,6 +177,19 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 **Supersedes:** Master & Branch Ordering's assumption that a chain has one Agreed Range across all branches, **and its model of an Agreed Range as a chain-specific product list changed product by product.** "Agreed Range" now means a catalogue Range assigned to the chain.
 
 **Open impacts:** Range Review proposals assign or remove whole Ranges (T12.2), confirmed per Range on H-04; the branch Order Pad is settled as stacked range sections oldest range first, which puts the everyday range first by convention (T7.15–T7.18); the rep/manager multi-branch grid uses a range picker (M11.4); how the master Location view and tablet snapshot present several ranges and overlapping membership. Dropdown sort order is deferred; the current first option is the initial fallback.
+
+---
+
+### BR-NEW-009 — Orders wait as Pending until a cut-off, then are accepted automatically
+
+*Settled 26 Sep 2026.* Colm: orders "shouldn't be accepted by default" on receipt. Chosen over a person accepting every order, and over holding flagged orders for a person.
+
+1. A synced rep order, or a placed customer order, is **Pending** until the next **order cut-off**.
+2. At the cut-off it is accepted automatically, with BR-NEW-001's dispositions applied then (shortfall routed to allocation, unavailable lines removed, annotations recorded). Still no person accepts orders; H1.6 stands.
+3. Until the cut-off, the rep can edit a Pending order on the rep website (R-04). Whether a customer can edit their own Pending order is open (C4.1 made placement final).
+4. *Settled 26 Sep 2026:* the company sets a cut-off time **for each day of the week**, and a day may have none (for example 4pm Monday to Thursday, 1pm Friday, none at weekends). An order synced or placed after a day's cut-off, or on a day without one, waits for the next cut-off ("You can change this until 4pm Monday"). Rejected: one daily time for the company; different times by region or delivery run. Which head office screen holds the setting is open (not yet drawn).
+
+**Supersedes:** "accepted on receipt" and "when it is received … accepted" in BR-NEW-001, US-NEW-005, Head Office Order Processing US-008, and Self-service (glossary, US-005, US-006, US-009): read "at the cut-off".
 
 ---
 
@@ -481,7 +496,7 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ### US-NEW-005: As a Head Office user, I want orders that are within policy to go through without my acceptance so that my worklist only holds things that genuinely need a decision.
 
-> **Context:** replaces the order-decision parts of Head Office US-001 to US-003. Implements BR-NEW-001.
+> **Context:** replaces the order-decision parts of Head Office US-001 to US-003. Implements BR-NEW-001. *Amended 26 Sep 2026 (BR-NEW-009):* in AC-NEW-005-1 to 3, "When it is received" reads "At the next order cut-off"; until then the order is Pending and the rep can edit it on R-04.
 
 **Acceptance Criteria:**
 
@@ -503,10 +518,10 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 **AC-NEW-005-4:**
 - **Given** I open the worklist
 - **When** it renders
-- **Then** it contains only range proposals, duplicate matches and customer account requests, each labelled with its type
+- **Then** it contains only range proposals and duplicate matches, each labelled with its type *(customer account requests moved to M-17, 26 Sep 2026)*
 
 **AC-NEW-005-5:**
-- **Given** there are no range proposals, duplicate matches or account requests
+- **Given** there are no range proposals or duplicate matches
 - **When** I open the worklist
 - **Then** it reads "Nothing needs a decision." with no action offered
 
@@ -817,7 +832,7 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 ### Self-service US-005, US-007 and US-008 — customer confirmation and post-submit access
 
-> **Context:** settled 26 Sep 2026 (C4.1–C4.2). The customer reviews and corrects the order before choosing “Place order”. That action confirms the order. Automatic acceptance on receipt means there is no useful customer Pending edit window. After submission, the customer can view the order and status but cannot edit, cancel a line, or cancel the whole order in self-service. The placed-order detail shows the company phone number and email address beside the order reference so they can request a change; company-side amendment and cancellation mechanics require a separate operational decision. This supersedes the customer Pending edit/cancel scenarios in Self-service US-007. The read-only/contact rule also applies to orders placed through C-05.
+> **Context:** settled 26 Sep 2026 (C4.1–C4.2). The customer reviews and corrects the order before choosing “Place order”. That action confirms the order. Automatic acceptance on receipt means there is no useful customer Pending edit window. After submission, the customer can view the order and status but cannot edit, cancel a line, or cancel the whole order in self-service. The placed-order detail shows the company phone number and email address beside the order reference so they can request a change; company-side amendment and cancellation mechanics require a separate operational decision. This supersedes the customer Pending edit/cancel scenarios in Self-service US-007. The read-only/contact rule also applies to orders placed through C-05. *Amended the same day (C4.3, BR-NEW-009):* orders now wait as Pending until the order cut-off, so the customer can edit or cancel their own order until then; the read-only and contact rules apply after the cut-off. AC-SS007-A is amended accordingly; see AC-SS007-C/D.
 
 **Additional Acceptance Criteria:**
 
@@ -828,8 +843,8 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **And** the placed order is shown with its current status
 
 **AC-SS007-A:**
-- **Given** I have placed an order
-- **When** I view it in history or detail, even if its status briefly reads Pending
+- **Given** I have placed an order and the order cut-off has passed *(amended by C4.3)*
+- **When** I view it in history or detail
 - **Then** I see no customer edit, line-cancel, or whole-order cancel action
 - **And** I am directed to contact the company if I need to request a change
 
@@ -837,6 +852,26 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 - **Given** I view a placed order that I need to change, including an individual branch order placed through C-05
 - **Then** its order reference, the company's phone number, and the company's email address appear together
 - **And** I am told to quote the reference when contacting the company
+
+**AC-SS007-C:** *(C4.3, settled 26 Sep 2026)*
+- **Given** I placed an order at 10:12 and the cut-off is 4pm
+- **When** I open it before 4pm
+- **Then** it reads "Pending" and "You can change this until 4pm today", with Edit and Cancel order
+- **When** I choose Edit, change a quantity and choose Save changes
+- **Then** the order stays Pending with the change, without placing it again
+
+**AC-SS007-D:** *(C4.3)*
+- **When** I choose Cancel order and confirm "Cancel order #12345? This can't be undone."
+- **Then** the order is Cancelled and shows as Cancelled in history
+- **And** an order placed by a colleague or my rep shows neither Edit nor Cancel order
+
+**AC-SS007-E:** *(C4.4, settled 26 Sep 2026)*
+- **Given** the cut-off is 4pm and I am editing my order at 3:55pm
+- **Then** I see "This order locks at 4pm — 5 minutes left to save"
+- **When** I save at 4:01pm
+- **Then** my changes are not saved and the order stands as accepted at 4pm
+- **And** I am told to contact the company, quoting the order reference, with its phone and email
+- **And** if I only view the Pending order at 3:55pm without choosing Edit, no warning appears
 
 **AC-SS008-A:**
 - **Given** I can view orders placed by me, colleagues, or my rep for my Locations
@@ -2336,6 +2371,14 @@ A rep may lower a line's price by up to an allowance, expressed as a percentage 
 
 **Superseded:** "outcomes of any override or free-goods request".
 
+> **Context:** settled 26 Sep 2026 (BR-NEW-009, R4.1). "Open on website" lands on R-04. Until the order cut-off, a rep can edit or cancel a Pending order they took themselves; customer-placed and other reps' orders open read-only. R-04's layout and first-iteration defaults were confirmed the same day.
+
+**AC-A1014-C:**
+- **Given** I took an Order at Carey's Pharmacy at 10:40 and the cut-off is 4pm
+- **When** I open it on the website at 2pm
+- **Then** I can change its lines, or cancel it, until 4pm
+- **And** an order Mary placed online for Hickey's Rathdrum opens read-only, even while Pending
+
 ---
 
 ### Area 1 US-006, US-007 — "Stock mentioned" on a phone Call
@@ -2537,11 +2580,28 @@ Retained: range proposals, duplicate matches and account requests, each labelled
 
 ### Head Office US-003 — order detail decisions *(superseded)*
 
-H-02 becomes a record rather than a decision screen (US-NEW-005, AC-6 and AC-7). Partial Release is replaced by routing short quantities to allocation. Whether Hold and Reject survive is open (RC-NEW-003).
+H-02 becomes a record rather than a decision screen (US-NEW-005, AC-6 and AC-7). Partial Release is replaced by routing short quantities to allocation. *Amended 26 Sep 2026 (H2.9):* Hold and Reject return as manual actions on a Pending order, before the cut-off.
 
-### Head Office US-006 — held orders *(affected)*
+### Head Office US-006 — held orders *(amended 26 Sep 2026)*
 
-Depends on RC-NEW-003. If Hold is removed, this story's trigger needs redefining or the story retires.
+> **Context:** settled 26 Sep 2026 (H2.9, resolves RC-NEW-003). Orders wait as Pending until the order cut-off (BR-NEW-009). Before then, head office may Hold or Reject an order by hand on H-02; nothing flags orders for this. Held orders are listed on H-06 until released or rejected. Short stock no longer holds an order, so US-006 S2 is superseded. Visibility, editing and H-06's layout were confirmed the same day.
+
+**AC-HO006-A:**
+- **Given** order O-10412 is Pending and the cut-off is 4pm
+- **When** I choose Hold at 2pm with the note "Credit stop - check with accounts"
+- **Then** it is not accepted at 4pm and appears on Held orders with its note and time held
+- **When** I choose Release
+- **Then** it is accepted at once, with BR-NEW-001's dispositions applied then
+
+**AC-HO006-B:**
+- **Given** an order is Pending
+- **When** I choose Reject with the reason "Account on hold"
+- **Then** the order is Rejected, and the rep and customer see "Rejected — Account on hold"
+
+**AC-HO006-C:**
+- **Given** an order has been accepted
+- **When** I open it on H-02
+- **Then** neither Hold nor Reject is offered
 
 ---
 
@@ -2562,8 +2622,8 @@ Depends on RC-NEW-003. If Hold is removed, this story's trigger needs redefining
 
 - ~~**RC-NEW-001** — What clears the "not supplied" count: opening the order, an explicit "Told them", or the next call at that location?~~ **Resolved (24 Sep 2026):** "Told them", marked per order on the list and on T-08, with Undo; the next Call logged at the Location is the backstop; a later removal re-raises the order with only the new line (US-NEW-003, EC-NEW-007).
 - ~~**RC-NEW-002** — Are the rep discount allowance and the free-of-charge cap one figure for everyone, set per rep, or per category?~~ **Resolved at UX level:** a manager groups eligible products into a commercial policy profile with rules such as 10% rep discount and X FOC units per rep per month.
-- **RC-NEW-003** — Do Hold and Reject survive on H-02 with no flag driving them?
-- **RC-NEW-004** — Do orders appear on H-01 at all, e.g. as a read-only feed, or only via search and the customer record?
+- ~~**RC-NEW-003** — Do Hold and Reject survive on H-02 with no flag driving them?~~ **Resolved 26 Sep 2026 (H2.9):** yes, by hand, before the cut-off; held orders on H-06.
+- ~~**RC-NEW-004** — Do orders appear on H-01 at all, e.g. as a read-only feed, or only via search and the customer record?~~ **Resolved 26 Sep 2026 (H1.8):** no feed; a secondary "View orders" link on the Worklist opens H-31 Order list.
 - ~~**RC-NEW-005** — Does the quantity popover dismiss on add, or advance to the next not added Low item?~~ **Resolved (24 Sep 2026):** it always dismisses on add, wherever it was opened.
 - **RC-NEW-006** — Does the spend-threshold discount apply to the final order total (assumed) or the pre-discount total?
 - ~~**RC-NEW-007** — What does the Low tab show on an order that doesn't follow a stock check (a phone order, say)?~~ **Resolved (24 Sep 2026):** a phone Call now has "Stock mentioned" (Area 1 US-006/US-007). An order with no Call carries the gaps (not added, CAN'T ADD) from the Location's most recent Call, minus products ordered since, dated, with no age limit (US-NEW-002 AC-8–12).

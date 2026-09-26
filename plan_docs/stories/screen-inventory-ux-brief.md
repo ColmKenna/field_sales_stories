@@ -256,6 +256,7 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 ### R-04 · Order & call correction
 - **Purpose:** edit a pending order or correct a synced call, online.
 - **Note:** reached from the tablet's "Open on website" link. The corrections-versus-follow-up rule applies here as on the tablet.
+- **Pending orders (BR-NEW-009, 26 Sep 2026):** an order is Pending until the next order cut-off, then accepted automatically; the rep can edit or cancel it here until then, **only if they took it themselves** (R4.1). Customer-placed and other reps' orders open read-only.
 - **Stories:** Area 1 US-014 (link target); open item in area 1 clarifications.
 
 *(The multi-branch grid, M-11, is also used by reps on the laptop.)*
@@ -380,6 +381,7 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 ### H-06 · Held orders
 - **Purpose:** make sure nothing parked is forgotten.
 - **Must show:** hold note, days held, short products, a link into allocation.
+- **Holds are manual (H2.9, 26 Sep 2026):** head office may Hold or Reject a Pending order on H-02 before the order cut-off; held orders are listed here until released or rejected.
 - **Stories:** Head Office US-006.
 
 ### ~~H-07 · Customer user account approval~~ — replaced by M-17 (26 Sep 2026)
@@ -498,6 +500,11 @@ The rep's planning and correction surface. Everything here is deliberately *not*
 - **Purpose:** one place for locations missing a profile, a rep, a main contact or a confirmed position — fixable inline, filterable by gap type.
 - **Stories:** Customer Directory US-008.
 
+### H-31 · Order list *(added in session, 26 Sep 2026)*
+- **Purpose:** view orders when head office wants to, without putting them on the Worklist (H1.8).
+- **Reached from:** a secondary "View orders >" link on H-01; each row opens H-02.
+- **Stories:** Head Office US-001, US-002 (read-only remainder); BR-NEW-009 (Pending, Held, Accepted, Rejected states).
+
 ---
 
 ## 7. Customer self-service (C) — web and app, online
@@ -520,6 +527,7 @@ Untrained, infrequent users. **There is no registration** — accounts are creat
 
 ### C-04 · Order entry (single location)
 - Their price only — no tier name, no list price, no breakdown. Break prompts and the offer summary **are** shown.
+- A placed order is Pending until the order cut-off; the customer can Edit or Cancel their own order until then ("You can change this until 4pm"), and it is read-only after (C4.1–C4.3). Close to the cut-off the page warns, but only while the customer is editing; a save after it is refused and the accepted order stands (C4.4).
 - **Stories:** Self-service US-005.
 
 ### C-05 · Multi-branch grid
@@ -530,7 +538,7 @@ Untrained, infrequent users. **There is no registration** — accounts are creat
 - Every order for their locations — theirs, colleagues', and their rep's — with despatch status and outstanding quantities.
 - A chain submission is one expandable history entry containing its separate branch orders, each with its own status and reference (C6.1).
 - Filtering to one branch shows its chain-created orders as ordinary chronological rows, without the expandable chain wrapper (C6.2).
-- **All placed orders are read-only to the customer.** A change request goes to the company; no self-service edit or cancel controls appear (C4.1).
+- **Accepted orders are read-only to the customer.** Before the order cut-off, the customer can edit or cancel their own Pending order (C4.3, BR-NEW-009); after it, a change request goes to the company and no edit or cancel controls appear (C4.1).
 - **Stories:** Self-service US-007, US-008.
 
 ### C-07 · Order detail & repeat

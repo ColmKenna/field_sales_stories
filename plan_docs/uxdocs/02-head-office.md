@@ -1,4 +1,4 @@
-# 02 — Head office (H-01, H-02, H-03, H-10, H-16)
+# 02 — Head office (H-01, H-02, H-03, H-06, H-10, H-16)
 
 **Device assumptions:** laptop, online, trained daily user, high volume, keyboard-driven where possible.
 **Consequence carried through every frame:** density is a feature here, not a risk. These people clear a queue.
@@ -57,7 +57,12 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 | Duplicate match | Quinn's, Rathdrum (new)     | matches Quinn's Centra,     | 2d 1h  > |
 |                 |                             | last ordered 14 Mar 2026    |          |
 +---------------------------------------------------------------------------------------+
+| 2 orders on hold (H-06)                                                            >  |
+|                                                                        View orders >  |
++---------------------------------------------------------------------------------------+
 ```
+
+*26 Sep 2026 (H2.9, confirmed):* a line under the items counts orders on hold and opens H-06, so held orders are seen daily. Orders themselves stay off the Worklist (H1.6).
 
 **Empty state** — good news, no action (§2.10):
 
@@ -76,9 +81,13 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 > **DECISION H1.6 — orders leave the worklist entirely.**
 > Price Override and Free of Charge were the only flags where a person had a real decision; H-02 forbids editing lines, so for every other flag the only choices were accept, hold or reject a whole order, and "this shop is new" argues for none of them. Moving both limits to capture turns head office from a *gatekeeper* into the owner of *guardrails*: out-of-policy requests can't be raised, so nothing in-policy needs reviewing. The failure avoided is **alarm fatigue** — ten flag types feeding a human queue teaches the operator that flags don't mean much.
+> *Amended 26 Sep 2026 (BR-NEW-009):* orders still never pass through a person, but they are accepted at the next **order cut-off**, not on receipt. Until then an order is Pending and the rep can edit it on R-04.
 
 > **DECISION H1.7 — Unavailable Line auto-resolves rather than stopping.**
 > Stopping achieves nothing: the line can't be supplied and can't be removed by hand. Removing it automatically changes the order total after the rep quoted it, so the rep is prompted (T-02, T2.5) — for most shops the rep is the only channel to the customer.
+
+> **DECISION H1.8 — no orders feed on the Worklist, but a secondary "View orders" link. Settled 26 Sep 2026.**
+> The Worklist stays a list of things that need a decision (H1.6), so orders are not listed on it. A quiet **View orders >** link sits below the items, never the primary thing on the screen, and opens **H-31 Order list** (added in session; to be drafted with the head office batch). Orders are still also reached from search, the customer record and allocation. Resolves Q6 / RC-NEW-004. **Rejected:** a "Today's orders" count on the Worklist; no way to view orders from it.
 
 > **SUPERSEDED — H1.2 and H1.5, "Accept all routine".** There is no routine/non-routine split when no order needs a decision. H1.3 (flags as plain sentences) and H1.4 (rep name shown) move to H-02, where annotations are now read.
 
@@ -127,6 +136,20 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 > **DECISION H2.8 — override lines show their working.**
 > The rep's discount stacks on smaller promotions (01, T7.9), so the price is a calculation, not a comparison. Offer price, rep discount and reason sit on one line, so anyone querying it later can see how it was reached and that it was inside policy.
 
+> **DECISION H2.9 — Hold and Reject return, by hand, before the cut-off. Settled 26 Sep 2026.**
+> Orders now wait as Pending until the order cut-off (BR-NEW-009), which gives head office a window to step in. While an order is Pending, H-02 offers **Hold** and **Reject**; nothing flags an order for them, so they are a person's deliberate choice (a credit stop, a suspected mistake). **Hold** keeps the order from being accepted at the cut-off until someone releases or rejects it; held orders are listed on H-06. **Reject** ends the order with a reason. Once an order is accepted, neither is offered. This resolves RC-NEW-003 and amends H2.6 (H-02 still never accepts or partly releases). **Rejected:** removing both and retiring H-06; Reject only.
+> *Confirmed 26 Sep 2026:* Hold requires a note, which stays internal; the rep and customer see "On hold — we'll be in touch". Reject requires a reason, which the rep and customer see ("Rejected — Account on hold", as in Area 1 US-014 S4). A held order can't be edited by the rep or customer. **Release** accepts it at once, applying BR-NEW-001's dispositions then. Under BR-NEW-006, a hold or rejection concerns the order itself, never a rule that changed after it was captured.
+
+```
+  Pending order, before the cut-off
+  | O-10412   Carey's Pharmacy, Arklow        Pending - accepted at 4pm unless held      |
+  |                                                          [ Hold... ]  [ Reject... ]  |
+
+  Hold, inline
+  | Hold note (required, internal)  [ Credit stop - check with accounts   ]              |
+  |                                                    [ Cancel ]   [ Hold order ]       |
+```
+
 ---
 
 ## H-03 · Despatch recording
@@ -155,6 +178,36 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 
 > **DECISION H3.2 — cumulative history stacks in its own column rather than expanding.**
 > Two or three despatches per line is normal; hiding them behind a chevron costs a click on the exact information needed to judge the number being typed beside it. *Proximity.*
+
+---
+
+## H-06 · Held orders
+
+> Started 26 Sep 2026 from H2.9. Frame and details are first-iteration defaults from the brief and Head Office US-006, confirmed the same day.
+
+**Job:** make sure nothing parked is forgotten.
+
+**From the source:** each held order with its hold note, days held and any short products, with a link into allocation; an order whose Location closes while held is flagged for a Reject or Release decision (Head Office US-006). Holds are now manual only (H2.9); short stock no longer holds an order (BR-NEW-001), so US-006 S2's "allocation releases it" no longer applies.
+
+```
++---------------------------------------------------------------------------------------+
+| Held orders (2)                                                                        |
++---------------------------------------------------------------------------------------+
+| ORDER     | LOCATION                  | HOLD NOTE                       | HELD   |        |
++---------------------------------------------------------------------------------------+
+| O-10412   | Carey's Pharmacy, Arklow  | Credit stop - check accounts    | 2d 3h  |      > |
+|           |                           | 1 short product - Allocate >    |        |        |
+| O-10433   | Byrne's, Aughrim          | Suspected duplicate of O-10431  | 5h     |      > |
+|           | (!) Location closed       |                                 |        |        |
++---------------------------------------------------------------------------------------+
+|                                   Each row: [ Reject... ]  [ Release ]                 |
++---------------------------------------------------------------------------------------+
+
+  Empty
+  | No orders on hold.                                                                    |
+```
+
+> *Confirmed 26 Sep 2026:* oldest hold first; each row offers **Release** (accepts it now, H2.9) and **Reject…** (reason required); a Location that closes while an order is held shows "(!) Location closed" on the row; H-01's Worklist shows a count "2 orders on hold >" linking here, so held orders are seen daily without returning orders to the Worklist.
 
 ---
 
@@ -281,8 +334,8 @@ Two business rules, enforced at capture on the tablet, are what empty Divert. Ne
 ## Open questions from this file
 
 1. ~~Large orders now ship with no human glance.~~ **Resolved.** Large stays Annotate. Slips are caught at capture: T-07's Review screen marks quantities that are out of pattern for the location (01, T7.11).
-2. **Do orders appear on H-01 at all** — e.g. a read-only "today's orders" feed — or only via search and the customer record?
-3. **Hold and Reject** — do they survive with no flag driving them? (Credit stops would be the obvious case, but credit is external per brief §9.)
+2. ~~**Do orders appear on H-01 at all** — e.g. a read-only "today's orders" feed — or only via search and the customer record?~~ **Resolved 26 Sep 2026 (H1.8):** no feed; a secondary "View orders" link opens H-31 Order list.
+3. ~~**Hold and Reject** — do they survive with no flag driving them?~~ **Resolved 26 Sep 2026 (H2.9):** both return, by hand, before the cut-off; held orders are listed on H-06.
 4. ~~**Rep discount allowance and FOC cap granularity and accounting.**~~ **Resolved at UX level:** a manager groups eligible products into a commercial policy profile with rules such as a 10% rep discount and X FOC units per rep per month (01, T7.9–T7.10). Products outside a policy do not expose those actions. An FOC item is an ordinary order line at €0.00, with the same stock and fulfilment lifecycle as any other line; its quantity counts against the monthly allowance while the line exists and is released by normal line removal. The entity name and rule model are provisional and must be reconciled with the catalogue's existing Product Profile classification. The discount allowance stacks on promotions no larger than it; a larger promotion stops stacking, but the rep can still reach the allowance off the tier or break price if that is lower; lines in multi-buys, bundles and mix-and-match never take a rep discount; spend thresholds qualify on prices before rep discounts. Only promotions count as an "offer"; tier and quantity-break prices are the base the allowance applies to. The applicable rules, membership and current monthly FOC balance must be in the tablet snapshot (brief §11).
 5. ~~**H-10** — what happens to a draft allocation when the incoming delivery changes?~~ **Resolved:** preserve and flag the draft; block release only when over-allocated; explicit Re-propose lets the manager choose usable On Hand/Incoming pools, then replaces the whole draft across waiting orders.
 6. ~~**H-16** — does "Leave them in the archived branch" need its own second confirmation?~~ **Resolved — no.** Repeat the exact consequence immediately above the single category-name confirmation.

@@ -1,4 +1,4 @@
-# 03 — Rep website (R-01, R-02, R-03)
+# 03 — Rep website (R-01, R-02, R-03, R-04)
 
 **Device assumptions:** laptop, online, same person as the tablet user but in a different posture — sitting down, planning, once or twice a week.
 **Consequence:** everything here is deliberately *not* on the tablet. If a frame below would work on a tablet, it's probably in the wrong file.
@@ -255,6 +255,44 @@
 
 ---
 
+## R-04 · Order & call correction
+
+> Started 26 Sep 2026. Reached from the tablet's "Open on website" on a sent item (T-08, Area 1 US-014).
+
+**Job:** fix a mistake after it has left the tablet: edit an order the rep took while it is still Pending, or correct a synced Call.
+
+**From the source:** after sync the tablet shows Calls and Orders read-only, with "Open on website" (Area 1 US-014). A correction changes a value already in a saved Call (a count, the Channel, a Low mark, note text) or removes a line; additions go on a Follow-up Call (Area 1 glossary, "Corrections constrained by the interface"). Orders are Pending until the order cut-off, then accepted automatically (BR-NEW-009).
+
+> **DECISION R4.1 — a rep edits only Pending orders they took themselves. Settled 26 Sep 2026.**
+> Each person changes only their own orders, as the customer does (C4.3). A customer-placed order, or another rep's, opens read-only here even while Pending; a change the customer phones in goes back to the customer, or through the company. **Rejected:** the rep also editing customer-placed orders at their Locations (two people editing one Pending order).
+
+> *Confirmed 26 Sep 2026 (first-iteration defaults from the stories):*
+> 1. **Pending order:** the same order lines as T-07 (§2.4 order line), with "You can change this until 4pm" and Save changes / Cancel order, the 15-minute warning once editing and the refused save after the cut-off, exactly as for the customer (C4.3–C4.4). Allowance and FOC limits are enforced as on the tablet (BR-NEW-002, BR-NEW-003).
+> 2. **Accepted order:** read-only with its live status, like T-08 without the "as of sync" wording, since the website is live.
+> 3. **Synced Call:** values editable and lines removable; where "Add" would be, **Record a follow-up call** explains that follow-up calls are recorded on the tablet. Each correction is saved with who changed it and when.
+> 4. The tablet shows the corrected version at its next sync.
+
+```
++------------------------------------------------------------------------------------------+
+| < Sent items          Order - Carey's Pharmacy, Arklow          Pending                  |
+|                       Captured 26 Sep 10:40 - you can change this until 4pm today        |
++------------------------------------------------------------------------------------------+
+| Hand Cream 75ml                        [ - ]  48  [ + ]    EUR 3.42  Rep's price         |
+| SPF30 Sun Lotion 200ml                 [ - ]  24  [ + ]    EUR 10.08 24+ price           |
+| ...                                                                                      |
++------------------------------------------------------------------------------------------+
+| 18 lines   EUR 2,924.00                            [ Cancel order ]   [ Save changes ]   |
++------------------------------------------------------------------------------------------+
+
+  Synced call
+  | Call 26 Sep - Quinn's Centra - Stock check                                             |
+  |   SPF30 Sun Lotion 200ml   counted [ 12 ]  [x] Low                     [ Remove ]      |
+  |   Anything forgotten? Record a follow-up call on the tablet.                           |
+  |                                                           [ Save correction ]          |
+```
+
+---
+
 ## Open questions from this file
 
 1. ~~**R-01** — absence days blocked or droppable-with-warning?~~ **Resolved — blocked by the Visit Planning source stories.**
@@ -263,4 +301,4 @@
 6. ~~**R-01** — generic Due Reason indicator or structured type?~~ **Resolved — manager/admin-maintained structured Reason Type plus free-text explanation; manager/admin chooses icon and colour from a controlled set.**
 4. ~~**R-02** — does "apply to all" respect the two sections separately, or all seven at once?~~ **Resolved — a bulk action opens a dedicated review page with all candidates grouped by section, Select all and individual inclusion/exclusion; completion returns to the digest.**
 5. ~~**R-02** — what downstream business rule runs after a visit is marked Missed?~~ **Resolved — close and record only; any replacement one-off visit is created manually by a rep or manager.**
-6. **R-04 (not drawn)** — the corrections screen is defined in principle only; it needs the corrections-vs-follow-up rule settled before it can be sketched.
+6. ~~**R-04 (not drawn)**~~ **Resolved 26 Sep 2026 — first-pass settled (R4.1 and confirmed defaults).** Original note: the corrections screen is defined in principle only; it needs the corrections-vs-follow-up rule settled before it can be sketched.
