@@ -3,6 +3,7 @@
 **Sources** — the 14 area story documents in [plan_docs/stories/](../stories/) (145 stories, including the UX amendments folded into them) and the UX design set in [plan_docs/uxdocs/](../uxdocs/) (00–06 and the handover).
 **Generated** — 28 September 2026.
 **Provenance** — *content* (what to build, acceptance criteria, examples) comes from the stories and UX documents. *Ownership* (who builds each task, how it is tested, and in what order) was **classified in this plan** from those documents alone: no delegation-triage report was supplied. Every tier therefore carries `(inferred)`, and dimensions that couldn't be scored were scored High and reported below.
+**Picking this up?** Read [HANDOVER.md](HANDOVER.md) first: current state, what to do next, how to execute a task, and the rules for editing the plan.
 **Location** — the plan lives in `plan_docs/iterations/`, one folder per iteration, as requested. (The planner's default would have been `docs/plans/<source-slug>/`.) Nothing else in the repository was written.
 
 ## How to read this plan

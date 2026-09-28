@@ -21,7 +21,7 @@ Also carried here, with no story: head office assigning Ranges to a chain direct
 
 **Ownership source** — classified in this plan from the stories alone; every tier is `(inferred)`.
 
-**Spec sources** — [master-branch-ordering.md](../../stories/master-branch-ordering.md) (US-001–US-004, glossary, Requires Clarification), [head-office-order-processing.md](../../stories/head-office-order-processing.md) (US-005), [rep-at-a-location-tablet.md](../../stories/rep-at-a-location-tablet.md) (US-023), [04-user-stories-amendments.md](../../uxdocs/04-user-stories-amendments.md) (BR-NEW-008), [01-tablet-day.md](../../uxdocs/01-tablet-day.md) (T-11 T11.1; T-12 T12.2; T-07 T7.14–T7.18), [02-head-office.md](../../uxdocs/02-head-office.md) (H-01 H1.1; H-04 H4.1–H4.4 — draft, MI-32; H-25).
+**Spec sources** — [master-branch-ordering.md](../../stories/master-branch-ordering.md) (US-001–US-004, glossary, Requires Clarification), [head-office-order-processing.md](../../stories/head-office-order-processing.md) (US-005), [rep-at-a-location-tablet.md](../../stories/rep-at-a-location-tablet.md) (US-023), [04-user-stories-amendments.md](../../uxdocs/04-user-stories-amendments.md) (BR-NEW-008), [01-tablet-day.md](../../uxdocs/01-tablet-day.md) (T-11 T11.1; T-12 T12.2; T-07 T7.14–T7.18), [02-head-office.md](../../uxdocs/02-head-office.md) (H-01 H1.1; H-04 H4.1–H4.4 — draft, MI-32; H-26 H26.3 — draft).
 
 ---
 
@@ -32,7 +32,7 @@ Also carried here, with no story: head office assigning Ranges to a chain direct
 **Produces** — a scenario list: names plus one-line intent, no code
 
 Questions to answer while writing it:
-- MI-17: how does head office assign Ranges to a Master Location — on H-25 (the customer record), on H-18 (the Range), or both? Is it the same mechanism as a rep's assigned Ranges (T-9.8.1)?
+- MI-17: how does head office assign Ranges to a Master Location — on H-26, the Master Location's record (drafting call H26.3 puts an Agreed ranges section there), on H-18 (the Range), or both? Confirm H26.3 or replace it. Is it the same mechanism as a rep's assigned Ranges (T-9.8.1)?
 - Only Active Ranges can be assigned (T12.2's rule for proposals); what happens to an assigned Range that is archived (MI-18)?
 - Per-branch variations: every branch gets all of the chain's Ranges (MI-30 — still open)?
 - Assignment history: who assigned which Range and when?
@@ -54,7 +54,7 @@ Questions to answer while writing it:
 > - {{NEEDS ACCEPTANCE CRITERIA}} for head office assigning and removing a chain's Ranges directly (MI-17)
 
 **Slice** — On a chain's Master Location record, head office assigns and removes catalogue Ranges as the chain's Agreed Ranges, with who and when recorded, and those assignments are what every later chain screen reads.
-**Spec source** — BR-NEW-008 rules 0, 1, 5; Master & Branch US-001 S5, S6 and amendment; Requires Clarification 2, 6, 8; uxdocs 02 H-25 (customer record)
+**Spec source** — BR-NEW-008 rules 0, 1, 5; Master & Branch US-001 S5, S6 and amendment; Requires Clarification 2, 6, 8; uxdocs 02 H-26 (H26.3 — Agreed ranges section on a master's Location record, a draft)
 **Depends on** — T-9.8.1, T-9.1.1, T-12.2.1
 **Pattern to follow** — T-9.8.1 (assigning Ranges)
 **Ownership** — Impl: Agent-Assisted | Test: Human-Led | Complexity: M | Confidence: L
@@ -84,7 +84,7 @@ Context:
   and those assignments are what every later chain screen reads.
 - Specs: plan_docs/uxdocs/04-user-stories-amendments.md BR-NEW-008;
   plan_docs/stories/master-branch-ordering.md US-001 S5, S6 and Requires
-  Clarification 2, 6, 8; plan_docs/uxdocs/02-head-office.md H-25. The
+  Clarification 2, 6, 8; plan_docs/uxdocs/02-head-office.md H-26 (H26.3). The
   acceptance criteria for assignment itself are agreed in T-23.1.1-S
   (MI-17); do not start until they exist.
 - Stack: {{STACK}}. Code locations: {{PLACEHOLDER}} — rep Range assignment
