@@ -9,6 +9,8 @@
 
 ```mermaid
 flowchart TD
+    I[I-03 Tablet entry] --> A[T-01 Sync]
+    I -->|Returning within 24 hours| B[T-02 Home]
     A[T-01 Sync] --> B[T-02 Home]
     B --> D[T-04 Search]
     D --> C[T-05 Location]
@@ -215,6 +217,8 @@ Shown expanded. Its position as the first collapsed section was confirmed 26 Sep
   |                    [  Sync now  ]                             |
 ```
 
+**Sign-in entry and recovery:** [07-access-and-sign-in.md](07-access-and-sign-in.md) I-03 draws first entry, the 24-hour offline return and the connected sign-in reached from the expired state above. When the rep signs in from a Sync they already started, that same Sync resumes automatically. I-04 draws the warning when they choose Sign out with Unsent work. The rep's captured work remains on the tablet across automatic logout.
+
 > **DECISION T1.1 — Needs Attention is first and is the only section with per-item buttons.** *(confirmed 24 Sep 2026)*
 > Ready to Send and In Progress need no decision from the rep; Needs Attention needs two. Putting the only actionable buttons in the only actionable section stops the screen reading as a wall of controls.
 > *24 Sep 2026:* work is **judged as captured** (BR-NEW-006). A reassignment, archive or other rule change after capture never rejects it, so Needs Attention holds only technical faults (an incomplete or corrupt upload, a duplicate) and should be rare.
@@ -226,6 +230,7 @@ Shown expanded. Its position as the first collapsed section was confirmed 26 Sep
 > The brief describes sync as deliberate. An automatic background sync would make the counts on Home change while the rep isn't looking, which undermines the entire "you can see what hasn't gone" contract. Notifications nudge; the rep presses the button.
 > *Confirmed 24 Sep 2026:* manual only, in both directions. When signal returns and there is unsent work, a gentle reminder with Sync now appears, at most once an hour (Area 1 US-002 Scenario 2). **Rejected:** automatic upload with manual download; automatic both ways.
 > *Exception, 26 Sep 2026 (C1.5):* customer requests (a new invitation, see `06-customer.md` C1.1–C1.6) are delivered in the background whenever the tablet has signal, and the rep's "Send new invitation" goes back out the same way (C1.7). They appear only in their own Home section, so the exception strip and unsent-work counts still change only on a manual sync.
+> *Authentication continuation, 28 Sep 2026:* if the rep pressed Sync and had to sign in again, completing sign-in resumes **that** Sync automatically (I3.2). A connection returning by itself still does not start Sync.
 
 ---
 

@@ -1,7 +1,7 @@
 # Handover — implementation plan
 
 **For:** any agent or person picking up this work: planning, settling open questions, or implementing tasks.
-**State as of:** 28 September 2026, commit `47ca3e6` (plus this note and one correction to T-23.1.1).
+**State as of:** 28 September 2026. The plan incorporates staff and tablet sign-in; these revisions have not been committed.
 **Read first:** [00-index.md](00-index.md). This note says how to work with the plan; the index says what is in it.
 
 ---
@@ -9,10 +9,10 @@
 ## 1. Where things stand
 
 - **Planning is complete; nothing is built.** There is no application code, no stack, and no test framework in this repository. No task has started and no scenario list has been agreed.
-- **The plan:** 10 iterations → 29 epics → 220 tasks, covering all 145 stories in `plan_docs/stories/`. Each iteration is a folder here; each epic is a file `NN-slug.md`.
+- **The plan:** 10 iterations → 29 epics → 224 tasks, covering all 150 stories in `plan_docs/stories/`. Each iteration is a folder here; each epic is a file `NN-slug.md`.
 - **Its sources**, which win over the plan wherever they disagree:
-  - `plan_docs/stories/` — 14 area story documents, already amended from the UX sessions.
-  - `plan_docs/uxdocs/` — screen designs (00–06), the amendments record (`04-user-stories-amendments.md`, which holds the BR-NEW / RC-NEW / EC-NEW items), and the UX handover (`handover.md`).
+  - `plan_docs/stories/` — 14 original area story documents plus `staff-and-tablet-sign-in.md`, already amended from the UX sessions.
+  - `plan_docs/uxdocs/` — screen designs (00–07), including `07-access-and-sign-in.md`, the amendments record (`04-user-stories-amendments.md`, which holds the BR-NEW / RC-NEW / EC-NEW items), and the UX handover (`handover.md`).
 - **How it was made:** the plan was generated with the `story-implementation-planner` skill. No delegation-triage report existed, so every ownership tier was classified from the stories alone and is marked `(inferred)`.
 
 ## 2. What to do next, in order
@@ -20,12 +20,12 @@
 1. **Settle the Iteration 0 blockers**, MI-01 to MI-08 in the index's Missing Information Report:
    - the stack
    - an offline snapshot size spike
-   - identity and roles
+   - the remaining identity choices: credential and recovery method, administrator treatment, and the relationship to customer identity (MI-03); one staff sign-in across held roles and last-used permitted landing are settled
    - how released orders reach the warehouse
    - where the order cut-off is set
    - the go-live data load
    - the Eircode source
-   - confirming the 14 drafted MVP screens
+   - confirming the 14 original drafted MVP screens and reviewing the new I-01–I-05 access layouts (MI-08)
 
    These are decisions for the product owner (Colm), not for an agent to make. An agent can prepare options, but should not choose.
 2. **Replace `{{STACK}}`** once the stack is chosen. Code locations stay `{{PLACEHOLDER}}` until the code they point at exists. Fill each one in when the task it names has landed.
@@ -40,9 +40,11 @@
    | T-19.1.1 | Commercial policy setup | MI-24 |
 
    Add each as a story, or as a UX amendment in `plan_docs/stories/`, then update the task's parent-story quote.
-4. **Start Iteration 1 at T-1.1.1** and follow the critical path in the index:
+4. **Start Iteration 1 at T-1.0.1** for staff website sign-in, then T-1.0.2 for live role checks, before catalogue work. Follow the critical path in the index:
 
-   `T-1.1.1 → T-2.1.1 → T-2.3.1 → T-3.1.1 → T-4.1.1 → T-4.2.1 → T-4.2.2 → T-5.1.1 → T-4.1.2 → T-7.1.1 → T-8.2.1 → T-8.4.1`
+   `T-1.0.1 → T-1.0.2 → T-1.1.1 → T-2.1.1 → T-2.3.1 → T-3.1.1 → T-4.1.1 → T-4.2.1 → T-4.2.2 → T-5.1.1 → T-4.1.2 → T-7.1.1 → T-8.2.1 → T-8.4.1`
+
+   T-4.1.1 includes tablet sign-in and the 24-hour offline return. T-4.6.1 resumes an interrupted Sync automatically after sign-in; T-4.7.1 warns on manual sign-out with Unsent work and preserves that work through automatic logout. MI-62 records the still-open outcome when a rep account is fully disabled before reconnecting.
 
    Iteration 1's epics are groupings, not a sequence. Several MVP tasks depend on tasks in later MVP epics, and each task's `Depends on` line is authoritative.
 
@@ -70,17 +72,18 @@ Every task section opens with the same header: parent story, slice, spec source,
 
 - **Keep headers uniform.** Tools and agents read the header block mechanically, so don't reword the field labels.
 - **Model names** appear only in the index's model table.
-- **New gaps** get the next free MI number (**MI-62**). Add each one to the index's Missing Information Report under the iteration it blocks, and cite it where it is used. Mark each assumption `(inferred)` at the point of use.
+- **New gaps** get the next free MI number (**MI-63**). Add each one to the index's Missing Information Report under the iteration it blocks, and cite it where it is used. Mark each assumption `(inferred)` at the point of use.
 - **Splitting a story across epics:** keep one home epic and add a "(part)" row to the delivering epic's story table. Update the index's "Stories delivered across epics" table.
 - **Changing a tier or adding a task:** update that epic's self-verification table and the index's counts (executive summary, epic table, where-the-split-matters lists).
 - **Dependencies must point backwards** in file order within an epic. Across epics they may point forward only within Iterations 1 and 2, where the index names each case.
-- **Shared surfaces** (the index's parallel-lanes table): only one task at a time may change the snapshot contract, the price engine, acceptance at the cut-off, the order line and provenance sheet, the Order Pad, tablet Home, the M-07 Location page, or the H-01 Worklist — even across lanes.
+- **Shared surfaces** (the index's parallel-lanes table): only one task at a time may change staff identity and roles, tablet sessions and Unsent storage, the snapshot contract, the price engine, acceptance at the cut-off, the order line and provenance sheet, the Order Pad, tablet Home, the M-07 Location page, or the H-01 Worklist — even across lanes.
 
 ## 5. Things that aren't obvious
 
 - **Superseded material is deliberate.** Head Office US-001 and US-003 and Pricing US-008 are listed with no tasks, and superseded scenarios are named in each epic's story table. Don't rebuild them.
 - **Orders are never decided by a person.** They are Pending until a per-weekday cut-off, then accepted automatically (BR-NEW-009). Rep discounts and free goods are limits enforced at capture (BR-NEW-002, BR-NEW-003), not approvals. Anything that looks like an "approve order" feature is out of date.
-- **Drafted screens.** Many screens are drafts "awaiting confirmation" (MI-08 for the MVP set, MI-32 and MI-61 for the rest). A task built on one says what to do until it is confirmed.
+- **Drafted screens.** Many screens are drafts "awaiting confirmation" (MI-08 for the MVP set, including the new access layouts; MI-32 and MI-61 for the rest). A task built on one says what to do until it is confirmed.
+- **Staff and tablet login.** Staff use one sign-in for their held roles and open their last-used permitted area; a removed website role stops on the next request. Tablet work remains available offline for 24 hours after the last connected sign-in. Earlier valid work uploads at the next Sync even if a role was then restricted, with the change flagged. The new login tasks are in E1 and E4; customer login remains in E25.
 - **T-23.1.1 now points at H-26.** It was corrected after the commit: H26.3 drafts an "Agreed ranges" section on a master's Location record. MI-17 still stands, because no story defines the assignment.
 - **T-1.5.3's mention of T-3.4.1 is a note, not a dependency.** Permissions register as a usage source when T-3.4.1 lands.
 - **Epic files were written in batches.** If one reads thinner than the others, compare it against E1 or E18.
@@ -112,4 +115,4 @@ grep -h '^\*\*Ownership\*\* — Impl: Human Tight-Loop' */*.md | wc -l
 grep -l -i 'opus\|sonnet\|haiku\|gpt-\|gemini' */*.md
 ```
 
-At commit `47ca3e6` these gave 198/198, 151/151, 48/48, and no model-name matches.
+For the revised plan, these should give 202/202, 151/151, 52/52, and no model-name matches.

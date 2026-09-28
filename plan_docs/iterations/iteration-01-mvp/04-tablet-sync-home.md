@@ -1,4 +1,4 @@
-# E4 — Tablet sync and Home
+# E4 — Tablet sign-in, sync and Home
 
 **Iteration** — 1, MVP: orders from the field reach the warehouse
 **Outcome** — A rep signs in, syncs the day's data, finds any assigned shop offline, and every captured item reaches the server exactly once or waits on the tablet with a stated cause. Restricted products never reach a tablet without permission.
@@ -6,19 +6,23 @@
 
 | # | Story | Priority | Delivered here |
 |---|---|---|---|
+| 0a | Staff and Tablet Sign-in US-003 — Sign in on the tablet and return to my downloaded day | Must (Draft: MI-62) | S1–S5 (T-4.1.1; disabled-account reconnect waits on MI-62) |
+| 0b | Staff and Tablet Sign-in US-004 — Sign in again when tablet Sync requires it | Must | S1–S4 (T-4.1.3, T-4.6.1) |
+| 0c | Staff and Tablet Sign-in US-005 — Sign out of the tablet without losing saved work | Must | S1–S3 (T-4.7.1) |
 | 1 | Rep at a Location US-001 — Sync my tablet | Must | S1–S5 (S4's example reason is superseded by BR-NEW-006; the partial-rejection behaviour is kept for technical faults, MI-52) |
 | 2 | Rep at a Location US-004 — Find and open any assigned Location | Must | S1–S4 (S2's Visit Due with Due Reason arrives with E13) |
 | 3 | Rep at a Location US-017 — Resolve items in Needs Attention | Must | S1–S7 |
 | 4 | Rep at a Location US-019 — Hide Restricted Products from reps without permission | Must | S1–S4 |
 | 5 | Rep at a Location US-003 — See today as a record and what's at risk | Must | S2, S5 and the unsent count (S1, S3, S4, S6 → E13; S7a → E14; S7 → E15; S8–S16 → E8) |
 
-**Exit criterion** — On a tablet with signal, a rep signs in and syncs: finished calls and orders upload first, each exactly once and judged as captured, then the day's data downloads in full. Offline, the rep searches 500 assigned shops in under a second, opens one, and sees Home as the record of the day with the unsent count. Failures say why. Restricted groups the rep lacks never reach the device.
+**Exit criterion** — On a tablet with signal, a rep signs in and syncs: finished calls and orders upload first, each exactly once and judged as captured, then the day's data downloads in full. The rep returns to the downloaded day offline within 24 hours of connected sign-in, and saved work survives sign-out and automatic logout. An expired online sign-in prompts for sign-in and resumes the Sync the rep started. Offline, the rep searches 500 assigned shops in under a second, opens one, and sees Home as the record of the day with the unsent count. Failures say why. Restricted groups the rep lacks never reach the device. The disabled-account reconnect outcome needs MI-62 before this exit criterion is final.
 
 **Capability-class stamp** — Frontier + extended reasoning for the sync slivers (T-4.1.1, T-4.1.2); Frontier workhorse for the other tight-loop and assisted tasks and for scenario drafting. Concrete models: see [../00-index.md](../00-index.md).
 
 **Ownership source** — classified in this plan from the stories alone; every tier is `(inferred)`.
 
-**Spec sources** — [rep-at-a-location-tablet.md](../../stories/rep-at-a-location-tablet.md), [01-tablet-day.md](../../uxdocs/01-tablet-day.md) (T-01, T-02, T-04, T-05), [00-conventions-and-shared-elements.md](../../uxdocs/00-conventions-and-shared-elements.md) (§3 "As of sync", §4 Unsent work), [04-user-stories-amendments.md](../../uxdocs/04-user-stories-amendments.md) (BR-NEW-006, BR-NEW-007).
+**Spec sources** — [staff-and-tablet-sign-in.md](../../stories/staff-and-tablet-sign-in.md) (US-003–US-005), [07-access-and-sign-in.md](../../uxdocs/07-access-and-sign-in.md) (I-03, I-04), [rep-at-a-location-tablet.md](../../stories/rep-at-a-location-tablet.md), [01-tablet-day.md](../../uxdocs/01-tablet-day.md) (T-01, T-02, T-04, T-05), [00-conventions-and-shared-elements.md](../../uxdocs/00-conventions-and-shared-elements.md) (§3 "As of sync", §4 Unsent work), [04-user-stories-amendments.md](../../uxdocs/04-user-stories-amendments.md) (BR-NEW-006, BR-NEW-007).
+**Screen review** — I-03 and I-04 are layout proposals. Confirm their layouts under MI-08 before building them; the offline, recovery and sign-out behaviour comes from the stories.
 
 ---
 
@@ -33,7 +37,9 @@ Questions to answer while writing it:
 - What happens if the download is interrupted halfway: the old snapshot stays whole and in use, never a mix?
 - What proves "a snapshot download never alters Unsent items"?
 - What is the size and time budget on the target device (MI-02), and at what size does a scenario fail?
-- How long does a tablet sign-in last, and what happens when it expires offline?
+- Prove that offline return and capture work 2 hours after connected sign-in, and that Home is locked after 24 hours without signal while Unsent work stays stored (Sign-in US-003 S2, S4).
+- After a permission reduction, does previously captured work still upload while new actions disappear at the next Sync (S5; BR-NEW-006)?
+- MI-62: what happens to earlier Unsent work if the rep's entire account was disabled before reconnect? Mark that scenario undecided until the product owner chooses.
 
 ---
 
@@ -47,10 +53,11 @@ Questions to answer while writing it:
 > - With signal, Sync downloads the Morning Snapshot and Home shows "Last synced 07:42" (S1, download part)
 > - A snapshot download never alters Unsent items (edge case)
 > - No signal shows "No connection — your work is saved on this tablet" (edge case)
+> - A rep who signed in with signal 2 hours ago can reopen the downloaded day and capture offline; after 24 hours offline, Home waits for connected sign-in and saved work remains (Staff and Tablet Sign-in US-003 S2, S4)
 
 **Slice** — A rep signs in on the tablet, taps Sync and gets their assigned shops and the catalogue offline, replaced in one piece, with Home showing when they last synced.
-**Spec source** — Rep at a Location US-001 S1 (download), edge cases and non-functional notes; design decision "Deliberate Sync that always downloads"; uxdocs 01 T-01, T-02 (T1.3: no automatic sync)
-**Depends on** — T-3.1.1, T-1.2.1
+**Spec source** — Rep at a Location US-001 S1 (download), edge cases and non-functional notes; Staff and Tablet Sign-in US-003 S1–S5; uxdocs 07 I-03; design decision "Deliberate Sync that always downloads"; uxdocs 01 T-01, T-02 (T1.3: no automatic sync)
+**Depends on** — T-1.0.1, T-3.1.1, T-1.2.1
 **Pattern to follow** — novel — see design notes (first tablet slice)
 **Ownership** — Impl: Human Tight-Loop | Test: Human-Led | Complexity: C | Confidence: L
   (inferred) — carries the offline storage and snapshot spike (MI-02) and the tablet stack choice (MI-01); Blast Radius High; Edge-Case Discovery High (atomic swap, interrupted download, unsent work untouched).
@@ -73,18 +80,20 @@ Offline storage and snapshot design are the largest technical unknown in the pla
 
 Increments:
 1. Spike (MI-02): build a synthetic snapshot at the full projected size — catalogue with breadcrumbs, attributes, prices, tiers and breaks, promotions, suggested-list history, thresholds, replacements, leads, a master's branches — and measure download, storage and search time on the target tablets. Record the result and the storage choice.
-2. Tablet app shell on the chosen stack (MI-01) with rep sign-in and a session that survives offline use.
+2. Tablet app shell on the chosen stack (MI-01), using the staff identity from T-1.0.1; I-03 handles first connected sign-in, then opens T-01. A local session allows Home and capture offline for up to 24 hours after connected sign-in, without refreshing its timer by reopening the app.
 3. Snapshot contract v1: assigned Locations (town, address, main contact), non-restricted products with category breadcrumbs, base prices (today and future-dated), units and steps. Versioned from the start.
 4. Server snapshot builder per rep, using T-3.1.1's resolver for assigned Locations.
 5. Download that stages the new snapshot and swaps it in only when complete; the previous snapshot stays in use until then.
 6. Unsent work (calls, orders, schedule changes) stored separately from the snapshot.
 7. Home shows "Last synced 07:42"; with no signal Sync shows "No connection — your work is saved on this tablet".
+8. After 24 hours without a connected sign-in, keep the rep's Unsent work but require connected sign-in before Home; after a permission reduction, upload work valid when captured and remove newly forbidden actions in the next snapshot. Do not decide the disabled-account case without MI-62.
 
 Decision points:
 - Full snapshot every sync, or deltas? The stories say "always downloads"; the spike decides whether full is affordable.
 - One snapshot per rep built on demand, or pre-built each morning?
 - How does the contract version, so an older tablet app can still sync after a server release?
 - Who owns the contract? Every later tablet task changes it; name one owner (see the index's parallel lanes).
+- MI-62: when the entire rep account is disabled before reconnect, what happens to work captured while the account was active? This must be decided before the disabled-account path is built.
 
 Delegable slivers:
 - **Synthetic snapshot generator** — Write a generator that produces a snapshot at a given scale (products, locations, history depth) in the agreed contract format for the spike. Do not touch production code.
@@ -459,11 +468,135 @@ Increments:
 
 Decision points:
 - After a failed upload, does the download still run when signal allows (S2 says yes), and is that visible to the rep?
-- Does "Sign in" resume the same sync automatically afterwards?
+- Successful sign-in resumes the same Sync automatically (Sign-in US-004 S2); T-4.6.1 delivers the continuation. Does the failed upload allow a safe resume point without resending a confirmed item?
 
 Delegable slivers:
 - **Fault-injection harness** — Build a test harness that wraps the sync transport and can drop the connection after N confirmations, return an expired-session response, or refuse connection. Test-only code; do not change production sync.
 - **Failure messages** — Map each classified sync failure to the exact sentences in US-001 S2, S3 and the no-connection edge case on T-01. Do not change classification or retry logic.
+
+---
+
+### T-4.6.1-S — Test scenarios for resuming Sync after sign-in
+
+**Owner** — Human-Led
+**Gates** — T-4.6.1
+**Produces** — a scenario list: names plus one-line intent, no code
+
+Questions to answer while writing it:
+- After the rep deliberately taps Sync and the online sign-in is expired, what remains Unsent, what reads "Sign in again to send 3 items", and what is sent once after successful sign-in (Sign-in US-004 S1–S2)?
+- If sign-in fails or signal drops, does the original queue stay untouched and visible (S3)?
+- Within the 24-hour local window, can the rep capture a new Call while the online sign-in is expired (S4)?
+- Characterise T-4.1.3's message and T-4.1.2's idempotent receive before adding automatic continuation. What proves this is a resume of the rep's explicit Sync, not background Sync on signal return (T1.3)?
+
+---
+
+### T-4.6.1 — Resume an expired tablet Sync after sign-in
+
+**Parent story**
+
+> As a Field Salesperson, I want an expired sign-in to explain how to send my saved work so that I can recover without losing a Call or Order.
+>
+> Acceptance criteria:
+> - Expired sign-in at Sync uploads nothing and shows "Sign in again to send 3 items" while all 3 remain stored (US-004 S1).
+> - After successful sign-in, that Sync resumes automatically and each item is sent once as confirmed (S2).
+> - No signal or failed sign-in leaves the Unsent queue intact (S3); local capture continues within the 24-hour window (S4).
+
+**Slice** — A rep who started Sync and must sign in again returns to that Sync automatically, with captured work preserved and no duplicate upload.
+**Spec source** — Staff and Tablet Sign-in US-004 S1–S4; uxdocs 07 I-03; uxdocs 01 T-01 and T1.3; Rep at a Location US-001 S3
+**Depends on** — T-4.1.1, T-4.1.2, T-4.1.3
+**Pattern to follow** — T-4.1.3 (expired-session state), T-4.1.2 (idempotent upload)
+**Ownership** — Impl: Human Tight-Loop | Test: Human-Led | Complexity: C | Confidence: M
+  (inferred) — authentication crossing the exactly-once Sync boundary has High Blast Radius and Test Safety Net risk; the desired UX is settled but the stack is MI-01.
+
+**Provisional commit message**
+
+```
+feat(sync): resume a rep's interrupted sync after sign-in
+
+- The rep already chose to Sync, so successful reauthentication continues it
+- Unsent work remains intact across failed sign-in and retry
+```
+
+**Capability class** — Frontier + extended reasoning · effort: Anthropic high budget / OpenAI xhigh / Google high
+Reauthentication and exactly-once upload meet at a shared protocol boundary.
+
+**Work package**
+
+Increments:
+1. Characterise T-4.1.3's expired message, T-4.1.2's queue states and idempotent receive, and T1.3's no-background-Sync rule with the agreed scenario list.
+2. Carry the identity of the rep-initiated Sync through I-03 sign-in; after success continue its pending upload and download automatically, confirming each item only once.
+3. On failed sign-in or lost signal, return to T-01 with the same Unsent count and stored states; allow offline capture inside the 24-hour local window.
+4. Execute the agreed fault and retry scenarios, including a server confirmation lost before the client receives it.
+
+Decision points:
+- How is the interrupted Sync identified across the chosen tablet sign-in mechanism without creating a second Sync on every reconnection?
+- If a confirmation was lost before sign-in expired, how is the idempotent receive reused instead of marking the item Sent twice?
+
+Delegable slivers:
+- **Recovery-state display** — Implement I-03's "Sign in again to send 3 items" and the return to T-01 using the existing queue count. Do not change authentication, retry or upload logic.
+- **Retry tests** — Given the agreed T-4.6.1-S cases, test failed sign-in, connection loss and one lost server confirmation with a fault harness. Do not design new cases or change production Sync.
+
+---
+
+### T-4.7.1-S — Test scenarios for tablet sign-out with Unsent work
+
+**Owner** — Human-Led
+**Gates** — T-4.7.1
+**Produces** — a scenario list: names plus one-line intent, no code
+
+Questions to answer while writing it:
+- With 2 Calls and 1 Ready to Send Order, does Sign out name all 3 Unsent items and offer Stay signed in or Sign out (US-005 S1)?
+- After deliberate Sign out or automatic logout, can only the same rep restore those exact item states on this tablet (S2–S3)?
+- With no Unsent work, is there no warning? Does Open Sync & unsent from the warning close it and open T-01?
+- Characterise T-4.1.1's local storage before changing logout. MI-62 controls the separate fully disabled account path.
+
+---
+
+### T-4.7.1 — Warn before tablet sign-out and retain Unsent work
+
+**Parent story**
+
+> As a Field Salesperson, I want to know when work is still on my tablet before I sign out so that I can leave safely and find that work when I return.
+>
+> Acceptance criteria:
+> - With 3 Unsent items, deliberate Sign out warns with the count and offers Stay signed in or Sign out (US-005 S1).
+> - Continuing Sign out ends access but keeps those items for the same rep's next sign-in on the tablet (S2).
+> - Automatic logout keeps the same items and states for the rep's next sign-in (S3).
+
+**Slice** — A rep can sign out of the tablet after seeing the Unsent count, and either kind of logout leaves their saved work recoverable only by that rep.
+**Spec source** — Staff and Tablet Sign-in US-005 S1–S3; uxdocs 07 I-04
+**Depends on** — T-4.1.1
+**Pattern to follow** — T-4.1.1 (local Unsent storage), uxdocs 07 I-04
+**Ownership** — Impl: Human Tight-Loop | Test: Human-Led | Complexity: M | Confidence: M
+  (inferred) — logout changes access to locally retained business data, so Blast Radius and privacy risk are High even though the warning is simple.
+
+**Provisional commit message**
+
+```
+feat(tablet): warn on sign-out with unsent work
+
+- A rep sees what is waiting before leaving the tablet session
+- Manual and automatic logout keep saved work for that rep alone
+```
+
+**Capability class** — Frontier workhorse · effort: Anthropic standard budget / OpenAI high / Google high
+The UI is small, but retaining and isolating local work needs human review.
+
+**Work package**
+
+Increments:
+1. Characterise T-4.1.1's local work and session boundary before changing logout; prove a stored Call and Order survive app restart.
+2. Add I-04's warning only when Unsent work exists, with the count and the three routes: stay, Sign out, or open T-01.
+3. End local access on manual and automatic logout while retaining Unsent work under the capturing rep's identity; another Staff Member never sees it.
+4. Restore the retained work after that rep signs in again and execute the agreed T-4.7.1-S scenarios.
+
+Decision points:
+- How is local work isolated for the capturing rep on the chosen tablet platform without deleting it at logout?
+- What device-administration path handles a lost or reassigned tablet? It is outside this slice and must not silently give work to a new rep.
+
+Delegable slivers:
+- **Warning dialog** — Implement I-04 from an existing Unsent count, with named Stay signed in, Sign out and Open Sync & unsent actions. Do not change session or storage logic.
+- **Retention tests** — Given the agreed scenario list, test that manual and automatic logout preserve item identity and state for the same rep while denying another rep access. Do not alter logout or storage.
 
 ---
 
@@ -774,16 +907,16 @@ Resume trigger — `Continue T-4.5.1`
 
 | Check | Result | Evidence |
 |---|---|---|
-| Every story in this epic appears and none is dropped | Pass | A1-001 (T-4.1.1–T-4.1.3), A1-004 (T-4.2.1, T-4.2.2), A1-017 (T-4.3.1), A1-019 (T-4.4.1), A1-003 part (T-4.5.1; other scenarios in E8, E13–E15) |
-| Every task satisfies the three slice criteria | Pass | 8 of 8 |
-| Every task carries a tier with a rationale citing dimensions | Pass | 8 of 8 |
-| Unscoreable dimensions scored High, marked (inferred), reported | Pass | T-4.1.1–T-4.1.3 (MI-01, MI-02, MI-52), T-4.4.1 (MI-45) |
-| Tasks modifying existing behaviour order characterisation first | Pass | None in this epic modify earlier behaviour |
+| Every story in this epic appears and none is dropped | Pass | Sign-in US-003 (T-4.1.1, MI-62), US-004 (T-4.1.3, T-4.6.1), US-005 (T-4.7.1); A1-001 (T-4.1.1–T-4.1.3), A1-004 (T-4.2.1, T-4.2.2), A1-017 (T-4.3.1), A1-019 (T-4.4.1), A1-003 part (T-4.5.1; other scenarios in E8, E13–E15) |
+| Every task satisfies the three slice criteria | Pass | 10 of 10 |
+| Every task carries a tier with a rationale citing dimensions | Pass | 10 of 10 |
+| Unscoreable dimensions scored High, marked (inferred), reported | Pass | T-4.1.1–T-4.1.3 (MI-01, MI-02, MI-52, MI-62), T-4.4.1 (MI-45) |
+| Tasks modifying existing behaviour order characterisation first | Pass | T-4.6.1 characterises Sync and T-4.7.1 characterises local storage before changing them |
 | No Agent-Autonomous body where Blast, Taste or Test Safety Net is High | Pass | No Agent-Autonomous task in this epic |
-| No agent prompt designs tests where Oracle Ambiguity or Edge-Case Discovery is High | Pass | T-4.1.1, T-4.1.2, T-4.1.3, T-4.4.1 are Human-Led |
+| No agent prompt designs tests where Oracle Ambiguity or Edge-Case Discovery is High | Pass | T-4.1.1, T-4.1.2, T-4.1.3, T-4.4.1, T-4.6.1, T-4.7.1 are Human-Led |
 | Every Agent-Assisted body has a checkpoint with an exact resume trigger | Pass | T-4.2.1, T-4.2.2, T-4.3.1, T-4.5.1 |
-| Every Human Tight-Loop body has increments, decision points and slivers | Pass | T-4.1.1, T-4.1.2, T-4.1.3, T-4.4.1 |
-| Every scenario task precedes the task it gates | Pass | 7 `-S` sections |
+| Every Human Tight-Loop body has increments, decision points and slivers | Pass | T-4.1.1, T-4.1.2, T-4.1.3, T-4.4.1, T-4.6.1, T-4.7.1 |
+| Every scenario task precedes the task it gates | Pass | 9 `-S` sections |
 | Every agent prompt is self-contained | Pass | Each names specs, criteria, constraints, gates, out of scope |
 | No concrete model name in any task section | Pass | Classes only |
 | Every placeholder and inferred marker is reported | Pass | `{{STACK}}`, `{{PLACEHOLDER}}`, MI-01, 02, 45, 52 |

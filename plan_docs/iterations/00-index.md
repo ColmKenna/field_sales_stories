@@ -1,10 +1,10 @@
 # Field Sales Management System — Implementation Plan
 
-**Sources** — the 14 area story documents in [plan_docs/stories/](../stories/) (145 stories, including the UX amendments folded into them) and the UX design set in [plan_docs/uxdocs/](../uxdocs/) (00–06 and the handover).
+**Sources** — the 14 original area story documents plus [staff-and-tablet-sign-in.md](../stories/staff-and-tablet-sign-in.md) in [plan_docs/stories/](../stories/) (150 stories, including the UX amendments folded into them) and the UX design set in [plan_docs/uxdocs/](../uxdocs/) (00–07 and the handover).
 **Generated** — 28 September 2026.
 **Provenance** — *content* (what to build, acceptance criteria, examples) comes from the stories and UX documents. *Ownership* (who builds each task, how it is tested, and in what order) was **classified in this plan** from those documents alone: no delegation-triage report was supplied. Every tier therefore carries `(inferred)`, and dimensions that couldn't be scored were scored High and reported below.
 **Picking this up?** Read [HANDOVER.md](HANDOVER.md) first: current state, what to do next, how to execute a task, and the rules for editing the plan.
-**Location** — the plan lives in `plan_docs/iterations/`, one folder per iteration, as requested. (The planner's default would have been `docs/plans/<source-slug>/`.) Nothing else in the repository was written.
+**Location** — the plan lives in `plan_docs/iterations/`, one folder per iteration, as requested. (The planner's default would have been `docs/plans/<source-slug>/`.) The linked stories and UX designs live beside it in `plan_docs/`.
 
 ## How to read this plan
 
@@ -28,7 +28,7 @@
 
 ## Capability classes and models
 
-This is **the only place concrete model names appear**. Task sections name a capability class and an effort setting, so a provider release changes this table, not 220 sections.
+This is **the only place concrete model names appear**. Task sections name a capability class and an effort setting, so a provider release changes this table, not 224 sections.
 
 > Verified 2026-09-14 against provider documentation. Verify again before use.
 
@@ -45,24 +45,26 @@ Escalate one class at a time if results are weak. Running tests against an agree
 
 ## Executive summary
 
-**10 iterations · 29 epics · 220 tasks · 145 stories** (3 superseded stories carry no tasks). There are **198 scenario sections** (`-S`) and **5 tasks carry `{{NEEDS ACCEPTANCE CRITERIA}}`** because no story exists for part of what they build (T-7.4.2, T-9.8.1, T-19.1.1, T-23.1.1, T-26.2.1).
+**10 iterations · 29 epics · 224 tasks · 150 stories** (3 superseded stories carry no tasks). There are **202 scenario sections** (`-S`) and **5 tasks carry `{{NEEDS ACCEPTANCE CRITERIA}}`** because no story exists for part of what they build (T-7.4.2, T-9.8.1, T-19.1.1, T-23.1.1, T-26.2.1). Staff website sign-in starts Iteration 1; tablet sign-in and recovery sit with the first Sync work.
 
 | Implementation tier | Tasks | Simple | Moderate | Complex |
 |---|---|---|---|---|
-| Human Tight-Loop (5 of them ↓ downgraded from Agent-Assisted for Low confidence) | 48 | 3 | 15 | 30 |
+| Human Tight-Loop (5 of them ↓ downgraded from Agent-Assisted for Low confidence) | 52 | 3 | 17 | 32 |
 | Agent-Assisted | 151 | 31 | 110 | 10 |
 | Agent-Autonomous | 21 | 15 | 6 | 0 |
-| **Total** | **220** | **49** | **131** | **40** |
+| **Total** | **224** | **49** | **133** | **42** |
 
 | Test tier | Tasks |
 |---|---|
-| Human-Led (a person writes the scenarios) | 73 |
+| Human-Led (a person writes the scenarios) | 77 |
 | Scenario Review (an agent drafts, a person approves) | 125 |
 | Agent-Autonomous (the agent selects scenarios from the criteria) | 22 |
 
-Classification confidence: 1 High, 192 Moderate, 27 Low. The Low ones sit almost entirely on gaps in the MIR below: undecided rules, missing stories, and the stack.
+Classification confidence: 1 High, 195 Moderate, 28 Low. The Low ones sit almost entirely on gaps in the MIR below: undecided rules, missing stories, and the stack.
 
-**Where risk concentrates.** Iteration 1 carries a third of all tasks (77) and most of the system's shared machinery:
+**Where risk concentrates.** Iteration 1 carries more than a third of all tasks (81) and most of the system's shared machinery:
+- staff website sign-in and live role checks (T-1.0.1, T-1.0.2)
+- tablet sign-in, expired-Sync recovery and safe sign-out (T-4.1.1, T-4.6.1, T-4.7.1)
 - the offline snapshot and exactly-once upload (T-4.1.1, T-4.1.2)
 - the price engine (T-6.4.1)
 - acceptance at the cut-off and release to the warehouse (T-7.1.1)
@@ -84,7 +86,7 @@ Every later iteration extends at least one of these. After Iteration 1, risk sit
 
 | # | Iteration | What becomes true | Epics | Tasks | Needs |
 |---|---|---|---|---|---|
-| 1 | [MVP: orders from the field reach the warehouse](iteration-01-mvp/) | A rep works offline from a morning snapshot and takes calls, stock checks and correctly priced orders. Orders sync once, wait until the cut-off, are accepted automatically and released, and despatch comes back to the tablet. | E1–E8 | 77 | — |
+| 1 | [MVP: orders from the field reach the warehouse](iteration-01-mvp/) | Staff sign in to permitted areas; a rep works offline from a morning snapshot and takes calls, stock checks and correctly priced orders. Orders sync once, wait until the cut-off, are accepted automatically and released, and despatch comes back to the tablet. | E1–E8 | 81 | — |
 | 2 | [Catalogue lifecycle](iteration-02-catalogue-lifecycle/) | Ranges guide the pad. Products are discontinued, run out and replaced with the tablet explaining why. Categories can be restructured safely. | E9–E11 | 19 | I1 |
 | 3 | [Visit rhythm](iteration-03-visit-rhythm/) | Servicing profiles generate a rep's visits. Reps plan the week and handle the Cycle End digest. Managers see exceptions and add one-off visits, and handovers move visits on an ownership change. | E12–E14 | 27 | I1 |
 | 4 | [Team changes and location upkeep](iteration-04-team-changes/) | Absences, cover and conflicts; reassignment batches with history; closures, GPS capture and gap lists. | E15–E17 | 16 | I3 |
@@ -101,10 +103,10 @@ Status is the plan's status: every epic file is written and no task has started.
 
 | Epic | Title | File | Tasks | TL / AS / AA | Status |
 |---|---|---|---|---|---|
-| E1 | Catalogue essentials | [01-catalogue-essentials.md](iteration-01-mvp/01-catalogue-essentials.md) | 13 | 3 / 7 / 3 | Planned |
+| E1 | Staff website access and catalogue essentials | [01-catalogue-essentials.md](iteration-01-mvp/01-catalogue-essentials.md) | 15 | 5 / 7 / 3 | Planned |
 | E2 | Customers, locations and contacts | [02-customers-locations-contacts.md](iteration-01-mvp/02-customers-locations-contacts.md) | 8 | 1 / 4 / 3 | Planned |
 | E3 | Rep coverage and product permissions | [03-rep-coverage-permissions.md](iteration-01-mvp/03-rep-coverage-permissions.md) | 11 | 3 / 5 / 3 | Planned |
-| E4 | Tablet sync and Home | [04-tablet-sync-home.md](iteration-01-mvp/04-tablet-sync-home.md) | 8 | 4 / 4 / 0 | Planned |
+| E4 | Tablet sign-in, sync and Home | [04-tablet-sync-home.md](iteration-01-mvp/04-tablet-sync-home.md) | 10 | 6 / 4 / 0 | Planned |
 | E5 | Calls, stock checks and orders | [05-calls-stock-checks-orders.md](iteration-01-mvp/05-calls-stock-checks-orders.md) | 14 | 1 / 12 / 1 | Planned |
 | E6 | Customer pricing on the order line | [06-customer-pricing.md](iteration-01-mvp/06-customer-pricing.md) | 8 | 1 / 7 / 0 | Planned |
 | E7 | Order processing and fulfilment | [07-order-processing-fulfilment.md](iteration-01-mvp/07-order-processing-fulfilment.md) | 8 | 3 / 4 / 1 | Planned |
@@ -138,6 +140,10 @@ Status is the plan's status: every epic file is written and no task has started.
 **Tasks, not epics, are the unit of ordering.** Each task's `Depends on` line is authoritative. Epic and iteration order is a convenient grouping that respects those lines, with the exceptions below.
 
 **Iteration 1 is ordered across epics, not within them.** Several MVP tasks depend on tasks in later-numbered MVP epics:
+- T-1.0.1 → T-1.0.2 → T-1.1.1; staff sign-in and live role checks precede catalogue work
+- T-1.0.1 → T-4.1.1; the tablet reuses the staff identity model
+- T-4.1.1, T-4.1.2, T-4.1.3 → T-4.6.1; expired-Sync continuation follows the upload protocol
+- T-4.1.1 → T-4.7.1; sign-out retention follows local Unsent storage
 - T-1.3.2 → T-4.1.1, T-6.4.1
 - T-1.4.2 → T-7.1.1
 - T-1.6.2 → T-4.1.1
@@ -147,9 +153,10 @@ Status is the plan's status: every epic file is written and no task has started.
 
 Build Iteration 1 along its critical path, pulling other tasks in as their dependencies land:
 
-`T-1.1.1 → T-2.1.1 → T-2.3.1 → T-3.1.1 → T-4.1.1 → T-4.2.1 → T-4.2.2 → T-5.1.1 → T-4.1.2 → T-7.1.1 → T-8.2.1 → T-8.4.1`
+`T-1.0.1 → T-1.0.2 → T-1.1.1 → T-2.1.1 → T-2.3.1 → T-3.1.1 → T-4.1.1 → T-4.2.1 → T-4.2.2 → T-5.1.1 → T-4.1.2 → T-7.1.1 → T-8.2.1 → T-8.4.1`
 
 - T-1.2.1 (products) also feeds T-4.1.1.
+- T-4.6.1 and T-4.7.1 complete tablet sign-in recovery and safe sign-out after the Sync and local storage slices land; neither blocks T-4.2.1.
 - The price engine (T-6.4.1, after T-1.3.1 and T-1.4.1) runs beside the path and must land before orders need resolved prices (T-6.4.2).
 
 The epics in Iteration 1 are a way to find tasks, not a sequence.
@@ -181,7 +188,9 @@ After Iteration 4, five lanes can run side by side:
 
 | Shared surface | Tasks that change it | Rule |
 |---|---|---|
+| Staff identity and role boundary (T-1.0.1, T-1.0.2) | T-1.1.1, T-3.4.1, T-4.1.1, T-25.1.1 | Settle MI-03 first; one owner reviews role and session changes across staff and customer surfaces |
 | Snapshot contract and upload (T-4.1.1, T-4.1.2) | T-1.3.2, T-1.6.2, T-4.4.1, T-9.8.1, T-12.4.1, T-13.6.1, T-18.2.1, T-19.1.1, T-20.1.2, T-20.3.1, T-21.1.1, T-21.3.1, T-23.2.1, T-23.5.1, T-24.1.1, T-24.3.2, T-25.2.1 | One snapshot version change at a time, reviewed by T-4.1.1's owner |
+| Tablet session and Unsent storage (T-4.1.1) | T-4.6.1, T-4.7.1 | Complete one authentication or logout change at a time; keep the exact-once and no-loss scenarios passing |
 | Price engine and shared test vectors (T-6.4.1) | T-18.1.1, T-18.4.1, T-18.5.1, T-18.6.1, T-19.1.2, T-21.3.2, T-24.2.1 | Serialise; all tablet/server vectors must pass after each |
 | Acceptance at the cut-off and release (T-7.1.1) | T-8.4.1, T-10.6.1, T-21.6.1, T-28.1.1, T-28.4.1, T-29.1.1, T-29.4.1 | Serialise; lanes B and E both touch it |
 | Order line and provenance sheet (T-6.4.3) | T-18.3.1, T-19.1.2, T-19.5.1 | Serialise (lane A) |
@@ -274,14 +283,14 @@ The items marked **Iteration 0** block Iteration 1 from starting and should be s
 
 | MI | Gap | Blocks |
 |---|---|---|
-| MI-01 | **Iteration 0.** Stack not chosen; every prompt carries `{{STACK}}` | All tasks; first T-1.1.1, T-4.1.1 |
+| MI-01 | **Iteration 0.** Stack not chosen; every prompt carries `{{STACK}}` | All tasks; first T-1.0.1, T-4.1.1 |
 | MI-02 | **Iteration 0.** Offline snapshot size and storage (Rep at a Location RC 5): spike needed before the snapshot contract is fixed | T-4.1.1 and every snapshot change |
-| MI-03 | **Iteration 0.** Identity and roles: staff sign-in, manager/head office/administrator roles, customer identity | T-1.1.1, T-3.4.1, T-4.1.1, T-25.1.1 |
+| MI-03 | **Iteration 0.** Identity and roles: staff credential and recovery method, administrator treatment, customer identity relationship. One sign-in for held staff roles, last-used permitted landing, immediate website role removal and next-Sync tablet changes are settled in Sign-in US-001–US-004 | T-1.0.1, T-1.0.2, T-3.4.1, T-4.1.1, T-25.1.1 |
 | MI-04 | **Iteration 0.** How released orders reach the warehouse, and what happens on failure | T-7.1.1, T-29.4.1 |
 | MI-05 | **Iteration 0.** Where the per-weekday order cut-off is set (no screen designed) | T-7.1.1 |
 | MI-06 | **Iteration 0.** Go-live data load: customers, Locations, contacts, ranges, chains' agreements | T-2.3.1, T-23.1.1 |
 | MI-07 | **Iteration 0.** Eircode lookup source and precision | T-2.3.2 |
-| MI-08 | **Iteration 0.** 14 MVP screens are drafts awaiting confirmation (H-03, H-12–H-15, H-17, H-20–H-22, H-25–H-27, H-29, H-31) | E1, E2, E6, E7 tasks that build them |
+| MI-08 | **Iteration 0.** 14 original MVP screens are drafts awaiting confirmation (H-03, H-12–H-15, H-17, H-20–H-22, H-25–H-27, H-29, H-31); the new I-01–I-05 access layouts are also proposals for review | E1, E2, E4, E6, E7 tasks that build them |
 | MI-11 | Tax: prices assumed exclusive, handled by the external system | T-6.4.1 |
 | MI-12 | Settings: where thresholds, periods, the expected-delivery days and the Large multiplier are set, and by whom | T-5.4.1, T-6.5.1, T-7.4.1, T-8.2.1, T-21.2.1, T-26.3.1, T-28.4.1 |
 | MI-42 | Epics are inferred; the sources define areas, not epics | Plan structure |
@@ -309,7 +318,8 @@ The items marked **Iteration 0** block Iteration 1 from starting and should be s
 | MI-48 | Rounding rules for percentages, splits and allowances | T-6.4.1, T-18.1.1, T-18.4.1, T-18.5.1, T-19.1.2 |
 | MI-49 | Out-of-pattern quantity threshold | T-5.1.6 |
 | MI-50 | "Open on website" target before R-04 exists (resolved by T-13.10.1) | T-7.5.1 |
-| MI-51 | One staff website for head office and managers (inferred) | T-1.1.1 |
+| MI-51 | Whether rep, manager and head-office areas share one site or several (inferred); the user journey requires one sign-in across held roles either way | T-1.0.1, T-1.0.2 |
+| MI-62 | Disabled rep account on tablet reconnect: whether work captured before disablement uploads, remains for manager recovery, or waits for account restoration (Sign-in US-003 Draft) | T-4.1.1 and E4 exit criterion |
 | MI-52 | Rep at a Location US-001 S4's rejection example is superseded by BR-NEW-006 | T-4.1.2 |
 | MI-54 | Runner-up price on the line (Pricing US-005) versus only in the provenance sheet (UX DECISION 1.1) | T-6.4.3 |
 | MI-55 | Type-to-confirm text: "Suncare" (story) versus "ARCHIVE SUNCARE" (H-16 frame) | T-11.3.1 |
@@ -368,7 +378,7 @@ The items marked **Iteration 0** block Iteration 1 from starting and should be s
 
 ## Open assumptions
 
-- **Ownership (all 220 tasks).** Every ownership line reads `(inferred) — …`, because tiers were classified here from the stories. Revisit them if a triage report is produced.
+- **Ownership (all 224 tasks).** Every ownership line reads `(inferred) — …`, because tiers were classified here from the stories. Revisit them if a triage report is produced.
 - **T-20.4.1** — the campaign detail is reached from a campaigns list that no story defines; the list is kept to name, window and progress.
 - **Assumptions adopted from the stories, recorded where used:**
   - prospect pricing (T-21.3.2)
@@ -388,18 +398,18 @@ The items marked **Iteration 0** block Iteration 1 from starting and should be s
 
 | Check | Result | Evidence |
 |---|---|---|
-| Every story appears in an epic; none added, none dropped | Pass | All 145 story IDs in the 14 source documents appear in the epics' story tables, and no table names an ID the sources don't have. Split stories have one home epic plus "(part)" rows (table above). The 3 superseded stories are listed with no tasks. |
-| Every task satisfies the three slice criteria | Pass | 220 of 220; each epic's self-verification records it |
-| Every task carries a tier with a rationale citing dimensions | Pass | 220 `(inferred) — …` rationale lines, one per task |
-| Every unscoreable dimension was scored High, marked `(inferred)`, and reported | Pass | MI-01 to MI-61; 27 Low-confidence tasks, 5 downgraded (↓): T-2.3.2, T-7.4.2, T-13.2.2, T-18.6.1, T-28.4.1 |
+| Every story appears in an epic; none added, none dropped | Pass | All 150 story IDs in the 15 source documents appear in the epics' story tables, and no table names an ID the sources don't have. Split stories have one home epic plus "(part)" rows (table above). The 3 superseded stories are listed with no tasks. |
+| Every task satisfies the three slice criteria | Pass | 224 of 224; each epic's self-verification records it |
+| Every task carries a tier with a rationale citing dimensions | Pass | 224 `(inferred) — …` rationale lines, one per task |
+| Every unscoreable dimension was scored High, marked `(inferred)`, and reported | Pass | MI-01 to MI-62; 28 Low-confidence tasks, 5 downgraded (↓): T-2.3.2, T-7.4.2, T-13.2.2, T-18.6.1, T-28.4.1 |
 | Every Sequencing Note from a triage report is honoured | Not applicable | No triage report supplied |
 | Every task modifying existing behaviour has characterisation ordered first | Pass | Δ tasks carry characterisation as their first step or checkpoint; each epic's table lists them |
 | No Agent-Autonomous body for a High Blast Radius, Taste or Test Safety Net item | Pass | 21 Agent-Autonomous tasks. Each rationale says why the work is low-impact (read-only, a repeated reviewed pattern, or a settled small addition), and 18 state Blast Radius Low explicitly. The four built on draft screens (T-1.1.2, T-1.7.1, T-9.3.1, T-18.8.1) say to treat them as Agent-Assisted until the screen is confirmed. |
-| No agent prompt designs tests where Oracle Ambiguity or Edge-Case Discovery is High | Pass | 73 Human-Led test tasks; the 28 Agent-Assisted ones among them forbid the agent to design tests |
+| No agent prompt designs tests where Oracle Ambiguity or Edge-Case Discovery is High | Pass | 77 Human-Led test tasks; the 28 Agent-Assisted ones among them forbid the agent to design tests |
 | Every Agent-Assisted body has a checkpoint with an exact resume trigger | Pass | 151 Agent-Assisted tasks, 151 `Resume trigger — Continue T-<id>` lines |
-| Every Human Tight-Loop body has increments, decision points and delegable slivers | Pass | 48 tight-loop tasks, 48 work packages |
-| Every `T-<id>-S` scenario task precedes the implementation it gates | Pass | 198 `-S` sections for the 198 Human-Led or Scenario Review tasks; each precedes its task (checked by line order; E20 was reordered so T-20.1.3 follows T-20.2.2) |
+| Every Human Tight-Loop body has increments, decision points and delegable slivers | Pass | 52 tight-loop tasks, 52 work packages |
+| Every `T-<id>-S` scenario task precedes the implementation it gates | Pass | 202 `-S` sections for the 202 Human-Led or Scenario Review tasks; each precedes its task (checked by line order; E20 was reordered so T-20.1.3 follows T-20.2.2) |
 | Every agent prompt is self-contained | Pass | Each names its spec paths, criteria, constraints, gates, steps, test expectations, definition of done and out-of-scope |
 | No concrete model name appears in any task section | Pass | 0 matches for model names across all 29 epic files; names appear only in this index's model table |
 | Every placeholder and `(inferred)` marker appears in the MIR | Pass | `{{STACK}}` (MI-01), `{{PLACEHOLDER}}` (MI-01, no code yet), `{{NEEDS ACCEPTANCE CRITERIA}}` (MI-09, MI-17, MI-24), T-20.4.1's campaign list (open assumptions) |
-| Nothing was written outside the plan directory | Pass (user-directed location) | Only `plan_docs/iterations/` was written, as requested, instead of the default `docs/plans/<source-slug>/` |
+| Plan lives in the requested directory | Pass | The implementation plan is in `plan_docs/iterations/`; it references the sign-in stories and UX designs in their existing `plan_docs/` directories. |

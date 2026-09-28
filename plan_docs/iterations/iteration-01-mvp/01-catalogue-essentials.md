@@ -1,11 +1,13 @@
-# E1 — Catalogue essentials
+# E1 — Staff website access and catalogue essentials
 
 **Iteration** — 1, MVP: orders from the field reach the warehouse
-**Outcome** — Head office can list a product from the minimum record in a findable category tree, give it dated base prices, a unit, classification and a restriction group, and find it again by search.
+**Outcome** — Staff sign in once to their permitted areas before head office lists a product from the minimum record in a findable category tree, gives it dated base prices, a unit, classification and a restriction group, and finds it again by search.
 **Stories**
 
 | # | Story | Priority | Delivered here |
 |---|---|---|---|
+| 0a | Staff and Tablet Sign-in US-001 — Sign in to the staff website | Must | S1–S8 (T-1.0.1) |
+| 0b | Staff and Tablet Sign-in US-002 — Enter only staff areas allowed by my role | Must | S1–S3 (T-1.0.1, T-1.0.2) |
 | 1 | Product Management US-005 — Browse and edit the Category tree | Must | S1–S5 (the "Recategorise products?" offer in S3 arrives with E11) |
 | 2 | Product Management US-001 — Create a product with the minimum record | Must | S1–S5 except the Range tick in S1 (E9, Range Lifecycle US-003) |
 | 3 | Product Management US-002 — Set and change the Base Price | Must | S1–S5 |
@@ -14,17 +16,158 @@
 | 6 | Product Management US-004 — Maintain Profile, Attributes, Brands, supplier and Restriction Group | Should | S1–S5 |
 | 7 | Product Management US-010 — Find products | Must | S1–S3 (archived-category products arrive with E11) |
 
-**Exit criterion** — A Head Office User can create a category tree to six levels, list a product from its minimum record, add future- and past-dated base prices, set a measure unit with step and minimum, classify the product (profile, brands, supplier, restriction group, attributes), retire reference data without breaking history, and find any product by code, name, brand or supplier with its breadcrumb. A future-dated price applies on the tablet on its day.
+**Exit criterion** — A Staff Member signs in once, reaches only their held areas, and loses removed access on the next website request. A Head Office User can then create a category tree to six levels, list a product from its minimum record, add future- and past-dated base prices, set a measure unit with step and minimum, classify the product (profile, brands, supplier, restriction group, attributes), retire reference data without breaking history, and find any product by code, name, brand or supplier with its breadcrumb. A future-dated price applies on the tablet on its day.
 
 **Capability-class stamp** — Frontier + extended reasoning for T-1.1.1's hardest slivers; Frontier workhorse for Agent-Assisted tasks and scenario drafting; Fast mid-tier for Agent-Autonomous tasks. Concrete models: see the matrix in [../00-index.md](../00-index.md).
 
 **Ownership source** — classified in this plan from the stories alone; no delegation-triage report was supplied, and no code exists. Every tier below is `(inferred)`.
 
-**Spec sources** — [product-management.md](../../stories/product-management.md), [02-head-office.md](../../uxdocs/02-head-office.md) (H-12, H-13, H-15, H-17), [00-conventions-and-shared-elements.md](../../uxdocs/00-conventions-and-shared-elements.md) (§7 Archive, never delete).
+**Spec sources** — [staff-and-tablet-sign-in.md](../../stories/staff-and-tablet-sign-in.md) (US-001, US-002), [07-access-and-sign-in.md](../../uxdocs/07-access-and-sign-in.md) (I-01, I-02, I-05), [product-management.md](../../stories/product-management.md), [02-head-office.md](../../uxdocs/02-head-office.md) (H-12, H-13, H-15, H-17), [00-conventions-and-shared-elements.md](../../uxdocs/00-conventions-and-shared-elements.md) (§7 Archive, never delete).
+**Screen review** — I-01, I-02 and I-05 are layout proposals. Confirm their layouts under MI-08 before building them; the sign-in and role behaviour comes from the stories.
 
 ---
 
-### T-1.1.1 — Create and rename categories to any depth, establishing the staff website
+### T-1.0.1-S — Test scenarios for staff website sign-in and held areas
+
+**Owner** — Human-Led
+**Gates** — T-1.0.1
+**Produces** — a scenario list: names plus one-line intent, no code
+
+Questions to answer while writing it:
+- Single-role Head Office User, Sales Manager and Field Salesperson: which area opens for each (US-001 S1–S3)?
+- With two roles, does one sign-in open the last-used permitted area and allow switching without another sign-in (S4)? What happens on first use or when the last-used area is no longer held (S5–S6)?
+- What do rejected sign-in and Sign out leave accessible (S7–S8)? Test a direct link as well as navigation.
+- Which credential method and staff account recovery path were chosen under MI-03? Do not invent them in the test list.
+
+---
+
+### T-1.0.1 — Sign staff into their permitted website areas
+
+**Parent story**
+
+> As a Staff Member, I want to sign in and reach an area allowed by my role so that I can start my work without searching for the right entry point.
+>
+> Acceptance criteria:
+> - A single-role staff member opens the rep, manager or head-office area held by that role (US-001 S1–S3).
+> - A person with both manager and head-office roles signs in once, opens their last-used permitted area and can switch areas without signing in again (S4).
+> - First use or a removed last-used area leads to a permitted choice or the only remaining area (S5–S6).
+> - Rejected sign-in opens no staff area; Sign out ends the shared session (S7–S8).
+
+**Slice** — A Staff Member signs in once and reaches a permitted staff landing, with multi-role routing, rejection and sign-out demonstrable before catalogue pages exist.
+**Spec source** — Staff and Tablet Sign-in US-001 S1–S8, US-002 S1–S2; uxdocs 07 I-01, I-02
+**Depends on** — none
+**Pattern to follow** — novel — first staff identity slice
+**Ownership** — Impl: Human Tight-Loop | Test: Human-Led | Complexity: C | Confidence: L
+  (inferred) — authentication and shared role routing have High Blast Radius and Novelty; MI-01, MI-03 and MI-51 leave the stack and credential integration unscoreable, treated High.
+
+**Provisional commit message**
+
+```
+feat(auth): sign staff into permitted website areas
+
+- Staff with several roles enter once and can reach each area they hold
+- Rejected sign-in and sign-out never leave a staff area open
+```
+
+**Capability class** — Frontier + extended reasoning · effort: Anthropic high budget / OpenAI xhigh / Google high
+The first identity and area boundary is copied by every later staff page.
+
+**Work package**
+
+Increments:
+1. Record the stack, staff identity method and whether the areas share one site or several (MI-01, MI-03, MI-51); one sign-in across held roles is the required experience either way.
+2. Establish staff identities and the Field Salesperson, Sales Manager and Head Office User roles; keep the administrator-role question visible under MI-03.
+3. Make I-01 sign-in and one protected landing per area work end to end, with rejection and Sign out.
+4. Route to the last-used permitted area; on first use with several roles show I-02; allow area switching in the same session. Deny a direct link to an unheld area without showing its content.
+5. Execute the agreed Human-Led scenario list against the website boundary, including one- and two-role accounts.
+
+Decision points:
+- Which credential method and recovery route are chosen for staff (MI-03), without mixing in Customer User invitations?
+- How are the areas hosted (MI-51) while keeping one session and direct-link return across them?
+- Is administrator a separate role or a permission held by another staff role (MI-03)?
+
+Delegable slivers:
+- **Sign-in page shell** — Build the I-01 page around the chosen staff credential control, with accessible labels, a retry state and Sign out return. Do not choose the credential method or implement authorisation.
+- **Role-routing scenario fixtures** — Given the agreed T-1.0.1-S list, create test fixtures for single-role and combined-role staff and assert their landing and switch destinations. Do not change role resolution or choose a new landing rule.
+
+---
+
+### T-1.0.2-S — Test scenarios for immediate website role removal
+
+**Owner** — Human-Led
+**Gates** — T-1.0.2
+**Produces** — a scenario list: names plus one-line intent, no code
+
+Questions to answer while writing it:
+- Characterise access under T-1.0.1 before the change: permitted direct read, permitted save, and denied direct link.
+- Remove Head Office User from a signed-in manager/head-office account: does the next catalogue read and save fail without restricted data (US-002 S3)?
+- What does I-05 say for a rejected write versus a rejected page read, and which remaining area can be opened?
+- If no staff area remains, what can the person see and do after the denial?
+
+---
+
+### T-1.0.2 — Enforce a removed website role on the next request
+
+**Parent story**
+
+> As a Field Salesperson, I want the website to make my permitted area clear so that I can work without entering a head-office function by mistake.
+>
+> Acceptance criteria:
+> - A held rep area opens and an unheld head-office area does not reveal content or actions (US-002 S1–S2).
+> - Removing Head Office User during an open session makes the next catalogue read or action fail, with I-05 explaining the change (S3).
+
+**Slice** — A Staff Member whose role was removed loses that area's reads and writes on the next request while the permitted areas remain available.
+**Spec source** — Staff and Tablet Sign-in US-002 S1–S3; uxdocs 07 I-05
+**Depends on** — T-1.0.1
+**Pattern to follow** — T-1.0.1 (staff role boundary)
+**Ownership** — Impl: Human Tight-Loop | Test: Human-Led | Complexity: M | Confidence: M
+  (inferred) — authorisation has High Blast Radius despite settled UX; characterisation and human-owned denial scenarios precede the change.
+
+**Provisional commit message**
+
+```
+feat(auth): apply staff role removals to the next request
+
+- Open sessions cannot keep using a staff area after its role is removed
+- Denied reads and writes explain the change without exposing area data
+```
+
+**Capability class** — Frontier workhorse · effort: Anthropic standard budget / OpenAI high / Google high
+The behaviour is specified, but the shared authorisation boundary needs close review.
+
+**Work package**
+
+Increments:
+1. Characterise T-1.0.1's current permitted and denied reads, writes, sign-out and last-used-area routing; keep those tests passing.
+2. Recheck the current staff role on each protected request, including a direct page read and a write from an already open form.
+3. Show I-05 when access changes, with “not saved” only for a denied write; offer only remaining permitted destinations.
+4. Execute the agreed T-1.0.2-S scenarios, including removal while a session stays open.
+
+Decision points:
+- Which requests are the shared authorisation boundary across the chosen site structure (MI-51)?
+- How does the site clear or replace a no-longer-permitted last-used destination without another sign-in?
+
+Delegable slivers:
+- **Access-changed page** — Build I-05 from the agreed read/write states and supplied remaining-area list. Do not implement the role check or render restricted content behind the page.
+- **Denial tests** — Given the agreed scenarios, test direct-link and already-open-form denial after a role removal. Test only the observable response; do not change authorisation logic.
+
+---
+
+### T-1.1.1-S — Test scenarios for creating and renaming categories
+
+**Owner** — Human-Led
+**Gates** — T-1.1.1
+**Produces** — a scenario list: names plus one-line intent, no code
+
+Questions to answer while writing it:
+- Use the already agreed T-1.0.1-S and T-1.0.2-S role scenarios; which catalogue-specific access check must still be demonstrated here?
+- What must happen to breadcrumbs shown on historic orders and calls after a rename — current path, or path at capture? The story says "no order or call is changed"; confirm that means the stored record, while display uses the current path.
+- Is there a maximum depth at all, or only a design target of six?
+- Which category form state survives a rejected or expired staff session without allowing an unauthorised save?
+
+---
+
+### T-1.1.1 — Create and rename categories to any depth on the staff website
 
 **Parent story**
 
@@ -36,30 +179,30 @@
 
 **Slice** — A signed-in Head Office User creates root and nested categories to six levels and renames one, and every breadcrumb beneath reflects the new name.
 **Spec source** — Product Management US-005 S4, S5; uxdocs 02 H-15 (drafting calls H15.1–H15.3)
-**Depends on** — none
-**Pattern to follow** — novel — see design notes (first slice in an empty repository)
+**Depends on** — T-1.0.2
+**Pattern to follow** — T-1.0.1 (staff website shell), T-1.0.2 (role boundary); novel catalogue persistence
 **Ownership** — Impl: Human Tight-Loop | Test: Human-Led | Complexity: C | Confidence: L
-  (inferred) — Novelty High: first slice, and the stack, identity model and site structure are undecided (MI-01, MI-03, MI-51); Blast Radius High: sign-in, roles and persistence scaffolding are shared by every later task.
+  (inferred) — Novelty High: first catalogue slice, while stack and site structure remain undecided (MI-01, MI-51); Blast Radius High: persistence and category identity are shared by later tasks. Staff sign-in and role guards arrive through T-1.0.1 and T-1.0.2.
 
 **Provisional commit message**
 
 ```
 feat(catalogue): create and rename categories on the staff website
 
-- First vertical slice: proves the staff website, sign-in with roles and
-  persistence end to end before anything wider is built
+- First catalogue slice proves category persistence through the signed-in
+  staff website before anything wider is built
 - Breadcrumbs are derived from the tree, never stored per product, so a
   rename can never leave stale paths on orders or calls
 ```
 
 **Capability class** — Frontier + extended reasoning · effort: Anthropic high budget / OpenAI xhigh / Google high
-Architecture choices made here are copied by every later task, so the delegated slivers that touch them are the hardest sub-problems in the plan.
+The catalogue persistence and category identity choices made here are copied by later catalogue tasks, so the delegated slivers that touch them need close review.
 
 **Work package**
 
 Increments:
-1. Record the stack and hosting decision (MI-01) and the staff website structure (MI-51: one site with head-office and manager areas by role, unless decided otherwise) as a short decision record in the repository.
-2. Staff sign-in with roles Field Salesperson, Sales Manager, Head Office User and an administrator role, plus the rep → manager reporting line (MI-03). Verify: a Head Office User reaches the catalogue area; a Field Salesperson cannot.
+1. Use the stack and hosting decision from T-1.0.1; record the catalogue persistence and category identity choices as a short decision record in the repository.
+2. Use T-1.0.1 and T-1.0.2's staff sign-in and role boundary for the catalogue area; record the rep → manager reporting line needed by later work (MI-03). Verify: a Head Office User reaches the catalogue area; a Field Salesperson cannot.
 3. Category domain type: a node with a parent, unlimited depth, and a breadcrumb derived by walking to the root. Verify with unit tests at depth 6.
 4. Persistence for categories; create root and child categories through the site. Verify a six-level tree survives a restart.
 5. Rename: the breadcrumb of every descendant changes; nothing that references a category by identity is rewritten. Verify with two same-named leaves under different parents ("Lotions" under Suncare and under Body Care).
@@ -78,17 +221,24 @@ Delegable slivers:
 
 ---
 
-### T-1.1.1-S — Test scenarios for creating and renaming categories and staff sign-in
+### T-1.2.1-S — Test scenarios for creating a product from the minimum record
 
-**Owner** — Human-Led
-**Gates** — T-1.1.1
+**Owner** — Scenario Review
+**Gates** — T-1.2.1
 **Produces** — a scenario list: names plus one-line intent, no code
 
-Questions to answer while writing it:
-- Which role combinations exist in practice ("Sales Manager, usually also a Head Office User")? List each and what it may reach.
-- What must happen to breadcrumbs shown on historic orders and calls after a rename — current path, or path at capture? The story says "no order or call is changed"; confirm that means the stored record, while display uses the current path.
-- Is there a maximum depth at all, or only a design target of six?
-- Which sign-in failures must be tested (expired session, disabled user, wrong role)?
+**Agent prompt**
+
+```
+Draft the test scenario list for creating a product from the minimum record
+(task T-1.2.1). Read plan_docs/stories/product-management.md US-001 and the
+glossary. Output one line per scenario as Should_Outcome_When_Condition,
+followed by "→" and a one-line intent. Cover every story scenario (S1–S5),
+then the edge cases you can derive: whitespace or case differences in codes,
+a category that is archived, a price of zero, very long names. Mark any case
+where the story does not say what correct is as "Needs a decision". Write no
+test code and change no files. Stop after producing the list.
+```
 
 ---
 
@@ -217,27 +367,6 @@ Resume trigger — `Continue T-1.2.1`
 
 ---
 
-### T-1.2.1-S — Test scenarios for creating a product from the minimum record
-
-**Owner** — Scenario Review
-**Gates** — T-1.2.1
-**Produces** — a scenario list: names plus one-line intent, no code
-
-**Agent prompt**
-
-```
-Draft the test scenario list for creating a product from the minimum record
-(task T-1.2.1). Read plan_docs/stories/product-management.md US-001 and the
-glossary. Output one line per scenario as Should_Outcome_When_Condition,
-followed by "→" and a one-line intent. Cover every story scenario (S1–S5),
-then the edge cases you can derive: whitespace or case differences in codes,
-a category that is archived, a price of zero, very long names. Mark any case
-where the story does not say what correct is as "Needs a decision". Write no
-test code and change no files. Stop after producing the list.
-```
-
----
-
 ### T-1.1.2 — Show category counts, branch products and breadcrumb search
 
 **Parent story**
@@ -324,6 +453,28 @@ Self-verification (report each line pass or fail with evidence):
 
 Out of scope: moving categories (E11, T-11.1.1), recategorising (E11),
 archiving (E11), product search (T-1.7.1).
+```
+
+---
+
+### T-1.4.1-S — Test scenarios for units of measure
+
+**Owner** — Scenario Review
+**Gates** — T-1.4.1
+**Produces** — a scenario list: names plus one-line intent, no code
+
+**Agent prompt**
+
+```
+Draft the test scenario list for units of measure, step and minimum (task
+T-1.4.1). Read plan_docs/stories/product-management.md US-003 and US-002 S5,
+and plan_docs/stories/rep-at-a-location-tablet.md US-008 S6 for the
+validation wording. Output one line per scenario as
+Should_Outcome_When_Condition, then "→" and a one-line intent. Cover every
+story scenario, then derivable edges: step 0.25, minimum equal to step,
+quantities one step off, very large quantities, litre and metre units.
+Mark anything the story leaves undecided as "Needs a decision". Write no
+test code and change no files.
 ```
 
 ---
@@ -435,24 +586,22 @@ Resume trigger — `Continue T-1.4.1`
 
 ---
 
-### T-1.4.1-S — Test scenarios for units of measure
+### T-1.3.1-S — Test scenarios for dated base prices
 
 **Owner** — Scenario Review
-**Gates** — T-1.4.1
+**Gates** — T-1.3.1
 **Produces** — a scenario list: names plus one-line intent, no code
 
 **Agent prompt**
 
 ```
-Draft the test scenario list for units of measure, step and minimum (task
-T-1.4.1). Read plan_docs/stories/product-management.md US-003 and US-002 S5,
-and plan_docs/stories/rep-at-a-location-tablet.md US-008 S6 for the
-validation wording. Output one line per scenario as
-Should_Outcome_When_Condition, then "→" and a one-line intent. Cover every
-story scenario, then derivable edges: step 0.25, minimum equal to step,
-quantities one step off, very large quantities, litre and metre units.
-Mark anything the story leaves undecided as "Needs a decision". Write no
-test code and change no files.
+Draft the test scenario list for dated base prices (task T-1.3.1). Read
+plan_docs/stories/product-management.md US-002. Output one line per scenario
+as Should_Outcome_When_Condition, then "→" and a one-line intent. Cover S1,
+S3 and S4, then derivable edges: two future prices, a past-dated price
+between two existing ones, a price effective today, the last day before a
+change. Mark anything the story leaves undecided (editing, deleting a future
+price, time zone) as "Needs a decision". Write no test code; change no files.
 ```
 
 ---
@@ -508,22 +657,23 @@ Delegable slivers:
 
 ---
 
-### T-1.3.1-S — Test scenarios for dated base prices
+### T-1.5.1-S — Test scenarios for archive-not-delete on Brands
 
 **Owner** — Scenario Review
-**Gates** — T-1.3.1
+**Gates** — T-1.5.1
 **Produces** — a scenario list: names plus one-line intent, no code
 
 **Agent prompt**
 
 ```
-Draft the test scenario list for dated base prices (task T-1.3.1). Read
-plan_docs/stories/product-management.md US-002. Output one line per scenario
-as Should_Outcome_When_Condition, then "→" and a one-line intent. Cover S1,
-S3 and S4, then derivable edges: two future prices, a past-dated price
-between two existing ones, a price effective today, the last day before a
-change. Mark anything the story leaves undecided (editing, deleting a future
-price, time zone) as "Needs a decision". Write no test code; change no files.
+Draft the test scenario list for the Brands archive-not-delete list (task
+T-1.5.1). Read plan_docs/stories/product-management.md US-008 S1–S4 and
+plan_docs/uxdocs/00-conventions-and-shared-elements.md §7. Output one line
+per scenario as Should_Outcome_When_Condition, then "→" and a one-line
+intent. Cover every story scenario, then derivable edges: a reference added
+after the page loads, a brand used only as an alternative brand, archiving
+then editing a product that holds the archived brand, duplicate names. Mark
+undecided cases as "Needs a decision". Write no test code; change no files.
 ```
 
 ---
@@ -638,27 +788,6 @@ Resume trigger — `Continue T-1.5.1`
 
 ---
 
-### T-1.5.1-S — Test scenarios for archive-not-delete on Brands
-
-**Owner** — Scenario Review
-**Gates** — T-1.5.1
-**Produces** — a scenario list: names plus one-line intent, no code
-
-**Agent prompt**
-
-```
-Draft the test scenario list for the Brands archive-not-delete list (task
-T-1.5.1). Read plan_docs/stories/product-management.md US-008 S1–S4 and
-plan_docs/uxdocs/00-conventions-and-shared-elements.md §7. Output one line
-per scenario as Should_Outcome_When_Condition, then "→" and a one-line
-intent. Cover every story scenario, then derivable edges: a reference added
-after the page loads, a brand used only as an alternative brand, archiving
-then editing a product that holds the archived brand, duplicate names. Mark
-undecided cases as "Needs a decision". Write no test code; change no files.
-```
-
----
-
 ### T-1.5.2 — Apply archive-not-delete to Product Profiles, Attribute names and suppliers
 
 **Parent story**
@@ -736,6 +865,27 @@ Self-verification (report each line pass or fail with evidence):
 
 Out of scope: Restriction Groups (T-1.5.3), setting these on a product
 (T-1.6.1, T-1.6.2), Location and Contact Types (T-2.2.1).
+```
+
+---
+
+### T-1.6.1-S — Test scenarios for product classification
+
+**Owner** — Scenario Review
+**Gates** — T-1.6.1
+**Produces** — a scenario list: names plus one-line intent, no code
+
+**Agent prompt**
+
+```
+Draft the test scenario list for product classification (task T-1.6.1). Read
+plan_docs/stories/product-management.md US-004 and glossary (Brand, Restriction
+Group). Output one line per scenario as Should_Outcome_When_Condition, then
+"→" and a one-line intent. Cover S1, S3, S4 and S5, then derivable edges:
+removing the primary brand while alternatives remain, the same brand as
+primary and alternative, changing a product's restriction group, an archived
+supplier. Mark undecided cases as "Needs a decision". Write no test code;
+change no files.
 ```
 
 ---
@@ -843,27 +993,6 @@ Resume trigger — `Continue T-1.6.1`
 
 ---
 
-### T-1.6.1-S — Test scenarios for product classification
-
-**Owner** — Scenario Review
-**Gates** — T-1.6.1
-**Produces** — a scenario list: names plus one-line intent, no code
-
-**Agent prompt**
-
-```
-Draft the test scenario list for product classification (task T-1.6.1). Read
-plan_docs/stories/product-management.md US-004 and glossary (Brand, Restriction
-Group). Output one line per scenario as Should_Outcome_When_Condition, then
-"→" and a one-line intent. Cover S1, S3, S4 and S5, then derivable edges:
-removing the primary brand while alternatives remain, the same brand as
-primary and alternative, changing a product's restriction group, an archived
-supplier. Mark undecided cases as "Needs a decision". Write no test code;
-change no files.
-```
-
----
-
 ### T-1.7.1 — Find products by code, name, brand or supplier
 
 **Parent story**
@@ -954,6 +1083,19 @@ editing (T-1.6.1).
 
 ---
 
+### T-1.5.3-S — Test scenarios for Restriction Group archiving
+
+**Owner** — Human-Led
+**Gates** — T-1.5.3
+**Produces** — a scenario list: names plus one-line intent, no code
+
+Questions to answer while writing it:
+- For a rep with permission, a rep without, and a new rep, what does each see for a product in an archived group?
+- What happens to an In Progress order line for such a product (valid when captured)?
+- After un-archiving, does each rep's visibility return exactly as before?
+
+---
+
 ### T-1.5.3 — Maintain Restriction Groups, archiving without effect
 
 **Parent story**
@@ -998,19 +1140,6 @@ Decision points:
 Delegable slivers:
 - **List registration** — Register Restriction Groups in the T-1.5.1 list switcher with product and permission usage counts, reusing the existing component. Do not implement any visibility logic.
 - **Archive message** — Add the S5 message "N permissions will be kept but have no effect while archived" to the archive confirmation, counting permissions through the existing interface. Change nothing else.
-
----
-
-### T-1.5.3-S — Test scenarios for Restriction Group archiving
-
-**Owner** — Human-Led
-**Gates** — T-1.5.3
-**Produces** — a scenario list: names plus one-line intent, no code
-
-Questions to answer while writing it:
-- For a rep with permission, a rep without, and a new rep, what does each see for a product in an archived group?
-- What happens to an In Progress order line for such a product (valid when captured)?
-- After un-archiving, does each rep's visibility return exactly as before?
 
 ---
 
@@ -1103,6 +1232,19 @@ snapshot changes.
 Produces before pausing — the snapshot contract diff (new fields and version).
 Human reviews — Is this change compatible with tablets still holding the previous snapshot version, and within the snapshot size budget (MI-02)?
 Resume trigger — `Continue T-1.6.2`
+
+---
+
+### T-1.3.2-S — Test scenarios for future-dated prices on the tablet
+
+**Owner** — Human-Led
+**Gates** — T-1.3.2
+**Produces** — a scenario list: names plus one-line intent, no code
+
+Questions to answer while writing it:
+- Which time zone defines "the day" — Europe/Dublin (MI-53)? What if the tablet's clock is wrong?
+- A line added at 23:58 on 31 October and edited at 00:02 on 1 November: which price, and does editing the quantity re-resolve it?
+- An In Progress order started before the change and finished after it: which price do new lines get, and do old lines change?
 
 ---
 
@@ -1204,16 +1346,23 @@ Resume trigger — `Continue T-1.3.2`
 
 ---
 
-### T-1.3.2-S — Test scenarios for future-dated prices on the tablet
+### T-1.4.2-S — Test scenarios for changing a product's unit
 
-**Owner** — Human-Led
-**Gates** — T-1.3.2
+**Owner** — Scenario Review
+**Gates** — T-1.4.2
 **Produces** — a scenario list: names plus one-line intent, no code
 
-Questions to answer while writing it:
-- Which time zone defines "the day" — Europe/Dublin (MI-53)? What if the tablet's clock is wrong?
-- A line added at 23:58 on 31 October and edited at 00:02 on 1 November: which price, and does editing the quantity re-resolve it?
-- An In Progress order started before the change and finished after it: which price do new lines get, and do old lines change?
+**Agent prompt**
+
+```
+Draft the test scenario list for changing the unit of a product that has
+orders (task T-1.4.2). Read plan_docs/stories/product-management.md US-003 S5.
+Output one line per scenario as Should_Outcome_When_Condition, then "→" and a
+one-line intent. Cover S5 and derivable edges: In Progress orders on tablets
+(which the server can't count — note it), stock counts in the old unit,
+quantity breaks set in the old unit, changing back. Mark undecided cases as
+"Needs a decision". Write no test code; change no files.
+```
 
 ---
 
@@ -1309,40 +1458,20 @@ Resume trigger — `Continue T-1.4.2`
 
 ---
 
-### T-1.4.2-S — Test scenarios for changing a product's unit
-
-**Owner** — Scenario Review
-**Gates** — T-1.4.2
-**Produces** — a scenario list: names plus one-line intent, no code
-
-**Agent prompt**
-
-```
-Draft the test scenario list for changing the unit of a product that has
-orders (task T-1.4.2). Read plan_docs/stories/product-management.md US-003 S5.
-Output one line per scenario as Should_Outcome_When_Condition, then "→" and a
-one-line intent. Cover S5 and derivable edges: In Progress orders on tablets
-(which the server can't count — note it), stock counts in the old unit,
-quantity breaks set in the old unit, changing back. Mark undecided cases as
-"Needs a decision". Write no test code; change no files.
-```
-
----
-
 ## Epic self-verification
 
 | Check | Result | Evidence |
 |---|---|---|
-| Every story in this epic appears and none is dropped | Pass | 7 stories; each has at least one task (PM-005: T-1.1.1, T-1.1.2; PM-001: T-1.2.1; PM-002: T-1.3.1, T-1.3.2; PM-003: T-1.4.1, T-1.4.2; PM-008: T-1.5.1–T-1.5.3; PM-004: T-1.6.1, T-1.6.2; PM-010: T-1.7.1) |
-| Every task satisfies the three slice criteria | Pass | Each slice names an observable outcome a Head Office User or rep can be shown |
-| Every task carries a tier with a rationale citing dimensions | Pass | 13 of 13 |
-| Unscoreable dimensions scored High, marked (inferred), reported | Pass | T-1.1.1 (stack, identity), T-1.5.3 (MI-45), T-1.3.2 (MI-53) |
-| Tasks modifying existing behaviour order characterisation first | Pass | T-1.4.2's checkpoint is the characterisation pass |
+| Every story in this epic appears and none is dropped | Pass | 9 stories; new Sign-in US-001 (T-1.0.1) and US-002 (T-1.0.1, T-1.0.2) precede the 7 catalogue stories listed above |
+| Every task satisfies the three slice criteria | Pass | 15 of 15 have a shippable, testable staff or catalogue outcome |
+| Every task carries a tier with a rationale citing dimensions | Pass | 15 of 15 |
+| Unscoreable dimensions scored High, marked (inferred), reported | Pass | T-1.0.1 (MI-01, MI-03, MI-51), T-1.1.1 (MI-01, MI-51), T-1.5.3 (MI-45), T-1.3.2 (MI-53) |
+| Tasks modifying existing behaviour order characterisation first | Pass | T-1.0.2 starts by characterising T-1.0.1; T-1.4.2's checkpoint is the characterisation pass |
 | No Agent-Autonomous body where Blast, Taste or Test Safety Net is High | Pass | Autonomous: T-1.1.2, T-1.5.2, T-1.7.1 — all Medium or Low, with a stated fallback if their drafts stay unconfirmed |
-| No agent prompt designs tests where Oracle Ambiguity or Edge-Case Discovery is High | Pass | T-1.1.1, T-1.5.3, T-1.3.2 are Human-Led |
+| No agent prompt designs tests where Oracle Ambiguity or Edge-Case Discovery is High | Pass | T-1.0.1, T-1.0.2, T-1.1.1, T-1.5.3 and T-1.3.2 are Human-Led |
 | Every Agent-Assisted body has a checkpoint with an exact resume trigger | Pass | T-1.2.1, T-1.4.1, T-1.5.1, T-1.6.1, T-1.6.2, T-1.3.2, T-1.4.2 |
-| Every Human Tight-Loop body has increments, decision points and slivers | Pass | T-1.1.1, T-1.3.1, T-1.5.3 |
-| Every scenario task precedes the task it gates | Pass | 10 `-S` sections, each directly before its task |
+| Every Human Tight-Loop body has increments, decision points and slivers | Pass | T-1.0.1, T-1.0.2, T-1.1.1, T-1.3.1, T-1.5.3 |
+| Every scenario task precedes the task it gates | Pass | 12 `-S` sections, including the two sign-in gates |
 | Every agent prompt is self-contained | Pass | Each names its spec files, criteria, constraints, gates and out-of-scope tasks |
 | No concrete model name in any task section | Pass | Capability classes only |
 | Every placeholder and inferred marker is reported | Pass | `{{STACK}}`, `{{PLACEHOLDER}}`, MI-01, 03, 07, 08, 13, 45, 51, 53 in the index |

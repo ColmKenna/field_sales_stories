@@ -1,7 +1,7 @@
 # 00 — Conventions & shared elements
 
 **Companion to:** Field Sales Management System — Screen Inventory & UI Brief (19 Sep 2026)
-**Status:** draft wireframes for review. Every "DECISION" block is a call I made where the brief was silent — none of them are settled.
+**Status:** living wireframes. Individual DECISION blocks state whether they are settled, confirmed or still drafts.
 
 ---
 
@@ -13,8 +13,12 @@
 | `01-tablet-day.md` | T-01, T-02, T-03, T-04, T-05, T-06, T-07, T-08 | 1, 2, 3 |
 | `02-head-office.md` | H-01, H-02, H-03, H-10, H-16 | 4, 6 |
 | `03-rep-planner.md` | R-01, R-02, R-03 | 5 |
+| `04-user-stories-amendments.md` | settled story and business-rule amendments | companion |
+| `05-manager.md` | M-01–M-17 | manager area |
+| `06-customer.md` | C-01–C-09 | customer area |
+| `07-access-and-sign-in.md` | I-01–I-05 shared staff and tablet access screens | added after brief |
 
-Everything else in the brief (M-*, C-*, remaining H-*) is deliberately not drawn yet — §10 calls it "largely conventional admin once the patterns above are settled", and drawing it now would bake in conventions that haven't been ruled on.
+The `I-` prefix identifies shared Identity and Access screens added after the original T/R/M/H/C inventory. The original screen tally in the 26 Sep handover is a snapshot from before this addition.
 
 **Notation:** `[ Button ]` · `[x]` checkbox · `( )` radio · `>` navigates · `v` expands · `(!)` warning marker · `(i)` opens detail.
 Tablet frames are drawn at ~64 characters; laptop frames at ~96. Proportions are indicative of *hierarchy*, not pixels.
